@@ -16,6 +16,9 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     var collectionView: UICollectionView!
     let searchController = UISearchController()
     
+    var navBarHeight: CGFloat?
+    var tabBarHeight: CGFloat?
+    
     //Category colors and labels
     let categories = Category()
     
@@ -24,12 +27,16 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navBarHeight = self.navigationController?.navigationBar.frame.size.height ?? 100
+        tabBarHeight = self.tabBarController?.tabBar.frame.size.height ?? 84
+        
         if let dbPointer = CADatabaseHelper.getDatabasePointer(databaseName: "CSIDAssistFoodDatabase.db") {
             pointer = dbPointer
         } else {
             print("Something went wrong!")
         }
-        
+        print(self.tabBarController?.tabBar.frame.size.height as Any)
         let queryPrimer = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: "", searchTerm: "", databasePointer: pointer)
         
         configureViewController()
@@ -62,8 +69,8 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         
         NSLayoutConstraint.activate([
             collectionView.widthAnchor.constraint(equalToConstant: view.bounds.width),
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100 ),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: navBarHeight!),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight!),
             collectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }

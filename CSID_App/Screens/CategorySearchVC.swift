@@ -13,6 +13,9 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
     var collectionView: UICollectionView!
     let searchController = UISearchController()
     
+    var navBarHeight: CGFloat?
+    var tabBarHeight: CGFloat?
+    
     //Variable for filtered search results
     var passedUSDACategoryData: [USDAFoodDetails] = []
     var filteredUSDACategoryData: [USDAFoodDetails] = []
@@ -20,7 +23,10 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        navBarHeight = self.navigationController?.navigationBar.frame.size.height ?? 100
+        tabBarHeight = self.tabBarController?.tabBar.frame.size.height ?? 84
+        
         filteredUSDACategoryData = passedUSDACategoryData
         
         configureViewController()
@@ -52,8 +58,8 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
         
         NSLayoutConstraint.activate([
             collectionView.widthAnchor.constraint(equalToConstant: view.bounds.width),
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100 ),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: navBarHeight!),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight!),
             collectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }

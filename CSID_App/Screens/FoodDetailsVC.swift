@@ -59,6 +59,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         nutrientData = CADatabaseQueryHelper.queryDatabaseNutrientData(fdicID: passedData.fdicID, databasePointer: passedPointer)
         
         view.backgroundColor = .systemBackground
@@ -349,7 +350,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
             collectionView.topAnchor.constraint(equalTo: sugarStarchContainer.bottomAnchor, constant: 10),
             collectionView.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100 )
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 10 )
         ])
         
     }
