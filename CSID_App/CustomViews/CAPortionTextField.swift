@@ -36,9 +36,8 @@ class CAPortionTextField: UITextField {
         textColor       = .label
         tintColor       = .label
         textAlignment   = .center
-        font = UIFont.preferredFont(forTextStyle: .body)
-        adjustsFontSizeToFitWidth = true
-        minimumFontSize     = 12
+        adjustsFontSizeToFitWidth = false
+        font            = UIFont.systemFont(ofSize: 14)
         autocorrectionType  = .no
         keyboardType        = .numberPad
 
