@@ -29,6 +29,8 @@
 		BCEE63EA2AF422EF00116F68 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEE63E92AF422EF00116F68 /* CollectionViewCell.swift */; };
 		EB2617512B2EB08000DA1075 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2617502B2EB08000DA1075 /* GlobalVariables.swift */; };
 		EB5BFE242B14ED810063FA4F /* CADatabaseQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5BFE232B14ED810063FA4F /* CADatabaseQueryHelper.swift */; };
+		EB85EB292B3E88B80037A969 /* SucroseIngredientClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB85EB282B3E88B80037A969 /* SucroseIngredientClass.swift */; };
+		EB85EB2B2B4098DB0037A969 /* SugarCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB85EB2A2B4098DB0037A969 /* SugarCardCollectionViewCell.swift */; };
 		EB9EEE412B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db in Resources */ = {isa = PBXBuildFile; fileRef = EB9EEE402B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db */; };
 		EBA53C9E2B0BBA35000BAB15 /* CategoryStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53C9D2B0BBA35000BAB15 /* CategoryStruct.swift */; };
 		EBA53CA02B0BEB7F000BAB15 /* SeparatorLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53C9F2B0BEB7F000BAB15 /* SeparatorLine.swift */; };
@@ -67,6 +69,8 @@
 		BCEE63E92AF422EF00116F68 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		EB2617502B2EB08000DA1075 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		EB5BFE232B14ED810063FA4F /* CADatabaseQueryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CADatabaseQueryHelper.swift; sourceTree = "<group>"; };
+		EB85EB282B3E88B80037A969 /* SucroseIngredientClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SucroseIngredientClass.swift; sourceTree = "<group>"; };
+		EB85EB2A2B4098DB0037A969 /* SugarCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SugarCardCollectionViewCell.swift; sourceTree = "<group>"; };
 		EB9EEE402B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = CSIDAssistFoodDatabase.db; sourceTree = "<group>"; };
 		EBA53C9D2B0BBA35000BAB15 /* CategoryStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryStruct.swift; sourceTree = "<group>"; };
 		EBA53C9F2B0BEB7F000BAB15 /* SeparatorLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorLine.swift; sourceTree = "<group>"; };
@@ -105,6 +109,7 @@
 				BC49CF2A2AF2C0E700EB20AA /* YourFoodClass.swift */,
 				EBA53C9D2B0BBA35000BAB15 /* CategoryStruct.swift */,
 				EB2617502B2EB08000DA1075 /* GlobalVariables.swift */,
+				EB85EB282B3E88B80037A969 /* SucroseIngredientClass.swift */,
 			);
 			path = Modal;
 			sourceTree = "<group>";
@@ -137,6 +142,7 @@
 				EBA53CA12B0D1C96000BAB15 /* ChartCircleView.swift */,
 				EBE2B8D52B1AF34D00B44999 /* CAPortionTextField.swift */,
 				EBF96E7C2B315DFF008B325D /* CSIDAlertVC.swift */,
+				EB85EB2A2B4098DB0037A969 /* SugarCardCollectionViewCell.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -278,9 +284,11 @@
 				BC5F07EA2AB257C8007096F8 /* FavoritesVC.swift in Sources */,
 				BC8DF8912AEDA1ED00799CB9 /* NewFoodTextField.swift in Sources */,
 				EBA53CA02B0BEB7F000BAB15 /* SeparatorLine.swift in Sources */,
+				EB85EB292B3E88B80037A969 /* SucroseIngredientClass.swift in Sources */,
 				EBF96E7F2B3160EC008B325D /* UIViewController+Extension.swift in Sources */,
 				EB2617512B2EB08000DA1075 /* GlobalVariables.swift in Sources */,
 				BC49CF2F2AF4185800EB20AA /* UIHelper.swift in Sources */,
+				EB85EB2B2B4098DB0037A969 /* SugarCardCollectionViewCell.swift in Sources */,
 				EBA53CA22B0D1C96000BAB15 /* ChartCircleView.swift in Sources */,
 				EBF96E7D2B315DFF008B325D /* CSIDAlertVC.swift in Sources */,
 				BC8DF8932AEDCA6500799CB9 /* NewFoodLabel.swift in Sources */,

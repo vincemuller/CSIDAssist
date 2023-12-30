@@ -15,6 +15,10 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     var passedPointer:          OpaquePointer?
     var nutrientData:           USDANutrientData!
     var recordID:               String?
+    let findSugars = SucroseCheck()
+    
+    var sugarIngr: [String] = []
+    var otherIngr: [String] = []
     
     var foodItemRecordID:       CKRecord.ID?
     
@@ -63,6 +67,10 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         nutrientData = CADatabaseQueryHelper.queryDatabaseNutrientData(fdicID: passedData.fdicID, databasePointer: passedPointer)
         
         view.backgroundColor = .systemBackground
+        
+        sugarIngr = findSugars.getSucroseIngredients(productIngredients: passedData.ingredients.lowercased())
+        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: passedData.ingredients.lowercased())
+        
         configureTitleLabel()
         configureTopContainers()
         configureTopLabels()
@@ -341,6 +349,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: UIHelper.createOverLappingFlowLayout(in: view))
         view.addSubview(collectionView)
         collectionView.register(CardCollectionViewCell.self, forCellWithReuseIdentifier: CardCollectionViewCell.reuseID)
+        collectionView.register(SugarCardCollectionViewCell.self, forCellWithReuseIdentifier: SugarCardCollectionViewCell.reuseID)
 
         collectionView.delegate         = self
         collectionView.dataSource       = self
@@ -360,21 +369,36 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
+        let returnCell: UICollectionViewCell
         
-        cell.layer.shadowColor = (indexPath.row==0 ? UIColor.clear.cgColor : UIColor.black.cgColor)
-        
-        cell.backgroundColor        = cardsColors[indexPath.row]
-        cell.cardLabel.text         = cardsDetails[indexPath.row]
         if cardsDetails[indexPath.row] == "Ingredients" {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
+            cell.cardLabel.text         = cardsDetails[indexPath.row]
+            
             cell.cardDescription.text                   = passedData.ingredients
+            returnCell = cell
         } else if cardsDetails[indexPath.row] == "Sugars"{
-            cell.cardDescription.text                   = "This product contains the\nfollowing types of sugar:\n\(sugarTypes)"
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SugarCardCollectionViewCell.reuseID, for: indexPath) as! SugarCardCollectionViewCell
+            cell.cardLabel.text         = cardsDetails[indexPath.row]
+            sugarIngr = sugarIngr.map({$0.capitalized})
+            otherIngr = otherIngr.map({$0.capitalized})
+            let sI = sugarIngr.joined(separator: "  •")
+            let oI = otherIngr.joined(separator: "  •")
+            cell.sucroseIngr.text       = (sI.isEmpty ? "No sucrose detected. As always, check the ingredients" : "•\(sI)")
+            cell.otherIngr.text         = (oI.isEmpty ? "No other sugars detected. As always, check the ingredients" : "•\(oI)")
+            returnCell = cell
         } else {
-            cell.cardDescription.text                   = ""
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
+            
+            cell.cardDescription.text                   = nil
+            cell.cardLabel.text         = cardsDetails[indexPath.row]
+            returnCell = cell
         }
         
-        return cell
+        returnCell.layer.shadowColor = (indexPath.row==0 ? UIColor.clear.cgColor : UIColor.black.cgColor)
+        returnCell.backgroundColor        = cardsColors[indexPath.row]
+        
+        return returnCell
     }
 
     
