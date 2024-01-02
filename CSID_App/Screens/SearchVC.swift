@@ -38,10 +38,14 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         }
         print(self.tabBarController?.tabBar.frame.size.height as Any)
         let queryPrimer = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: "", searchTerm: "", databasePointer: pointer)
-        
+
         configureViewController()
         configureSearchController()
         configureCollectionView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     func configureSearchController() {
@@ -70,7 +74,7 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         NSLayoutConstraint.activate([
             collectionView.widthAnchor.constraint(equalToConstant: view.bounds.width),
             collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: navBarHeight!),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight!),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(tabBarHeight!+5)),
             collectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
@@ -128,8 +132,11 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let foodDetailsVC       = CSIDFoodDetailsVC()
-        let categorySearchVC    = CategorySearchVC()
+        let foodDetailsVC                       = CSIDFoodDetailsVC()
+        let categorySearchVC                    = CategorySearchVC()
+        let userFoodsVC                         = UserFoodsVC()
+        var queryResult: [USDAFoodDetails]      = []
+        var queriedUserFoods: [YourFoodItem]    = []
         
         if searchInProgress == true {
             foodDetailsVC.passedData                = filteredUSDAFoodData[indexPath.row]
@@ -140,13 +147,52 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         } else {
             //let queryResult: [USDAFoodDetails] = []
             let selection   = categories.list[indexPath.row]
-            let queryResult = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: selection, searchTerm: "", databasePointer: pointer)
-            categorySearchVC.category                 = selection
-            categorySearchVC.passedUSDACategoryData   = queryResult
-            categorySearchVC.passedPointer            = pointer
-            navigationController?.pushViewController(categorySearchVC, animated: true)
+            if selection != "Your Foods" {
+                queryResult = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: selection, searchTerm: "", databasePointer: pointer)
+                categorySearchVC.category                 = selection
+                categorySearchVC.passedUSDACategoryData   = queryResult
+                categorySearchVC.passedPointer            = pointer
+                navigationController?.pushViewController(categorySearchVC, animated: true)
+            } else {
+                Task.init {
+                    do {
+                        guard userID != "" else {
+                            print("Not able to retrieve user id")
+                            return
+                        }
+                        queriedUserFoods = try await queryUserFoods()
+                        userFoodsVC.passedUserFoods = queriedUserFoods
+                        navigationController?.pushViewController(userFoodsVC, animated: true)
+                    } catch {
+                        print("Fetching failed with error \(error)")
+                    }
+                }
+            }
             
         }
+    }
+    
+    func queryUserFoods() async throws -> [YourFoodItem] {
+        var userFoods:   [YourFoodItem] = []
+        let privateDB = CKContainer.default().privateCloudDatabase
+        let predicate = NSPredicate(format: "userID = %@", userID)
+        let query = CKQuery(recordType: "UserFoods", predicate: predicate)
+        let testResults = try await privateDB.records(matching: query)
+        print(testResults)
+        for t in testResults.matchResults {
+            let a = try t.1.get()
+            let recordID        = a.value(forKey: "creatorUserRecordID") as! CKRecord.ID
+            let description     = a.value(forKey: "description") as! String
+            let ingredients     = a.value(forKey: "ingredients") as! String
+            let portionSize     = a.value(forKey: "portionSize") as! String
+            let totalCarbs      = a.value(forKey: "totalCarbs") as! Float
+            let totalFiber      = a.value(forKey: "totalFiber") as! Float
+            let totalSugars     = a.value(forKey: "totalSugars") as! Float
+            let addedSugars     = a.value(forKey: "addedSugars") as! Float
+            let x = YourFoodItem(recordID: a.recordID, category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredients, totalCarbs: totalCarbs, totalFiber: totalFiber, totalSugars: totalSugars, addedSugars: addedSugars)
+            userFoods.append(x)
+        }
+        return userFoods
     }
     
 }

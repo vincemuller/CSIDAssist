@@ -91,7 +91,7 @@ class FavoritesVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         NSLayoutConstraint.activate([
             collectionView.widthAnchor.constraint(equalToConstant: view.bounds.width),
             collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: navBarHeight!),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight! ),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(tabBarHeight!+5)),
             collectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }

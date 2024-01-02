@@ -19,7 +19,7 @@ class MultiLineTextField: UITextView {
     }
     
     private func configure() {
-        backgroundColor                             = .systemGray6
+        backgroundColor                             = .systemGray5
         translatesAutoresizingMaskIntoConstraints   = false
         layer.cornerRadius                          = 10
         isEditable                                  = true

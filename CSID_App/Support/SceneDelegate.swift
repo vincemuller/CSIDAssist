@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CloudKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -21,7 +22,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = TabBarVC()
         window?.makeKeyAndVisible()
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -32,6 +32,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
+        fetchICloudUserRecordID()
+        Task.init {
+            do {
+                guard userID != "" else {
+                    print("Not able to retrieve user id")
+                    return
+                }
+                userFavorites = try await queryAllFavs()
+            } catch {
+                userID = ""
+                userFavorites = []
+                print("Fetching failed with error \(error)")
+            }
+        }
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
     }
@@ -41,17 +55,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
 
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
+    func fetchICloudUserRecordID() {
+        CKContainer.default().fetchUserRecordID { returnedID, returnedError in
+            userID = returnedID?.recordName ?? ""
+        }
     }
-
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
+    
+    func queryAllFavs() async throws -> [Int] {
+        var userFavs:   [Int] = []
+        let privateDB = CKContainer.default().privateCloudDatabase
+        let predicate = NSPredicate(format: "userID = %@", userID)
+        let query = CKQuery(recordType: "UserFavorites", predicate: predicate)
+        let testResults = try await privateDB.records(matching: query)
+        for t in testResults.matchResults {
+            let a = try t.1.get()
+            let i = a.value(forKey: "fdicID") as! Int
+            userFavs.append(i)
+        }
+        return userFavs
     }
-
 
 }
 

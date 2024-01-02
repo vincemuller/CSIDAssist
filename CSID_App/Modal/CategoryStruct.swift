@@ -9,6 +9,7 @@ import UIKit
 
 class Category {
     let list: [String] = [
+        "Your Foods",
         "Baby Foods & Formula",
         "Baking Goods & Spices",
         "Breakfast Foods",
@@ -31,6 +32,7 @@ class Category {
         "Prepared Meals"
     ]
     let colors: [UIColor] = [
+        UIColor.systemMint,
         UIColor.systemRed,
         UIColor.systemYellow,
         UIColor.systemOrange,

@@ -1,15 +1,16 @@
 //
-//  AddNewFoodVC.swift
+//  EditUserFoodVC.swift
 //  CSID_App
 //
-//  Created by Vince Muller on 9/14/23.
+//  Created by Vince Muller on 1/1/24.
 //
 
 import UIKit
 import CloudKit
 
-class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
+class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     var yourFoodData: [YourFoodItem] = []
+    var passedData: YourFoodItem!
     let scrollView  = UIScrollView()
     let contentView = UIView()
     
@@ -42,9 +43,9 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         configureCTAButton()
         
         createDismissKeyboardTapGesture()
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(AddNewFoodVC.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-            
+        
         NotificationCenter.default.addObserver(self, selector: #selector(AddNewFoodVC.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
@@ -77,6 +78,7 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         contentView.addSubview(fdTextField)
         
         fdTextField.delegate = self
+        fdTextField.text     = passedData.description
         
         NSLayoutConstraint.activate([
             fdLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
@@ -95,6 +97,7 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         contentView.addSubview(psTextField)
         
         psTextField.delegate = self
+        psTextField.text     = passedData.portionSize
         
         NSLayoutConstraint.activate([
             psLabel.topAnchor.constraint(equalTo: fdTextField.bottomAnchor, constant: 15),
@@ -114,6 +117,7 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         contentView.addSubview(ingredientsTextField)
         
         ingredientsTextField.delegate = self
+        ingredientsTextField.text     = passedData.ingredients
         
         NSLayoutConstraint.activate([
             ingredientsLabel.topAnchor.constraint(equalTo: psTextField.bottomAnchor, constant: 15),
@@ -133,41 +137,48 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         contentView.addSubview(totalFiberTextField)
         contentView.addSubview(totalSugarsTextField)
         contentView.addSubview(addedSugarsTextField)
-            
+        
         totalCarbsTextField.delegate    = self
+        totalCarbsTextField.text        = passedData.totalCarbs.description
+        
         totalFiberTextField.delegate    = self
+        totalFiberTextField.text        = passedData.totalFiber.description
+        
         totalSugarsTextField.delegate   = self
+        totalSugarsTextField.text       = passedData.totalSugars.description
+        
         addedSugarsTextField.delegate   = self
+        addedSugarsTextField.text       = passedData.addedSugars.description
         
         totalCarbsTextField.keyboardType    = .numberPad
         totalFiberTextField.keyboardType    = .numberPad
         totalSugarsTextField.keyboardType   = .numberPad
         addedSugarsTextField.keyboardType   = .numberPad
-            
+        
         NSLayoutConstraint.activate([
             nutritionLabel.topAnchor.constraint(equalTo: ingredientsTextField.bottomAnchor, constant: 15),
             nutritionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25),
-                
+            
             totalCarbsTextField.topAnchor.constraint(equalTo: nutritionLabel.bottomAnchor, constant: 10),
             totalCarbsTextField.leadingAnchor.constraint(equalTo: nutritionLabel.leadingAnchor),
             totalCarbsTextField.widthAnchor.constraint(equalToConstant: (view.frame.width * 0.85)/2),
             totalCarbsTextField.heightAnchor.constraint(equalToConstant: 40),
-                
+            
             totalFiberTextField.topAnchor.constraint(equalTo: nutritionLabel.bottomAnchor, constant: 10),
             totalFiberTextField.trailingAnchor.constraint(equalTo: ingredientsTextField.trailingAnchor),
             totalFiberTextField.widthAnchor.constraint(equalToConstant: (view.frame.width * 0.85)/2),
             totalFiberTextField.heightAnchor.constraint(equalToConstant: 40),
-                
+            
             totalSugarsTextField.topAnchor.constraint(equalTo: totalCarbsTextField.bottomAnchor, constant: 10),
             totalSugarsTextField.leadingAnchor.constraint(equalTo: nutritionLabel.leadingAnchor),
             totalSugarsTextField.widthAnchor.constraint(equalToConstant: (view.frame.width * 0.85)/2),
             totalSugarsTextField.heightAnchor.constraint(equalToConstant: 40),
-                
+            
             addedSugarsTextField.topAnchor.constraint(equalTo: totalCarbsTextField.bottomAnchor, constant: 10),
             addedSugarsTextField.trailingAnchor.constraint(equalTo: ingredientsTextField.trailingAnchor),
             addedSugarsTextField.widthAnchor.constraint(equalToConstant: (view.frame.width * 0.85)/2),
             addedSugarsTextField.heightAnchor.constraint(equalToConstant: 40),
-            ])
+        ])
     }
     
     func configureCTAButton() {
@@ -175,7 +186,7 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         
         ctaButton.translatesAutoresizingMaskIntoConstraints = false
         ctaButton.backgroundColor = .systemGreen
-        ctaButton.setTitle("Add New Food", for: .normal)
+        ctaButton.setTitle("Update Food", for: .normal)
         ctaButton.layer.cornerRadius = 10
         ctaButton.addTarget(self, action: #selector(createNewFood), for: .touchUpInside)
         
@@ -202,20 +213,11 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         }
         
         ckUserFoodRecordCreation(userID: userID.description, category: "Your Food", description: description, ingredients: ingredientsTextField.text, portionSize: portionSize, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
-        resetFields()
     }
     
     func resetFields() {
-        fdTextField.text            = ""
-        psTextField.text            = ""
-        ingredientsTextField.text   = ""
-        totalCarbsTextField.text    = ""
-        totalFiberTextField.text    = ""
-        totalSugarsTextField.text   = ""
-        addedSugarsTextField.text   = ""
-        
         let contentInsets2 = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
-        let contentInsets = CGPoint(x: 0, y: -100)
+        let contentInsets = CGPoint(x: 0, y: 0)
         
         // reset back the content inset to zero after keyboard is gone
         scrollView.setContentOffset(contentInsets, animated: true)
@@ -224,55 +226,56 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     }
     
     func ckUserFoodRecordCreation(userID: String, category: String, description: String, ingredients: String, portionSize: String, totalCarbs: Float, totalFiber: Float, totalSugars: Float, addedSugars: Float) {
-        let record = CKRecord(recordType: "UserFoods")
         let container = CKContainer.default()
         let database = container.privateCloudDatabase
+        
+        database.fetch(withRecordID: passedData.recordID) { record, error in
+            if let record = record, error == nil {
 
-            record.setValuesForKeys([
-                "userID": userID,
-                "category": category,
-                "description": description,
-                "ingredients": ingredients,
-                "portionSize": portionSize,
-                "totalCarbs": totalCarbs,
-                "totalFiber": totalFiber,
-                "totalSugars": totalSugars,
-                "addedSugars": addedSugars
-            ]
-            )
+                record.setValuesForKeys([
+                    "userID": userID,
+                    "category": category,
+                    "description": description,
+                    "ingredients": ingredients,
+                    "portionSize": portionSize,
+                    "totalCarbs": totalCarbs,
+                    "totalFiber": totalFiber,
+                    "totalSugars": totalSugars,
+                    "addedSugars": addedSugars
+                ]
+                )
+                
+                database.save(record) { _, error in
+                    self.presentGFAlertOnMain(title: "Food Updated", message: "You have successfully updated your food!", buttonTitle: "Ok")
 
-        database.save(record) { record, error in
-            if let error = error {
-                print("error, did not succeed!\(error)")
-                return
+                }
             }
-            self.presentGFAlertOnMain(title: "New Food Added", message: "You have successfully added a new food! Looks yummy!", buttonTitle: "Ok")
         }
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
         else {
-          // if keyboard size is not available for some reason, dont do anything
-          return
+            // if keyboard size is not available for some reason, dont do anything
+            return
         }
         let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize.height , right: 0.0)
         scrollView.contentInset = contentInsets
         scrollView.scrollIndicatorInsets = contentInsets
-      }
-
+    }
+    
     @objc func keyboardWillHide(notification: NSNotification) {
         let contentInsets2 = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
-        let contentInsets = CGPoint(x: 0, y: -100)
+        let contentInsets = CGPoint(x: 0, y: 0)
         
         // reset back the content inset to zero after keyboard is gone
         scrollView.setContentOffset(contentInsets, animated: true)
         scrollView.scrollIndicatorInsets = contentInsets2
-      }
+    }
     
     func createDismissKeyboardTapGesture() {
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(contentView.endEditing))
         view.addGestureRecognizer(tap)
     }
-
+    
 }

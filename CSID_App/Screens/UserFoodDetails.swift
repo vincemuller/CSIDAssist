@@ -1,20 +1,17 @@
 //
-//  CSIDFoodDetailsVC.swift
+//  UserFoodDetails.swift
 //  CSID_App
 //
-//  Created by Vince Muller on 9/27/23.
+//  Created by Vince Muller on 12/31/23.
 //
 
 import UIKit
 import CloudKit
 
-class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
-    
-    var passedData:             USDAFoodDetails!
+class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
+    var passedData:             YourFoodItem!
     var sugarTypes:             String = ""
-    var passedPointer:          OpaquePointer?
-    var nutrientData:           USDANutrientData!
-    var recordID:               String?
+    
     let findSugars = SucroseCheck()
     
     var sugarIngr: [String] = []
@@ -24,8 +21,8 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     
     let titleLabel              = CALabel(size: 20, weight: .bold, numOfLines: 3)
     
-    let favIcon                 = UIImageView()
-    var favIconEnabled: Bool    = false
+    let editIcon                = UIImageView()
+
     var config                  = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
     var addNewSymbol: UIImage?
     let tapGesture              = UITapGestureRecognizer()
@@ -64,8 +61,6 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        nutrientData = CADatabaseQueryHelper.queryDatabaseNutrientData(fdicID: passedData.fdicID, databasePointer: passedPointer)
-        
         view.backgroundColor = .systemBackground
         
         sugarIngr = findSugars.getSucroseIngredients(productIngredients: passedData.ingredients.lowercased())
@@ -74,18 +69,13 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         configureTitleLabel()
         configureTopContainers()
         configureTopLabels()
-        configureCustomPortion()
         configureSugarStarchContainer()
         configureSugarStarchLabels()
         configureCarbsContainer()
         configureCarbsLabels()
         configureCollectionView()
-        
+        configureEditIcon()
         createDismissKeyboardTapGesture()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        configureFavIcon()
     }
     
     func configureTitleLabel() {
@@ -93,7 +83,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         view.addSubview(brandCategoryLabel)
         
         titleLabel.text = passedData.description.capitalized
-        brandCategoryLabel.text = "Category: \(passedData.brandedFoodCategory.capitalized)"
+        brandCategoryLabel.text = "Category: Your Foods"
         
         brandCategoryLabel.textColor = .systemGray2
         
@@ -109,85 +99,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         ])
     }
 
-    func query() async throws {
-        let privateDB = CKContainer.default().privateCloudDatabase
-        let predicate = NSPredicate(format: "userID = %@", userID)
-        let predicate2 = NSPredicate(format: "fdicID = \(passedData.fdicID)")
-        let compPred = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, predicate2])
-        let query = CKQuery(recordType: "UserFavorites", predicate: compPred)
-        let testResults = try await privateDB.records(matching: query)
-        for t in testResults.matchResults {
-            let a = try t.1.get()
-            foodItemRecordID = a.recordID
-        }
-      //  let result = try testResults.matchResults[1].1.get()
-    }
     
-    func testingCKRecordCreation() {
-        guard favIconEnabled == false else {return}
-        let record = CKRecord(recordType: "UserFavorites")
-        let container = CKContainer.default()
-        let database = container.privateCloudDatabase
-
-            record.setValuesForKeys([
-                "fdicID": passedData.fdicID as Any,
-                "userID": userID as Any,
-            ]
-            )
-
-        database.save(record) { record, error in
-            if let error = error {
-                print("error, did not succeed!\(error)")
-                return
-            }
-                print("Successful!")
-                print(record?.recordID.recordName as Any)
-        }
-    }
-    
-    func ckRecordDeletion(id: CKRecord.ID) {
-        let container = CKContainer.default()
-        let database = container.privateCloudDatabase
-        
-        database.delete(withRecordID: id) { id, error in
-            if let error = error {
-                print("error, did not remove!\(error)")
-                return
-            }
-                print("Successfully removed favorite \(String(describing: id))")
-        }
-    }
-
-    
-    func configureFavIcon() {
-        view.addSubview(favIcon)
-        let favCheck = userFavorites.contains(passedData.fdicID)
-        print(passedData.fdicID)
-        print(favCheck)
-        if favCheck==true {
-            favIconEnabled=true
-        }
-        
-        addNewSymbol        = (favIconEnabled==false ? UIImage(systemName: "star", withConfiguration: config) : UIImage(systemName: "star.fill", withConfiguration: config))
-        favIcon.image       = addNewSymbol
-        favIcon.tintColor   = .systemGreen
-        
-        tapGesture.addTarget(self, action: #selector(handleFavoriteTapped))
-        tapGesture.isEnabled            = true
-        tapGesture.numberOfTapsRequired = 1
-
-        favIcon.translatesAutoresizingMaskIntoConstraints = false
-        
-        favIcon.isUserInteractionEnabled    = true
-        favIcon.addGestureRecognizer(tapGesture)
-        
-        NSLayoutConstraint.activate([
-            favIcon.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            favIcon.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 5)
-        ])
-        
-        
-    }
     func configureTopContainers() {
         view.addSubview(topContainer)
         view.addSubview(portionContainer)
@@ -210,9 +122,9 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         topContainer.addSubview(brandNameLabel)
         portionContainer.addSubview(portionLabel)
         
-        brandOwnerLabel.text    = "Brand Owner: \(passedData.brandOwner?.capitalized ?? "N/A")"
-        brandNameLabel.text     = "Brand Name: \(passedData.brandName?.capitalized ?? "N/A")"
-        portionLabel.text       = "Serving Size:  \(passedData.servingSize)\(passedData.servingSizeUnit)"
+        brandOwnerLabel.text    = "Brand Owner: "
+        brandNameLabel.text     = "Brand Name: "
+        portionLabel.text       = "Serving Size:  \(passedData.portionSize.lowercased())"
         
         NSLayoutConstraint.activate([
             brandOwnerLabel.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: 7),
@@ -223,21 +135,6 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
             
             portionLabel.centerYAnchor.constraint(equalTo: portionContainer.centerYAnchor),
             portionLabel.leadingAnchor.constraint(equalTo: brandOwnerLabel.leadingAnchor)
-        ])
-    }
-    
-    func configureCustomPortion() {
-        view.addSubview(customPortionTextField)
-        
-        customPortionTextField.delegate = self
-        
-        customPortionTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-        
-        NSLayoutConstraint.activate([
-            customPortionTextField.topAnchor.constraint(equalTo: portionContainer.topAnchor),
-            customPortionTextField.leadingAnchor.constraint(equalTo: portionContainer.trailingAnchor, constant: 10),
-            customPortionTextField.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor),
-            customPortionTextField.bottomAnchor.constraint(equalTo: portionContainer.bottomAnchor)
         ])
     }
     
@@ -264,8 +161,8 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         totalStarchCircle.layer.borderWidth   = 3
         totalSugarsCircle.layer.borderWidth   = 3
         
-        totalSugarsData.text    = (nutrientData.totalSugars != "N/A" ? (round(Float(nutrientData.totalSugars)!*10)/10.0).description : "N/A")
-        totalStarchData.text    = (nutrientData.totalStarches != "N/A" ? (round(Float(nutrientData.totalStarches)!*10)/10.0).description : "N/A")
+        totalSugarsData.text    = passedData.totalSugars.description
+        totalStarchData.text    = (passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars).description
         totalSugarsLabel.text   = "Total Sugars"
         totalStarchLabel.text   = "Total Starches"
         
@@ -298,6 +195,36 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         totalSugarsCircle.layer.cornerRadius  = 40
     }
     
+    func configureEditIcon() {
+        view.addSubview(editIcon)
+        
+        addNewSymbol        = UIImage(systemName: "square.and.pencil", withConfiguration: config)
+        editIcon.image       = addNewSymbol
+        editIcon.tintColor   = .systemGray
+        
+        tapGesture.addTarget(self, action: #selector(handleFavoriteTapped))
+        tapGesture.isEnabled            = true
+        tapGesture.numberOfTapsRequired = 1
+
+        editIcon.translatesAutoresizingMaskIntoConstraints = false
+        
+        editIcon.isUserInteractionEnabled    = true
+        editIcon.addGestureRecognizer(tapGesture)
+        
+        NSLayoutConstraint.activate([
+            editIcon.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            editIcon.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 5)
+        ])
+        
+        
+    }
+    
+    @objc func handleFavoriteTapped(_ gesture: UITapGestureRecognizer) {
+        let editUserFoodVC          = EditUserFoodVC()
+        editUserFoodVC.passedData   = passedData
+        self.present(editUserFoodVC, animated: true)
+        }
+    
     func configureCarbsContainer() {
         view.addSubview(carbsContainer)
         carbsContainer.addSubview(carbsSeparatorLine)
@@ -321,12 +248,12 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         carbsContainer.addSubview(totalCarbsLabel)
         carbsContainer.addSubview(netCarbsLabel)
 
-        totalCarbsData.text             = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
+        totalCarbsData.text             = passedData.totalCarbs.description
         totalCarbsData.textAlignment    = .center
         totalCarbsLabel.text            = "Total Carbs"
         totalCarbsLabel.textAlignment   = .center
         
-        netCarbsData.text               = (nutrientData.netCarbs != "N/A" ? (round(Float(nutrientData.netCarbs)!*10)/10.0).description : "N/A")
+        netCarbsData.text               = (passedData.totalCarbs-passedData.totalFiber).description
         netCarbsData.textAlignment      = .center
         netCarbsLabel.text              = "Net Carbs"
         netCarbsLabel.textAlignment     = .center
@@ -375,7 +302,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
             cell.cardLabel.text         = cardsDetails[indexPath.row]
             
-            cell.cardDescription.text                   = passedData.ingredients
+            cell.cardDescription.text   = passedData.ingredients
             returnCell = cell
         } else if cardsDetails[indexPath.row] == "Sugars"{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SugarCardCollectionViewCell.reuseID, for: indexPath) as! SugarCardCollectionViewCell
@@ -411,78 +338,8 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         collectionView.reloadData()
     }
     
-    @objc func handleFavoriteTapped(_ gesture: UITapGestureRecognizer) {
-        if favIconEnabled == false {
-            guard userID != "" else {
-                presentGFAlertOnMain(title: "Unable to Favorite", message: CAError.invalidUserID.rawValue, buttonTitle: "Ok")
-                return
-            }
-            testingCKRecordCreation()
-            userFavorites.append(passedData.fdicID)
-            addNewSymbol        = UIImage(systemName: "star.fill", withConfiguration: config)
-            favIcon.image       = addNewSymbol
-            favIconEnabled      = true
-            self.presentGFAlertOnMain(title: "Food Favorited", message: "You have successfully added \(passedData.description.capitalized) to your favorites", buttonTitle: "Ok")
-        } else {
-            Task.init {
-                do {
-                    try await query()
-                    guard foodItemRecordID != nil else {
-                        presentGFAlertOnMain(title: "Unable to Remove", message: CAError.unableToRemove.rawValue, buttonTitle: "Ok")
-                        return
-                        }
-                    ckRecordDeletion(id: foodItemRecordID!)
-                    userFavorites       = userFavorites.filter(){$0 != passedData.fdicID}
-                    print(userFavorites)
-                    addNewSymbol        = UIImage(systemName: "star", withConfiguration: config)
-                    favIcon.image       = addNewSymbol
-                    favIconEnabled      = false
-                    self.presentGFAlertOnMain(title: "Food Removed", message: "You have successfully removed \(passedData.description.capitalized) from your favorites", buttonTitle: "Ok")
-                } catch {
-                    presentGFAlertOnMain(title: "Unable to Fetch", message: error.localizedDescription, buttonTitle: "Ok")
-                }
-            }
-        }
-    }
-    
     func createDismissKeyboardTapGesture() {
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(view.endEditing))
         topContainer.addGestureRecognizer(tap)
     }
-    
-    @objc private func textFieldDidChange(_ textField: UITextField) {
-        guard let customPortionText = customPortionTextField.text, customPortionText.count != 0 else {
-            totalCarbsData.text     = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
-            netCarbsData.text       = (nutrientData.netCarbs != "N/A" ? (round(Float(nutrientData.netCarbs)!*10)/10.0).description : "N/A")
-            totalStarchData.text    = (nutrientData.totalStarches != "N/A" ? (round(Float(nutrientData.totalStarches)!*10)/10.0).description : "N/A")
-            totalSugarsData.text    = (nutrientData.totalSugars != "N/A" ? (round(Float(nutrientData.totalSugars)!*10)/10.0).description : "N/A")
-            return
-        }
-        
-        let customPortion: Float   = Float(customPortionTextField.text ?? "1") ?? 1
-        let adjustor:      Float   = customPortion/Float(passedData.servingSize)
-        
-        if nutrientData.carbs != "N/A" {
-            let adjustedCarbs:  Float   = round(((Float(nutrientData.carbs)!*adjustor)*10)/10.0)
-            totalCarbsData.text = adjustedCarbs.description
-        }
-        
-        if nutrientData.netCarbs != "N/A" {
-            let adjustedNetCarbs: Float = round(((Float(nutrientData.netCarbs)!*adjustor)*10)/10.0)
-            netCarbsData.text   = adjustedNetCarbs.description
-        }
-            
-        if nutrientData.totalStarches != "N/A" {
-            let adjustedTotalStarches: Float = round(((Float(nutrientData.totalStarches)!*adjustor)*10)/10.0)
-            totalStarchData.text    = adjustedTotalStarches.description
-        }
-        
-        if nutrientData.totalSugars != "N/A" {
-            let adjustedTotalSugars: Float = round(((Float(nutrientData.totalSugars)!*adjustor)*10)/10.0)
-            totalSugarsData.text    = adjustedTotalSugars.description
-        }
-
-            
-        }
-    
 }

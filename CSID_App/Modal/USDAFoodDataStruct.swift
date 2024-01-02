@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import CloudKit
 
-struct YourFoodItem: Codable {
+struct YourFoodItem {
+    var recordID:       CKRecord.ID
     var category:       String
     var description:    String
     var portionSize:    String

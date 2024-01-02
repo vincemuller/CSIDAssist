@@ -36,7 +36,7 @@ class NewFoodTextField: UITextField {
         font = UIFont.preferredFont(forTextStyle: .body)
         adjustsFontSizeToFitWidth = true
         minimumFontSize = 12
-        backgroundColor     = .systemGray6
+        backgroundColor     = .systemGray5
         autocorrectionType  = .no
 
     }
