@@ -99,4 +99,28 @@ class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
             cell.backgroundColor = nil
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, canEditItemAt indexPath: IndexPath) -> Bool {
+        let userFoodItem = passedUserFoods[indexPath.row]
+        passedUserFoods.remove(at: indexPath.row)
+        collectionView.deleteItems(at: [indexPath])
+        
+        ckRecordDeletion(id: userFoodItem.recordID)
+        collectionView.reloadData()
+        return true
+    }
+    
+    func ckRecordDeletion(id: CKRecord.ID) {
+        let container = CKContainer.default()
+        let database = container.privateCloudDatabase
+        
+        database.delete(withRecordID: id) { id, error in
+            if let error = error {
+                self.presentGFAlertOnMain(title: "Unable to Remove", message: error.localizedDescription, buttonTitle: "Ok")
+                return
+            }
+            self.presentGFAlertOnMain(title: "Successfully Removed", message: "You successfully removed your food item", buttonTitle: "Ok")
+        }
+    }
+
 }

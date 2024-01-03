@@ -8,7 +8,8 @@
 import UIKit
 import CloudKit
 
-class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
+class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
+
     var passedData:             YourFoodItem!
     var sugarTypes:             String = ""
     
@@ -77,6 +78,7 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         configureEditIcon()
         createDismissKeyboardTapGesture()
     }
+    
     
     func configureTitleLabel() {
         view.addSubview(titleLabel)
@@ -202,7 +204,7 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         editIcon.image       = addNewSymbol
         editIcon.tintColor   = .systemGray
         
-        tapGesture.addTarget(self, action: #selector(handleFavoriteTapped))
+        tapGesture.addTarget(self, action: #selector(handleEditTapped))
         tapGesture.isEnabled            = true
         tapGesture.numberOfTapsRequired = 1
 
@@ -219,8 +221,9 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         
     }
     
-    @objc func handleFavoriteTapped(_ gesture: UITapGestureRecognizer) {
+    @objc func handleEditTapped(_ gesture: UITapGestureRecognizer) {
         let editUserFoodVC          = EditUserFoodVC()
+        editUserFoodVC.delegate = self
         editUserFoodVC.passedData   = passedData
         self.present(editUserFoodVC, animated: true)
         }
@@ -342,4 +345,20 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(view.endEditing))
         topContainer.addGestureRecognizer(tap)
     }
+    
+    func updateUserFoodDetails(foodDetails: YourFoodItem) {
+        passedData = foodDetails
+        
+        titleLabel.text         = passedData.description
+        portionLabel.text       = "Serving Size:  \(passedData.portionSize.lowercased())"
+        totalCarbsData.text     = passedData.totalCarbs.description
+        netCarbsData.text       = (passedData.totalCarbs-passedData.totalFiber).description
+        totalSugarsData.text    = passedData.totalSugars.description
+        totalStarchData.text    = (passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars).description
+        
+        collectionView.reloadData()
+        self.presentGFAlertOnMain(title: "Food Updated", message: "You have successfully updated your food!", buttonTitle: "Ok")
+    }
+
 }
+

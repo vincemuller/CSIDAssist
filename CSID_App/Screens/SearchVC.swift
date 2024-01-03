@@ -181,7 +181,6 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         print(testResults)
         for t in testResults.matchResults {
             let a = try t.1.get()
-            let recordID        = a.value(forKey: "creatorUserRecordID") as! CKRecord.ID
             let description     = a.value(forKey: "description") as! String
             let ingredients     = a.value(forKey: "ingredients") as! String
             let portionSize     = a.value(forKey: "portionSize") as! String

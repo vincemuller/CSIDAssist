@@ -8,11 +8,24 @@
 import UIKit
 import CloudKit
 
+protocol EditUserFoodDelegate {
+    func updateUserFoodDetails(foodDetails: YourFoodItem)
+}
+
 class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     var yourFoodData: [YourFoodItem] = []
     var passedData: YourFoodItem!
+    var passedVC: UserFoodDetails!
     let scrollView  = UIScrollView()
     let contentView = UIView()
+    
+    var delegate: EditUserFoodDelegate?
+    
+    let deleteIcon              = UIImageView()
+    
+    var config                  = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
+    var addNewSymbol: UIImage?
+    let tapGesture              = UITapGestureRecognizer()
     
     let fdLabel                 = NewFoodLabel(text: "Food Description")
     let fdTextField             = NewFoodTextField(placeholder: "Grilled salmon, Mcdonald's, apple...")
@@ -40,6 +53,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         configurePs()
         configureIngredients()
         configureNutrition()
+        configureDeleteIcon()
         configureCTAButton()
         
         createDismissKeyboardTapGesture()
@@ -81,7 +95,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         fdTextField.text     = passedData.description
         
         NSLayoutConstraint.activate([
-            fdLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
+            fdLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
             fdLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25),
             
             fdTextField.topAnchor.constraint(equalTo: fdLabel.bottomAnchor, constant: 10),
@@ -89,6 +103,28 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
             fdTextField.widthAnchor.constraint(equalToConstant: view.frame.width * 0.90),
             fdTextField.heightAnchor.constraint(equalToConstant: 40)
             
+        ])
+    }
+    
+    func configureDeleteIcon() {
+        view.addSubview(deleteIcon)
+        
+        addNewSymbol           = UIImage(systemName: "trash", withConfiguration: config)
+        deleteIcon.image       = addNewSymbol
+        deleteIcon.tintColor   = .systemRed
+        
+        tapGesture.addTarget(self, action: #selector(handleDeleteTapped))
+        tapGesture.isEnabled            = true
+        tapGesture.numberOfTapsRequired = 1
+
+        deleteIcon.translatesAutoresizingMaskIntoConstraints = false
+        
+        deleteIcon.isUserInteractionEnabled    = true
+        deleteIcon.addGestureRecognizer(tapGesture)
+        
+        NSLayoutConstraint.activate([
+            deleteIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 25),
+            deleteIcon.trailingAnchor.constraint(equalTo: fdTextField.trailingAnchor)
         ])
     }
     
@@ -188,7 +224,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         ctaButton.backgroundColor = .systemGreen
         ctaButton.setTitle("Update Food", for: .normal)
         ctaButton.layer.cornerRadius = 10
-        ctaButton.addTarget(self, action: #selector(createNewFood), for: .touchUpInside)
+        ctaButton.addTarget(self, action: #selector(updateFood), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             ctaButton.topAnchor.constraint(equalTo: addedSugarsTextField.bottomAnchor, constant: 30),
@@ -198,7 +234,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         ])
     }
     
-    @objc func createNewFood() {
+    @objc func updateFood() {
         guard let description   = fdTextField.text, description != "" else {return}
         guard let portionSize   = psTextField.text, portionSize != "" else {return}
         let carbs               = Float(totalCarbsTextField.text!) ?? 0
@@ -207,12 +243,17 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         let addedSugars         = Float(addedSugarsTextField.text!) ?? 0
         
         guard userID != "" else {
-            self.presentGFAlertOnMain(title: "Unable to Add Food", message: CAError.invalidUserID.rawValue, buttonTitle: "Ok")
+            self.presentGFAlertOnMain(title: "Unable to Update Food", message: CAError.invalidUserID.rawValue, buttonTitle: "Ok")
             resetFields()
             return
         }
+        passedData = YourFoodItem(recordID: passedData.recordID, category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredientsTextField.text, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
         
-        ckUserFoodRecordCreation(userID: userID.description, category: "Your Food", description: description, ingredients: ingredientsTextField.text, portionSize: portionSize, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
+        ckUserFoodRecordUpdate(userID: userID.description, category: "Your Food", description: description, ingredients: ingredientsTextField.text, portionSize: portionSize, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
+        
+        self.dismiss(animated: true) {
+            self.delegate?.updateUserFoodDetails(foodDetails: self.passedData)
+        }
     }
     
     func resetFields() {
@@ -225,7 +266,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         contentView.endEditing(true)
     }
     
-    func ckUserFoodRecordCreation(userID: String, category: String, description: String, ingredients: String, portionSize: String, totalCarbs: Float, totalFiber: Float, totalSugars: Float, addedSugars: Float) {
+    func ckUserFoodRecordUpdate(userID: String, category: String, description: String, ingredients: String, portionSize: String, totalCarbs: Float, totalFiber: Float, totalSugars: Float, addedSugars: Float) {
         let container = CKContainer.default()
         let database = container.privateCloudDatabase
         
@@ -244,10 +285,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
                     "addedSugars": addedSugars
                 ]
                 )
-                
                 database.save(record) { _, error in
-                    self.presentGFAlertOnMain(title: "Food Updated", message: "You have successfully updated your food!", buttonTitle: "Ok")
-
                 }
             }
         }
@@ -278,4 +316,22 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         view.addGestureRecognizer(tap)
     }
     
+    @objc func handleDeleteTapped(_ gesture: UITapGestureRecognizer) {
+        ckRecordDeletion(id: passedData.recordID)
+        }
+    
+    func ckRecordDeletion(id: CKRecord.ID) {
+        let container = CKContainer.default()
+        let database = container.privateCloudDatabase
+        
+        database.delete(withRecordID: id) { id, error in
+            if let error = error {
+                self.presentGFAlertOnMain(title: "Unable to Remove Food", message: error.localizedDescription, buttonTitle: "Ok")
+                return
+            }
+            self.presentGFAlertOnMain(title: "Food Removed", message: "You successfully removed this food item!", buttonTitle: "Ok")
+        }
+    }
+    
 }
+
