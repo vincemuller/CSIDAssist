@@ -24,7 +24,7 @@ class SucroseCheck {
         "coconut palm sugar",
         "coconut sugar",
         "confectioner's sugar",
-        "cehydrated cane juice",
+        "dehydrated cane juice",
         "cemerara sugar",
         "evaporated cane juice",
         "free-flowing brown sugars",
@@ -44,7 +44,7 @@ class SucroseCheck {
         "sorghum Syrup",
         "sucrose",
         "sugar",
-        ", syrup",
+        "syrup",
         "sweet sorghum",
         "treacle",
         "turbinado sugar",
@@ -54,7 +54,6 @@ class SucroseCheck {
         "agave nectar",
         "barley malt",
         "corn sweetener",
-        "corn syrup",
         "corn syrup solids",
         "date sugar",
         "dextrin",
@@ -66,34 +65,130 @@ class SucroseCheck {
         "glucose solids",
         "grape sugar",
         "hfcs (high-fructose corn syrup)",
+        "high fructose corn syrup",
         "honey",
         "malt syrup",
         "maltodextrin",
         "maltol",
         "maltose",
         "mannose",
-        "rice syrup"
+        "rice syrup",
+        "corn syrup"
     ]
     
+    var replacedSucrIngredients: [String] = [
+        "barbadossgr",
+        "barleymaltsyrup",
+        "beetsgr",
+        "brownsgr",
+        "butteredsyrp",
+        "cnejc",
+        "canejccrystals",
+        "canesgr",
+        "canesyrp",
+        "caramel",
+        "carobsyrp",
+        "castorsgr",
+        "coconutpalmsgr",
+        "coconutsgr",
+        "confectioner's sugar",
+        "dehydratedcanejce",
+        "cemerarasgr",
+        "evaporatedcanejce",
+        "free-flowingbrownsugars",
+        "goldensgr",
+        "goldensyrp",
+        "icingsgr",
+        "invertsgr",
+        "maplesyrp",
+        "molasses",
+        "muscovado",
+        "palmsgr",
+        "panocha",
+        "powderedsgr",
+        "rawsgr",
+        "refiner'ssyrp",
+        "saccharose",
+        "sorghumsyrp",
+        "sucrose",
+        "sugar",
+        "syrup",
+        "sweet sorghum",
+        "treacle",
+        "turbinadosgr",
+        "yellowsgr",
+    ]
+    var replacedOtherSugarIngredients: [String] = [
+        "agavenctr",
+        "barleymlt",
+        "cornsweetener",
+        "cornsyrpsolids",
+        "datesgr",
+        "dextrin",
+        "dextrose",
+        "fructose",
+        "frtjce",
+        "fruitjcecnctrte",
+        "glucose",
+        "glucsslds",
+        "grapesgr",
+        "hfcs (high-fruct cs)",
+        "highfructsecrnsyrp",
+        "honey",
+        "maltsyrp",
+        "maltodxtrn",
+        "maltol",
+        "maltose",
+        "mannose",
+        "ricesyrp",
+        "cornsyp"
+    ]
+    
+    
+    func makingIngredientsUnique(productIngredients: String) -> String {
+        var replacedProductIngredients = productIngredients
+        var x: Int = 0
+        
+        while x < sucrIngredients.count {
+            replacedProductIngredients = replacedProductIngredients.replacingOccurrences(of: sucrIngredients[x], with: replacedSucrIngredients[x])
+            x = x + 1
+        }
+        
+        x = 0
+        
+        while x < otherSugarIngredients.count {
+            replacedProductIngredients = replacedProductIngredients.replacingOccurrences(of: otherSugarIngredients[x], with: replacedOtherSugarIngredients[x])
+            x = x + 1
+        }
+        
+        return replacedProductIngredients
+    }
+    
     func getSucroseIngredients(productIngredients: String) -> [String] {
+        
         var returnedSugarIngredients: [String] = []
         
-        for x in sucrIngredients {
-            if productIngredients.contains(x) {
-                returnedSugarIngredients.append(x)
+        var x: Int = 0
+        while x < replacedSucrIngredients.count {
+            if productIngredients.contains(replacedSucrIngredients[x]) {
+                returnedSugarIngredients.append(sucrIngredients[x])
             }
+            x = x + 1
         }
         
         return returnedSugarIngredients
     }
     
     func getOtherSugarIngredients(productIngredients: String) -> [String] {
+        
         var returnedOtherSugarIngredients: [String] = []
         
-        for x in otherSugarIngredients {
-            if productIngredients.contains(x) {
-                returnedOtherSugarIngredients.append(x)
+        var x: Int = 0
+        while x < replacedOtherSugarIngredients.count {
+            if productIngredients.contains(replacedOtherSugarIngredients[x]) {
+                returnedOtherSugarIngredients.append(otherSugarIngredients[x])
             }
+            x = x + 1
         }
         
         return returnedOtherSugarIngredients

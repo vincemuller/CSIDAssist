@@ -154,19 +154,7 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
                 categorySearchVC.passedPointer            = pointer
                 navigationController?.pushViewController(categorySearchVC, animated: true)
             } else {
-                Task.init {
-                    do {
-                        guard userID != "" else {
-                            print("Not able to retrieve user id")
-                            return
-                        }
-                        queriedUserFoods = try await queryUserFoods()
-                        userFoodsVC.passedUserFoods = queriedUserFoods
-                        navigationController?.pushViewController(userFoodsVC, animated: true)
-                    } catch {
-                        print("Fetching failed with error \(error)")
-                    }
-                }
+                navigationController?.pushViewController(userFoodsVC, animated: true)
             }
             
         }

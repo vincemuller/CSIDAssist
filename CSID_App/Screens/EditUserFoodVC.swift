@@ -10,6 +10,7 @@ import CloudKit
 
 protocol EditUserFoodDelegate {
     func updateUserFoodDetails(foodDetails: YourFoodItem)
+    func removeUserFood()
 }
 
 class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
@@ -243,7 +244,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         let addedSugars         = Float(addedSugarsTextField.text!) ?? 0
         
         guard userID != "" else {
-            self.presentGFAlertOnMain(title: "Unable to Update Food", message: CAError.invalidUserID.rawValue, buttonTitle: "Ok")
+            self.presentGFAlertOnMain(title: CAAlertTitle.unableToUpdate.rawValue, message: CAAlertMessage.generaliCloudError.rawValue, buttonTitle: "Ok")
             resetFields()
             return
         }
@@ -329,7 +330,9 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
                 self.presentGFAlertOnMain(title: "Unable to Remove Food", message: error.localizedDescription, buttonTitle: "Ok")
                 return
             }
-            self.presentGFAlertOnMain(title: "Food Removed", message: "You successfully removed this food item!", buttonTitle: "Ok")
+        }
+        self.dismiss(animated: true) {
+            self.delegate?.removeUserFood()
         }
     }
     

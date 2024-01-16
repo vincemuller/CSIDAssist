@@ -8,7 +8,8 @@
 import UIKit
 import CloudKit
 
-class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+
+class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
 
     var collectionView: UICollectionView!
     let searchController = UISearchController()
@@ -18,13 +19,26 @@ class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     //Variable for filtered search results
     var passedUserFoods: [YourFoodItem] = []
-    var filteredUserFoods: [YourFoodItem] = []
     var category:   String = ""
     var recordID:   CKRecord.ID?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        Task.init {
+            do {
+                guard userID != "" else {
+                    self.presentGFAlertOnMain(title: CAAlertTitle.iCloudError.rawValue, message: CAAlertMessage.fetchFoodsError.rawValue, buttonTitle: "Ok")
+                    return
+                }
+                let queriedUserFoods = try await self.queryUserFoods()
+                passedUserFoods = queriedUserFoods
+                collectionView.reloadData()
+            } catch {
+                self.presentGFAlertOnMain(title: CAAlertTitle.iCloudError.rawValue, message: CAAlertMessage.fetchFoodsError.rawValue, buttonTitle: "Ok")
+            }
+        }
+        
         navBarHeight = self.navigationController?.navigationBar.frame.size.height ?? 100
         tabBarHeight = self.tabBarController?.tabBar.frame.size.height ?? 84
         
@@ -34,7 +48,7 @@ class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        filteredUserFoods = passedUserFoods
+
         collectionView.reloadData()
     }
     
@@ -85,8 +99,9 @@ class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         if let cell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
             cell.backgroundColor = .systemGray5
         }
-        
-        userFoodDetailsVC.passedData                = filteredUserFoods[indexPath.row]
+        userFoodDetailsVC.removeDelegate            = self
+        userFoodDetailsVC.updateDelegate            = self
+        userFoodDetailsVC.passedData                = passedUserFoods[indexPath.row]
         userFoodDetailsVC.modalPresentationStyle    = .popover
         userFoodDetailsVC.title                     = "CSIDAssist"
         
@@ -116,11 +131,69 @@ class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         
         database.delete(withRecordID: id) { id, error in
             if let error = error {
-                self.presentGFAlertOnMain(title: "Unable to Remove", message: error.localizedDescription, buttonTitle: "Ok")
+                self.presentGFAlertOnMain(title: CAAlertTitle.unableToRemove.rawValue, message: error.localizedDescription, buttonTitle: "Ok")
                 return
             }
-            self.presentGFAlertOnMain(title: "Successfully Removed", message: "You successfully removed your food item", buttonTitle: "Ok")
+            self.presentGFAlertOnMain(title: CAAlertTitle.foodRemoved.rawValue, message: CAAlertMessage.foodRemoved.rawValue, buttonTitle: "Ok")
         }
     }
+    
+    func removeUserFood() {
+        self.dismiss(animated: true) {
+            Task.init {
+                do {
+                    guard userID != "" else {
+                        self.presentGFAlertOnMain(title: CAAlertTitle.iCloudError.rawValue, message: CAAlertMessage.fetchFoodsError.rawValue, buttonTitle: "Ok")
+                        return
+                    }
+                    let queriedUserFoods = try await self.queryUserFoods()
+                    self.passedUserFoods = queriedUserFoods
+                    self.presentGFAlertOnMain(title: CAAlertTitle.foodRemoved.rawValue, message: CAAlertMessage.foodRemoved.rawValue, buttonTitle: "Ok")
+                    self.collectionView.reloadData()
+                } catch {
+                    self.presentGFAlertOnMain(title: CAAlertTitle.iCloudError.rawValue, message: CAAlertMessage.fetchFoodsError.rawValue, buttonTitle: "Ok")
+                }
+            }
+        }
+    }
+    
+    func queryUserFoods() async throws -> [YourFoodItem] {
+        var userFoods:   [YourFoodItem] = []
+        let privateDB = CKContainer.default().privateCloudDatabase
+        let predicate = NSPredicate(format: "userID = %@", userID)
+        let query = CKQuery(recordType: "UserFoods", predicate: predicate)
+        let testResults = try await privateDB.records(matching: query)
+        print(testResults)
+        for t in testResults.matchResults {
+            let a = try t.1.get()
+            let description     = a.value(forKey: "description") as! String
+            let ingredients     = a.value(forKey: "ingredients") as! String
+            let portionSize     = a.value(forKey: "portionSize") as! String
+            let totalCarbs      = a.value(forKey: "totalCarbs") as! Float
+            let totalFiber      = a.value(forKey: "totalFiber") as! Float
+            let totalSugars     = a.value(forKey: "totalSugars") as! Float
+            let addedSugars     = a.value(forKey: "addedSugars") as! Float
+            let x = YourFoodItem(recordID: a.recordID, category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredients, totalCarbs: totalCarbs, totalFiber: totalFiber, totalSugars: totalSugars, addedSugars: addedSugars)
+            userFoods.append(x)
+        }
+        return userFoods
+    }
+    
+    func updateUserFoods() {
+        Task.init {
+            do {
+                guard userID != "" else {
+                    self.presentGFAlertOnMain(title: CAAlertTitle.iCloudError.rawValue, message: CAAlertMessage.fetchFoodsError.rawValue, buttonTitle: "Ok")
+                    return
+                }
+                let queriedUserFoods = try await self.queryUserFoods()
+                self.passedUserFoods = queriedUserFoods
+                collectionView.reloadData()
+            } catch {
+                self.presentGFAlertOnMain(title: CAAlertTitle.iCloudError.rawValue, message: CAAlertMessage.fetchFoodsError.rawValue, buttonTitle: "Ok")
+            }
+        }
+    }
+    
 
 }

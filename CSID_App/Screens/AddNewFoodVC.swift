@@ -19,7 +19,7 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     let psLabel                 = NewFoodLabel(text: "Portion Size")
     let psTextField             = NewFoodTextField(placeholder: "1.0 slice, 25g, 1 cup...")
     
-    let ingredientsLabel        = NewFoodLabel(text: "Ingredients")
+    let ingredientsLabel        = NewFoodLabel(text: "Ingredients/Recipe")
     let ingredientsTextField    = MultiLineTextField()
     
     let nutritionLabel          = NewFoodLabel(text: "Nutrition Details")
@@ -196,7 +196,7 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         let addedSugars         = Float(addedSugarsTextField.text!) ?? 0
         
         guard userID != "" else {
-            self.presentGFAlertOnMain(title: "Unable to Add Food", message: CAError.invalidUserID.rawValue, buttonTitle: "Ok")
+            self.presentGFAlertOnMain(title: "Unable to Add Food", message: CAAlertMessage.generaliCloudError.rawValue, buttonTitle: "Ok")
             resetFields()
             return
         }

@@ -8,6 +8,10 @@
 import UIKit
 import CloudKit
 
+protocol FavoriteArtefactsDelegate {
+    func updateFavoritesCollectionView()
+}
+
 class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
     
     var passedData:             USDAFoodDetails!
@@ -16,6 +20,9 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     var nutrientData:           USDANutrientData!
     var recordID:               String?
     let findSugars = SucroseCheck()
+    
+    var delegate: FavoriteArtefactsDelegate?
+    var favoritesVC = FavoritesVC()
     
     var sugarIngr: [String] = []
     var otherIngr: [String] = []
@@ -68,8 +75,9 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         
         view.backgroundColor = .systemBackground
         
-        sugarIngr = findSugars.getSucroseIngredients(productIngredients: passedData.ingredients.lowercased())
-        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: passedData.ingredients.lowercased())
+        let uniqueIngredients = findSugars.makingIngredientsUnique(productIngredients: passedData.ingredients.lowercased())
+        sugarIngr = findSugars.getSucroseIngredients(productIngredients: uniqueIngredients)
+        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: uniqueIngredients)
         
         configureTitleLabel()
         configureTopContainers()
@@ -414,7 +422,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     @objc func handleFavoriteTapped(_ gesture: UITapGestureRecognizer) {
         if favIconEnabled == false {
             guard userID != "" else {
-                presentGFAlertOnMain(title: "Unable to Favorite", message: CAError.invalidUserID.rawValue, buttonTitle: "Ok")
+                presentGFAlertOnMain(title: CAAlertTitle.unableToFavorite.rawValue, message: CAAlertMessage.generaliCloudError.rawValue, buttonTitle: "Ok")
                 return
             }
             testingCKRecordCreation()
@@ -428,21 +436,22 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
                 do {
                     try await query()
                     guard foodItemRecordID != nil else {
-                        presentGFAlertOnMain(title: "Unable to Remove", message: CAError.unableToRemove.rawValue, buttonTitle: "Ok")
+                        presentGFAlertOnMain(title: CAAlertTitle.unableToRemove.rawValue, message: CAAlertMessage.unableToRemove.rawValue, buttonTitle: "Ok")
                         return
                         }
                     ckRecordDeletion(id: foodItemRecordID!)
                     userFavorites       = userFavorites.filter(){$0 != passedData.fdicID}
-                    print(userFavorites)
                     addNewSymbol        = UIImage(systemName: "star", withConfiguration: config)
                     favIcon.image       = addNewSymbol
                     favIconEnabled      = false
                     self.presentGFAlertOnMain(title: "Food Removed", message: "You have successfully removed \(passedData.description.capitalized) from your favorites", buttonTitle: "Ok")
+                    delegate?.updateFavoritesCollectionView()
                 } catch {
                     presentGFAlertOnMain(title: "Unable to Fetch", message: error.localizedDescription, buttonTitle: "Ok")
                 }
             }
         }
+
     }
     
     func createDismissKeyboardTapGesture() {

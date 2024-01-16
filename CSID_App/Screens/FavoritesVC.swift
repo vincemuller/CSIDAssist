@@ -8,7 +8,7 @@
 import UIKit
 import CloudKit
 
-class FavoritesVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     
     var passedPointer: OpaquePointer?
     var collectionView: UICollectionView!
@@ -133,6 +133,7 @@ class FavoritesVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let foodDetailsVC = CSIDFoodDetailsVC()
+        foodDetailsVC.delegate = self
         
         if let cell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
             cell.backgroundColor = .systemGray5
@@ -187,6 +188,11 @@ extension FavoritesVC: UISearchBarDelegate {
 
         collectionView.reloadData()
         collectionView.setCollectionViewLayout(UIHelper.createOneColumnFlowLayout(in: view), animated: false)
+    }
+    
+    func updateFavoritesCollectionView() {
+        filterUserFavs(favsFDICID: userFavorites)
+        collectionView.reloadData()
     }
     
 }

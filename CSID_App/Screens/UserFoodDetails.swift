@@ -8,8 +8,16 @@
 import UIKit
 import CloudKit
 
-class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
+protocol RemoveUserFoodDelegate {
+    func removeUserFood()
+}
 
+protocol UpdateUserFoodDelegate {
+    func updateUserFoods()
+}
+
+class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
+    
     var passedData:             YourFoodItem!
     var sugarTypes:             String = ""
     
@@ -17,6 +25,9 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     
     var sugarIngr: [String] = []
     var otherIngr: [String] = []
+    
+    var removeDelegate: RemoveUserFoodDelegate?
+    var updateDelegate: UpdateUserFoodDelegate?
     
     var foodItemRecordID:       CKRecord.ID?
     
@@ -56,7 +67,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     
     var collectionView: UICollectionView!
     var cardsColors: [UIColor]      = [UIColor.systemPink,UIColor.systemOrange,UIColor.systemTeal]
-    var cardsDetails: [String]      = ["Other", "Ingredients", "Sugars"]
+    var cardsDetails: [String]      = ["Other", "Ingredients/Recipe", "Sugars"]
     
     
     override func viewDidLoad() {
@@ -300,8 +311,8 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let returnCell: UICollectionViewCell
-        
-        if cardsDetails[indexPath.row] == "Ingredients" {
+        print("This ran")
+        if cardsDetails[indexPath.row] == "Ingredients/Recipe" {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
             cell.cardLabel.text         = cardsDetails[indexPath.row]
             
@@ -356,8 +367,20 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         totalSugarsData.text    = passedData.totalSugars.description
         totalStarchData.text    = (passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars).description
         
+        sugarIngr = findSugars.getSucroseIngredients(productIngredients: passedData.ingredients.lowercased())
+        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: passedData.ingredients.lowercased())
+        
         collectionView.reloadData()
-        self.presentGFAlertOnMain(title: "Food Updated", message: "You have successfully updated your food!", buttonTitle: "Ok")
+        updateDelegate?.updateUserFoods()
+        
+        self.presentGFAlertOnMain(title: CAAlertTitle.foodUpdated.rawValue, message: CAAlertMessage.foodUpdated.rawValue, buttonTitle: "Ok")
+        
+    }
+    
+    func removeUserFood() {
+        self.dismiss(animated: true) {
+            self.removeDelegate?.removeUserFood()
+        }
     }
 
 }
