@@ -122,7 +122,7 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
             ingredientsTextField.topAnchor.constraint(equalTo: ingredientsLabel.bottomAnchor, constant: 10),
             ingredientsTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             ingredientsTextField.widthAnchor.constraint(equalToConstant: view.frame.width * 0.90),
-            ingredientsTextField.heightAnchor.constraint(equalToConstant: 150)
+            ingredientsTextField.heightAnchor.constraint(equalToConstant: 120)
             
         ])
     }
@@ -262,12 +262,17 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
       }
 
     @objc func keyboardWillHide(notification: NSNotification) {
-        let contentInsets2 = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
-        let contentInsets = CGPoint(x: 0, y: -100)
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
+        else {
+          // if keyboard size is not available for some reason, dont do anything
+          return
+        }
+        let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: -keyboardSize.height, right: 0.0)
+        
         
         // reset back the content inset to zero after keyboard is gone
-        scrollView.setContentOffset(contentInsets, animated: true)
-        scrollView.scrollIndicatorInsets = contentInsets2
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
       }
     
     func createDismissKeyboardTapGesture() {

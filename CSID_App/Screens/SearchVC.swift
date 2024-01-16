@@ -54,7 +54,6 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         searchController.searchBar.placeholder      = "Whole foods, packaged meals, and more"
         navigationItem.searchController             = searchController
         navigationItem.hidesSearchBarWhenScrolling  = false
-        searchBar.scopeButtonTitles                 = ["USDA Foods", "Your Foods"]
     }
     
     func configureViewController() {
@@ -224,12 +223,10 @@ extension SearchVC: UISearchBarDelegate {
         searchController.searchBar.showsCancelButton = false
         collectionView.reloadData()
         collectionView.setCollectionViewLayout(UIHelper.createTwoColumnFlowLayout(in: view), animated: false)
-        searchBar.showsScopeBar = false
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchController.searchBar.showsCancelButton = true
-        searchBar.showsScopeBar                      = true
     }
     
 }

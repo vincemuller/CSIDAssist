@@ -64,8 +64,8 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     let totalStarchLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
     
     var collectionView: UICollectionView!
-    var cardsColors: [UIColor]      = [UIColor.systemPink,UIColor.systemOrange,UIColor.systemTeal]
-    var cardsDetails: [String]      = ["Other", "Ingredients", "Sugars"]
+    var cardsColors: [UIColor]  = [UIColor.systemPink,UIColor.systemOrange,UIColor.systemTeal]
+    var cardsDetails: [String]  = ["Other", "Ingredients", "Sugars"]
     
     
     override func viewDidLoad() {

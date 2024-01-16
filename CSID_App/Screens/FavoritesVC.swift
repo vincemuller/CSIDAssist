@@ -18,6 +18,7 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     var tabBarHeight: CGFloat?
     
     var favoriteUSDAData: [USDAFoodDetails] = []
+    var filteredUSDAData: [USDAFoodDetails] = []
     var category:   String = ""
     
     var userFavs:               [Int] = []
@@ -62,6 +63,7 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
         
         let queryResult = CADatabaseQueryHelper.queryDatabaseFavorites(searchTerms: fdicIDSearchTerms, databasePointer: passedPointer)
         favoriteUSDAData = queryResult
+        filteredUSDAData = favoriteUSDAData
     }
     
     func configureSearchController() {
@@ -97,7 +99,7 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return favoriteUSDAData.count
+        return filteredUSDAData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -110,19 +112,19 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
         cell.categoryIcon.backgroundColor   = .systemMint
         cell.layer.cornerRadius             = 0
         
-        let description = favoriteUSDAData[indexPath.row].description.capitalized
+        let description = filteredUSDAData[indexPath.row].description.capitalized
         
-        if favoriteUSDAData[indexPath.row].brandName=="" && favoriteUSDAData[indexPath.row].brandOwner=="" {
+        if filteredUSDAData[indexPath.row].brandName=="" && filteredUSDAData[indexPath.row].brandOwner=="" {
             cell.descriptionLabel.text = description
-        } else if favoriteUSDAData[indexPath.row].brandName != "" && favoriteUSDAData[indexPath.row].brandOwner != "" {
-            brandOwner = favoriteUSDAData[indexPath.row].brandOwner?.capitalized ?? ""
-            brandName = favoriteUSDAData[indexPath.row].brandName?.capitalized ?? ""
+        } else if filteredUSDAData[indexPath.row].brandName != "" && filteredUSDAData[indexPath.row].brandOwner != "" {
+            brandOwner = filteredUSDAData[indexPath.row].brandOwner?.capitalized ?? ""
+            brandName = filteredUSDAData[indexPath.row].brandName?.capitalized ?? ""
             cell.descriptionLabel.text = "\(brandOwner) | \(brandName)\n\(description)"
-        } else if favoriteUSDAData[indexPath.row].brandName != "" {
-            brandName = favoriteUSDAData[indexPath.row].brandName?.capitalized ?? ""
+        } else if filteredUSDAData[indexPath.row].brandName != "" {
+            brandName = filteredUSDAData[indexPath.row].brandName?.capitalized ?? ""
             cell.descriptionLabel.text = "\(brandName)\n\(description)"
         } else {
-            brandOwner = favoriteUSDAData[indexPath.row].brandOwner?.capitalized ?? ""
+            brandOwner = filteredUSDAData[indexPath.row].brandOwner?.capitalized ?? ""
             cell.descriptionLabel.text = "\(brandOwner)\n\(description)"
         }
         
@@ -139,7 +141,7 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
             cell.backgroundColor = .systemGray5
         }
         
-        foodDetailsVC.passedData                = favoriteUSDAData[indexPath.row]
+        foodDetailsVC.passedData                = filteredUSDAData[indexPath.row]
         foodDetailsVC.passedPointer             = passedPointer
         foodDetailsVC.modalPresentationStyle    = .popover
         foodDetailsVC.title                     = "CSIDAssist"
@@ -160,34 +162,18 @@ extension FavoritesVC: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        var searchTerms = ""
-        
-        let filter = searchBar.text
-        
-        var searchComponents = filter!.lowercased().components(separatedBy: " ")
-        searchComponents = searchComponents.filter{$0 != ""}
-        
-        var count = 0
-        while count < searchComponents.count {
-            searchTerms = searchTerms + "AND USDAFoodDetails.searchKeyWords LIKE '%\(searchComponents[count])%' "
-            count = count + 1
-        }
-        
-        let queryResult = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: category, searchTerm: searchTerms, databasePointer: passedPointer)
-        favoriteUSDAData = queryResult
-        
-        collectionView.reloadData()
-        collectionView.setCollectionViewLayout(UIHelper.createOneColumnFlowLayout(in: view), animated: false)
-        
-        guard favoriteUSDAData.count != 0 else {
+        guard let searchTerms = searchBar.text, searchTerms.count > 0 else {
             return
         }
+        print(filteredUSDAData)
+        filteredUSDAData = favoriteUSDAData.filter( { $0.searchKeyWords.lowercased().contains(searchTerms.lowercased()) } )
+
+        collectionView.reloadData()
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-
+        filteredUSDAData = favoriteUSDAData
         collectionView.reloadData()
-        collectionView.setCollectionViewLayout(UIHelper.createOneColumnFlowLayout(in: view), animated: false)
     }
     
     func updateFavoritesCollectionView() {
