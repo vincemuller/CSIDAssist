@@ -63,7 +63,9 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     func configureCollectionView() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: UIHelper.createTwoColumnFlowLayout(in: view))
         view.addSubview(collectionView)
+        
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.reuseID)
+        collectionView.register(CategoriesCollectionViewCell.self, forCellWithReuseIdentifier: CategoriesCollectionViewCell.reuseID)
 
         collectionView.delegate         = self
         collectionView.dataSource       = self
@@ -88,25 +90,21 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
+        
         var brandOwner: String
         var brandName: String
         
         if searchInProgress == false {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoriesCollectionViewCell.reuseID, for: indexPath) as! CategoriesCollectionViewCell
             cell.backgroundColor                = categories.colors[indexPath.row]
             cell.categoryLabel.text             = categories.list[indexPath.row]
-            cell.categoryIcon.backgroundColor   = nil
-            cell.descriptionLabel.text          = nil
-
-            cell.separatorLine.backgroundColor  = nil
-            cell.layer.cornerRadius             = 10
+            cell.categoryIcon.image             = UIImage(named: categories.list[indexPath.row])
             
             return cell
         } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
             cell.backgroundColor                = nil
-            cell.categoryLabel.text             = nil
             cell.categoryIcon.backgroundColor   = .systemMint
-            cell.layer.cornerRadius             = 0
             
             let description = filteredUSDAFoodData[indexPath.row].description.capitalized 
             

@@ -64,8 +64,8 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     let totalStarchLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
     
     var collectionView: UICollectionView!
-    var cardsColors: [UIColor]  = [UIColor.systemPink,UIColor.systemOrange,UIColor.systemTeal]
-    var cardsDetails: [String]  = ["Other", "Ingredients", "Sugars"]
+    var cardsColors: [UIColor]  = [UIColor.systemOrange,UIColor.systemTeal]
+    var cardsDetails: [String]  = ["Ingredients", "Sugars"]
     
     
     override func viewDidLoad() {
@@ -413,8 +413,8 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let element      = cardsColors.remove(at: indexPath.row)
         let elementLabel = cardsDetails.remove(at: indexPath.row)
-        cardsDetails.insert(elementLabel, at: indexPath.count)
-        cardsColors.insert(element, at: (indexPath.count))
+        cardsDetails.insert(elementLabel, at: indexPath.row+1)
+        cardsColors.insert(element, at: (indexPath.row+1))
         
         collectionView.reloadData()
     }
@@ -431,6 +431,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
             favIcon.image       = addNewSymbol
             favIconEnabled      = true
             self.presentGFAlertOnMain(title: "Food Favorited", message: "You have successfully added \(passedData.description.capitalized) to your favorites", buttonTitle: "Ok")
+            delegate?.updateFavoritesCollectionView()
         } else {
             Task.init {
                 do {

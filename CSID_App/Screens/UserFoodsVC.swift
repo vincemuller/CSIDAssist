@@ -82,7 +82,6 @@ class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDeleg
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
         
         cell.backgroundColor                = nil
-        cell.categoryLabel.text             = nil
         cell.categoryIcon.backgroundColor   = .systemMint
         cell.layer.cornerRadius             = 0
         

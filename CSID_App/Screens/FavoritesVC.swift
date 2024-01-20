@@ -108,7 +108,6 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
         var brandName: String
         
         cell.backgroundColor                = nil
-        cell.categoryLabel.text             = nil
         cell.categoryIcon.backgroundColor   = .systemMint
         cell.layer.cornerRadius             = 0
         

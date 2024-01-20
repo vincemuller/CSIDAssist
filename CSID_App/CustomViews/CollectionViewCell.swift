@@ -10,7 +10,6 @@ import UIKit
 class CollectionViewCell: UICollectionViewCell {
     static let reuseID  = "cell"
 
-    let categoryLabel       = UILabel()
     let categoryIcon        = UIImageView()
     let descriptionLabel    = UILabel()
     let separatorLine       = SeparatorLine()
@@ -26,20 +25,12 @@ class CollectionViewCell: UICollectionViewCell {
     
     
     private func configure() {
-        addSubview(categoryLabel)
         addSubview(categoryIcon)
         addSubview(descriptionLabel)
         addSubview(separatorLine)
         
-        categoryLabel.translatesAutoresizingMaskIntoConstraints         = false
         categoryIcon.translatesAutoresizingMaskIntoConstraints          = false
         descriptionLabel.translatesAutoresizingMaskIntoConstraints      = false
-        
-        categoryLabel.textAlignment         = .left
-        categoryLabel.lineBreakMode         = .byWordWrapping
-        categoryLabel.numberOfLines         = 2
-        categoryLabel.font                  = UIFont.systemFont(ofSize: 14, weight: .bold)
-        categoryLabel.textColor             = .white
         
         categoryIcon.layer.cornerRadius     = 25
         
@@ -49,9 +40,6 @@ class CollectionViewCell: UICollectionViewCell {
         descriptionLabel.font               = UIFont.systemFont(ofSize: 14, weight: .bold)
         
         NSLayoutConstraint.activate([
-            categoryLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            categoryLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            categoryLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 30),
             
             categoryIcon.leadingAnchor.constraint(equalTo: leadingAnchor),
             categoryIcon.centerYAnchor.constraint(equalTo: centerYAnchor),

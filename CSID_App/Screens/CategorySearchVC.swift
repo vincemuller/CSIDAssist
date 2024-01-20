@@ -74,7 +74,6 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
         var brandName: String
         
         cell.backgroundColor                = nil
-        cell.categoryLabel.text             = nil
         cell.categoryIcon.backgroundColor   = .systemMint
         cell.layer.cornerRadius             = 0
         

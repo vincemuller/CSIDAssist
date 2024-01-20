@@ -66,8 +66,8 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     let totalStarchLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
     
     var collectionView: UICollectionView!
-    var cardsColors: [UIColor]      = [UIColor.systemPink,UIColor.systemOrange,UIColor.systemTeal]
-    var cardsDetails: [String]      = ["Other", "Ingredients/Recipe", "Sugars"]
+    var cardsColors: [UIColor]      = [UIColor.systemOrange,UIColor.systemTeal]
+    var cardsDetails: [String]      = ["Ingredients/Recipe", "Sugars"]
     
     
     override func viewDidLoad() {
@@ -311,7 +311,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let returnCell: UICollectionViewCell
-        print("This ran")
+
         if cardsDetails[indexPath.row] == "Ingredients/Recipe" {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
             cell.cardLabel.text         = cardsDetails[indexPath.row]
@@ -346,8 +346,8 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let element      = cardsColors.remove(at: indexPath.row)
         let elementLabel = cardsDetails.remove(at: indexPath.row)
-        cardsDetails.insert(elementLabel, at: indexPath.count)
-        cardsColors.insert(element, at: (indexPath.count))
+        cardsDetails.insert(elementLabel, at: indexPath.row+1)
+        cardsColors.insert(element, at: (indexPath.row+1))
         
         collectionView.reloadData()
     }
