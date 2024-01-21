@@ -32,26 +32,26 @@ class Category {
         "Prepared Meals"
     ]
     let colors: [UIColor] = [
-        UIColor.systemMint,
         UIColor.systemRed,
-        UIColor.systemYellow,
         UIColor.systemOrange,
         UIColor.systemPurple,
         UIColor.systemGreen,
         UIColor.systemBlue,
         UIColor.systemPink,
-        UIColor.systemMint,
         UIColor.systemTeal,
         UIColor.systemBrown,
         UIColor.systemIndigo,
         UIColor.systemGray2,
         UIColor.systemRed,
-        UIColor.systemYellow,
         UIColor.systemOrange,
         UIColor.systemPurple,
         UIColor.systemGreen,
         UIColor.systemBlue,
         UIColor.systemPink,
-        UIColor.systemMint,
+        UIColor.systemTeal,
+        UIColor.systemBrown,
+        UIColor.systemIndigo,
+        UIColor.systemGray2,
+        UIColor.systemRed
     ]
 }

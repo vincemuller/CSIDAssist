@@ -42,12 +42,12 @@ class CategoriesCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             categoryLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             categoryLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            categoryLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 35),
+            categoryLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 40),
             
             categoryIcon.centerXAnchor.constraint(equalTo: centerXAnchor),
-            categoryIcon.bottomAnchor.constraint(equalTo: categoryLabel.topAnchor, constant: -8),
-            categoryIcon.heightAnchor.constraint(equalToConstant: 50),
-            categoryIcon.widthAnchor.constraint(equalToConstant: 50),
+            categoryIcon.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -15),
+            categoryIcon.heightAnchor.constraint(equalToConstant: 60),
+            categoryIcon.widthAnchor.constraint(equalToConstant: 60),
             
         ])
         
