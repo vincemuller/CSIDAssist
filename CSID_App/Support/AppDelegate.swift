@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } catch {
                 userID = ""
                 userFavorites = []
+                print("")
             }
         }
         return true
