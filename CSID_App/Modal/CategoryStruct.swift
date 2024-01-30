@@ -28,9 +28,10 @@ class Category {
         "Health & Supplements",
         "Meat & Fish",
         "Miscellaneous",
-        "Pickles, Olives, Peppers, & Relishes",
+        "Pickles, Olives, Peppers & Relishes",
         "Prepared Meals"
     ]
+    
     let colors: [UIColor] = [
         UIColor.systemRed,
         UIColor.systemOrange,

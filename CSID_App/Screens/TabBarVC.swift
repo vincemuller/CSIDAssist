@@ -25,7 +25,7 @@ class TabBarVC: UITabBarController {
     func createAddNewFoodNC() -> UINavigationController {
         let addNewFoodVC    = AddNewFoodVC()
         addNewFoodVC.title  = "New Food"
-        let config          = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 35))
+        let config          = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
         let addNewSymbol    = UIImage(systemName: "plus", withConfiguration: config)
         addNewFoodVC.tabBarItem = UITabBarItem(title: "New Food",
                                                image: addNewSymbol,
@@ -42,12 +42,22 @@ class TabBarVC: UITabBarController {
         return UINavigationController(rootViewController: favoritesVC)
     }
     
+    func createContactUs() -> UINavigationController {
+        let aboutUsVC         = AboutUsVC()
+        aboutUsVC.title       = "About CSID Assist"
+        let config            = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
+        let addNewSymbol      = UIImage(systemName: "info.circle", withConfiguration: config)
+        aboutUsVC.tabBarItem  = UITabBarItem(title: "About Us", image: addNewSymbol, tag: 3)
+        
+        return UINavigationController(rootViewController: aboutUsVC)
+    }
+    
     func createTabbar() {
         UITabBar.appearance().tintColor         = .systemGreen
         UITabBar.appearance().backgroundImage   = UIImage()
         UITabBar.appearance().shadowImage       = UIImage()
 
-        self.viewControllers = [createSearchNC(), createAddNewFoodNC(), createFavoritesNC()]
+        self.viewControllers = [createSearchNC(), createAddNewFoodNC(), createFavoritesNC(), createContactUs()]
     }
     
     func configureNavigationBar() {

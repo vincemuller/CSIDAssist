@@ -33,7 +33,7 @@ class CategoriesCollectionViewCell: UICollectionViewCell {
         categoryLabel.textAlignment         = .center
         categoryLabel.lineBreakMode         = .byWordWrapping
         categoryLabel.numberOfLines         = 2
-        categoryLabel.font                  = UIFont.systemFont(ofSize: 16, weight: .bold)
+        categoryLabel.font                  = UIFont.systemFont(ofSize: 14, weight: .bold)
         categoryLabel.textColor             = .white
         
         categoryIcon.layer.cornerRadius     = 25

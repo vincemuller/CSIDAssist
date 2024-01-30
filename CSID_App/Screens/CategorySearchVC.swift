@@ -19,6 +19,8 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
     //Variable for filtered search results
     var passedUSDACategoryData: [USDAFoodDetails] = []
     var filteredUSDACategoryData: [USDAFoodDetails] = []
+    
+    let categories = Category()
     var category:   String = ""
     
     override func viewDidLoad() {
@@ -72,9 +74,11 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
         var brandOwner: String
         var brandName: String
+        let index = categories.list.firstIndex(where: {$0 == filteredUSDACategoryData[indexPath.row].brandedFoodCategory})
         
         cell.backgroundColor                = nil
-        cell.categoryIcon.backgroundColor   = .systemMint
+        cell.categoryIcon.backgroundColor   = categories.colors[index ?? 0]
+        cell.image.image                    = UIImage(named: categories.list[index ?? 0])
         cell.layer.cornerRadius             = 0
         
         let description = filteredUSDACategoryData[indexPath.row].description.capitalized

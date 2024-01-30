@@ -21,6 +21,7 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     
     //Category colors and labels
     let categories = Category()
+
     
     //Variable for filtered search results
     var filteredUSDAFoodData: [USDAFoodDetails] = []
@@ -102,11 +103,15 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
             
             return cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
-            cell.backgroundColor                = nil
-            cell.categoryIcon.backgroundColor   = .systemMint
+            let cell  = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
+            let index = categories.list.firstIndex(where: {$0 == filteredUSDAFoodData[indexPath.row].brandedFoodCategory})
             
-            let description = filteredUSDAFoodData[indexPath.row].description.capitalized 
+            
+            cell.backgroundColor                = nil
+            cell.categoryIcon.backgroundColor   = categories.colors[index ?? 0]
+            cell.image.image                    = UIImage(named: filteredUSDAFoodData[indexPath.row].brandedFoodCategory)
+            
+            let description = filteredUSDAFoodData[indexPath.row].description.capitalized
             
             if filteredUSDAFoodData[indexPath.row].brandName=="" && filteredUSDAFoodData[indexPath.row].brandOwner=="" {
                 cell.descriptionLabel.text = description

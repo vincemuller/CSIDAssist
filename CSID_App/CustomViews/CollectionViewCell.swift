@@ -10,7 +10,9 @@ import UIKit
 class CollectionViewCell: UICollectionViewCell {
     static let reuseID  = "cell"
 
-    let categoryIcon        = UIImageView()
+    let categoryIcon        = UIView()
+    let image               = UIImageView()
+    
     let descriptionLabel    = UILabel()
     let separatorLine       = SeparatorLine()
     
@@ -26,10 +28,12 @@ class CollectionViewCell: UICollectionViewCell {
     
     private func configure() {
         addSubview(categoryIcon)
+        categoryIcon.addSubview(image)
         addSubview(descriptionLabel)
         addSubview(separatorLine)
         
         categoryIcon.translatesAutoresizingMaskIntoConstraints          = false
+        image.translatesAutoresizingMaskIntoConstraints                 = false
         descriptionLabel.translatesAutoresizingMaskIntoConstraints      = false
         
         categoryIcon.layer.cornerRadius     = 25
@@ -45,6 +49,11 @@ class CollectionViewCell: UICollectionViewCell {
             categoryIcon.centerYAnchor.constraint(equalTo: centerYAnchor),
             categoryIcon.heightAnchor.constraint(equalToConstant: 50),
             categoryIcon.widthAnchor.constraint(equalToConstant: 50),
+            
+            image.centerXAnchor.constraint(equalTo: categoryIcon.centerXAnchor),
+            image.centerYAnchor.constraint(equalTo: categoryIcon.centerYAnchor),
+            image.widthAnchor.constraint(equalToConstant: 30),
+            image.heightAnchor.constraint(equalToConstant: 30),
             
             descriptionLabel.leadingAnchor.constraint(equalTo: categoryIcon.trailingAnchor, constant: 10),
             descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
