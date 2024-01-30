@@ -18,14 +18,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Task.init {
             do {
                 guard userID != "" else {
-                    print("Not able to retrieve user id")
                     return
                 }
                 userFavorites = try await queryAllFavs()
             } catch {
                 userID = ""
                 userFavorites = []
-                print("Fetching failed with error \(error)")
             }
         }
         return true

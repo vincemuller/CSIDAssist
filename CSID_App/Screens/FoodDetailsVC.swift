@@ -170,8 +170,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     func configureFavIcon() {
         view.addSubview(favIcon)
         let favCheck = userFavorites.contains(passedData.fdicID)
-        print(passedData.fdicID)
-        print(favCheck)
+        
         if favCheck==true {
             favIconEnabled=true
         }

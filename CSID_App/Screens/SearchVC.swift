@@ -35,9 +35,7 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         if let dbPointer = CADatabaseHelper.getDatabasePointer(databaseName: "CSIDAssistFoodDatabase.db") {
             pointer = dbPointer
         } else {
-            print("Something went wrong!")
         }
-        print(self.tabBarController?.tabBar.frame.size.height as Any)
         let queryPrimer = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: "", searchTerm: "", databasePointer: pointer)
 
         configureViewController()
@@ -168,7 +166,7 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         let predicate = NSPredicate(format: "userID = %@", userID)
         let query = CKQuery(recordType: "UserFoods", predicate: predicate)
         let testResults = try await privateDB.records(matching: query)
-        print(testResults)
+
         for t in testResults.matchResults {
             let a = try t.1.get()
             let description     = a.value(forKey: "description") as! String

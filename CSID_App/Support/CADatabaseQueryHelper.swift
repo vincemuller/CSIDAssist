@@ -82,7 +82,6 @@ class CADatabaseQueryHelper {
             }
         } else {
             let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
-            print("\nQuery is not prepared \(errorMessage)")
         }
         sqlite3_finalize(queryStatement)
         return filteredUSDAFoodData
@@ -161,7 +160,7 @@ class CADatabaseQueryHelper {
             }
         } else {
             let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
-            print("\nQuery is not prepared \(errorMessage)")
+
         }
         sqlite3_finalize(queryStatement)
         return filteredUSDAFoodData
@@ -232,7 +231,7 @@ class CADatabaseQueryHelper {
             
           } else {
               let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
-              print("\nQuery is not prepared \(errorMessage)")
+
           }
           sqlite3_finalize(queryStatement)
         
@@ -337,7 +336,6 @@ class CADatabaseQueryHelper {
             }
         } else {
             let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
-            print("\nQuery is not prepared \(errorMessage)")
         }
         sqlite3_finalize(queryStatement)
         return filteredUSDAFoodData

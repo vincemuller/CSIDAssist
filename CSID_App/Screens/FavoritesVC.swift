@@ -32,7 +32,6 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
         if let dbPointer = CADatabaseHelper.getDatabasePointer(databaseName: "CSIDAssistFoodDatabase.db") {
             passedPointer = dbPointer
         } else {
-            print("Something went wrong!")
         }
         configureViewController()
         configureSearchController()
@@ -164,7 +163,6 @@ extension FavoritesVC: UISearchBarDelegate {
         guard let searchTerms = searchBar.text, searchTerms.count > 0 else {
             return
         }
-        print(filteredUSDAData)
         filteredUSDAData = favoriteUSDAData.filter( { $0.searchKeyWords.lowercased().contains(searchTerms.lowercased()) } )
 
         collectionView.reloadData()

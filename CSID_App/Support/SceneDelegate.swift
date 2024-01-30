@@ -36,14 +36,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Task.init {
             do {
                 guard userID != "" else {
-                    print("Not able to retrieve user id")
                     return
                 }
                 userFavorites = try await queryAllFavs()
             } catch {
                 userID = ""
                 userFavorites = []
-                print("Fetching failed with error \(error)")
             }
         }
         // Called when the scene has moved from an inactive state to an active state.

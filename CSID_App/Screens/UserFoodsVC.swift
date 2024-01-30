@@ -162,7 +162,7 @@ class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDeleg
         let predicate = NSPredicate(format: "userID = %@", userID)
         let query = CKQuery(recordType: "UserFoods", predicate: predicate)
         let testResults = try await privateDB.records(matching: query)
-        print(testResults)
+
         for t in testResults.matchResults {
             let a = try t.1.get()
             let description     = a.value(forKey: "description") as! String

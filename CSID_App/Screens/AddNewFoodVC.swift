@@ -243,7 +243,6 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
 
         database.save(record) { record, error in
             if let error = error {
-                print("error, did not succeed!\(error)")
                 return
             }
             self.presentGFAlertOnMain(title: "New Food Added", message: "You have successfully added a new food! Looks yummy!", buttonTitle: "Ok")
