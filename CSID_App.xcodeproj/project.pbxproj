@@ -13,7 +13,6 @@
 		BC5F07D42AB2557C007096F8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5F07D32AB2557C007096F8 /* AppDelegate.swift */; };
 		BC5F07D62AB2557C007096F8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5F07D52AB2557C007096F8 /* SceneDelegate.swift */; };
 		BC5F07DD2AB25582007096F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC5F07DC2AB25582007096F8 /* Assets.xcassets */; };
-		BC5F07E02AB25582007096F8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC5F07DE2AB25582007096F8 /* LaunchScreen.storyboard */; };
 		BC5F07E82AB25657007096F8 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5F07E72AB25657007096F8 /* SearchVC.swift */; };
 		BC5F07EA2AB257C8007096F8 /* FavoritesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5F07E92AB257C8007096F8 /* FavoritesVC.swift */; };
 		BC5F07F22AB36779007096F8 /* AddNewFoodVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5F07F12AB36779007096F8 /* AddNewFoodVC.swift */; };
@@ -56,7 +55,6 @@
 		BC5F07D32AB2557C007096F8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC5F07D52AB2557C007096F8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		BC5F07DC2AB25582007096F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		BC5F07DF2AB25582007096F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BC5F07E12AB25582007096F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BC5F07E72AB25657007096F8 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
 		BC5F07E92AB257C8007096F8 /* FavoritesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesVC.swift; sourceTree = "<group>"; };
@@ -168,7 +166,6 @@
 				BC5F07D32AB2557C007096F8 /* AppDelegate.swift */,
 				BC5F07D52AB2557C007096F8 /* SceneDelegate.swift */,
 				BC5F07DC2AB25582007096F8 /* Assets.xcassets */,
-				BC5F07DE2AB25582007096F8 /* LaunchScreen.storyboard */,
 				BC49CF2E2AF4185800EB20AA /* UIHelper.swift */,
 				EBA53CA52B0FDD32000BAB15 /* CADatabaseHelper.swift */,
 				EB5BFE232B14ED810063FA4F /* CADatabaseQueryHelper.swift */,
@@ -283,7 +280,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB9EEE412B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db in Resources */,
-				BC5F07E02AB25582007096F8 /* LaunchScreen.storyboard in Resources */,
 				BC5F07DD2AB25582007096F8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -335,17 +331,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		BC5F07DE2AB25582007096F8 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BC5F07DF2AB25582007096F8 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		BC5F07E22AB25582007096F8 /* Debug */ = {
