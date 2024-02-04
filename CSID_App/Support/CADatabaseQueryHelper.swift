@@ -235,7 +235,7 @@ class CADatabaseQueryHelper {
           }
           sqlite3_finalize(queryStatement)
         
-        //Calculating nut data
+        //Calculating net data
         //Net Carbs
         if carbs == "N/A" {
             netCarbs = "N/A"

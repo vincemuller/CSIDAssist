@@ -48,9 +48,10 @@ class SucroseCheck {
         "sweet sorghum",
         "treacle",
         "turbinado sugar",
-        "yellow sugar",
+        "yellow sugar"
     ]
     var otherSugarIngredients: [String] = [
+        "sugar alcohol",
         "agave nectar",
         "barley malt",
         "corn sweetener",
@@ -73,7 +74,16 @@ class SucroseCheck {
         "maltose",
         "mannose",
         "rice syrup",
-        "corn syrup"
+        "corn syrup",
+        "erythritol",
+        "maltitol",
+        "mannitol",
+        "sorbitol",
+        "xylitol",
+        "hydrogenated starch hydrolysates",
+        "isomalt",
+        "monk fruit extract",
+        "monk fruit"
     ]
     
     var replacedSucrIngredients: [String] = [
@@ -119,6 +129,7 @@ class SucroseCheck {
         "yellowsgr",
     ]
     var replacedOtherSugarIngredients: [String] = [
+        "sgralcl",
         "agavenctr",
         "barleymlt",
         "cornsweetener",
@@ -141,7 +152,16 @@ class SucroseCheck {
         "maltose",
         "mannose",
         "ricesyrp",
-        "cornsyp"
+        "cornsyp",
+        "erythritol",
+        "maltitol",
+        "mannitol",
+        "sorbitol",
+        "xylitol",
+        "hydrogenated starch hydrolysates",
+        "isomalt",
+        "mnkfrutxtrct",
+        "mnkfrt",
     ]
     
     

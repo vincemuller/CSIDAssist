@@ -41,14 +41,8 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     
     let brandCategoryLabel      = CALabel(size: 12, weight: .semibold, numOfLines: 1)
     
-    let topContainer            = FoodDetailsContainer()
-    let brandOwnerLabel         = CALabel(size: 12, weight: .semibold, numOfLines: 1)
-    let brandNameLabel          = CALabel(size: 12, weight: .semibold, numOfLines: 1)
-    
     let portionContainer        = FoodDetailsContainer()
     let portionLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
-    
-    let customPortionTextField  = CAPortionTextField(placeholder: "Custom Serving")
     
     let carbsContainer          = FoodDetailsContainer()
     let carbsSeparatorLine      = SeparatorLine()
@@ -74,20 +68,19 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
-        
-        sugarIngr = findSugars.getSucroseIngredients(productIngredients: passedData.ingredients.lowercased())
-        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: passedData.ingredients.lowercased())
+        let uniqueIngredients = findSugars.makingIngredientsUnique(productIngredients: passedData.ingredients.lowercased())
+        sugarIngr = findSugars.getSucroseIngredients(productIngredients: uniqueIngredients)
+        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: uniqueIngredients)
         
         configureTitleLabel()
-        configureTopContainers()
-        configureTopLabels()
+        configurePortionContainers()
+        configurePortionLabel()
         configureSugarStarchContainer()
         configureSugarStarchLabels()
         configureCarbsContainer()
         configureCarbsLabels()
         configureCollectionView()
         configureEditIcon()
-        createDismissKeyboardTapGesture()
     }
     
     
@@ -113,41 +106,25 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     }
 
     
-    func configureTopContainers() {
-        view.addSubview(topContainer)
+    func configurePortionContainers() {
         view.addSubview(portionContainer)
 
         NSLayoutConstraint.activate([
-            topContainer.topAnchor.constraint(equalTo: brandCategoryLabel.bottomAnchor, constant: 10),
-            topContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            topContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            topContainer.heightAnchor.constraint(equalToConstant: 50),
-            
-            portionContainer.topAnchor.constraint(equalTo: topContainer.bottomAnchor, constant: 10),
-            portionContainer.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor),
+            portionContainer.topAnchor.constraint(equalTo: brandCategoryLabel.bottomAnchor, constant: 10),
+            portionContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             portionContainer.trailingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
             portionContainer.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
     
-    func configureTopLabels() {
-        topContainer.addSubview(brandOwnerLabel)
-        topContainer.addSubview(brandNameLabel)
+    func configurePortionLabel() {
         portionContainer.addSubview(portionLabel)
         
-        brandOwnerLabel.text    = "Brand Owner: "
-        brandNameLabel.text     = "Brand Name: "
-        portionLabel.text       = "Serving Size:  \(passedData.portionSize.lowercased())"
+        portionLabel.text   = "Serving Size:  \(passedData.portionSize.lowercased())"
         
         NSLayoutConstraint.activate([
-            brandOwnerLabel.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: 7),
-            brandOwnerLabel.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: 7),
-            
-            brandNameLabel.topAnchor.constraint(equalTo: brandOwnerLabel.bottomAnchor, constant: 7),
-            brandNameLabel.leadingAnchor.constraint(equalTo: brandOwnerLabel.leadingAnchor),
-            
             portionLabel.centerYAnchor.constraint(equalTo: portionContainer.centerYAnchor),
-            portionLabel.leadingAnchor.constraint(equalTo: brandOwnerLabel.leadingAnchor)
+            portionLabel.leadingAnchor.constraint(equalTo: portionContainer.leadingAnchor, constant: 7)
         ])
     }
     
@@ -175,7 +152,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         totalSugarsCircle.layer.borderWidth   = 3
         
         totalSugarsData.text    = passedData.totalSugars.description
-        totalStarchData.text    = (passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars).description
+        totalStarchData.text    = (max((Float(passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars)),0)).description
         totalSugarsLabel.text   = "Total Sugars"
         totalStarchLabel.text   = "Total Starches"
         
@@ -246,7 +223,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         NSLayoutConstraint.activate([
             carbsContainer.topAnchor.constraint(equalTo: portionContainer.bottomAnchor, constant: 10),
             carbsContainer.leadingAnchor.constraint(equalTo: sugarStarchContainer.trailingAnchor, constant: 10),
-            carbsContainer.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor),
+            carbsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             carbsContainer.heightAnchor.constraint(equalToConstant: 125),
             
             carbsSeparatorLine.centerYAnchor.constraint(equalTo: carbsContainer.centerYAnchor),
@@ -267,7 +244,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         totalCarbsLabel.text            = "Total Carbs"
         totalCarbsLabel.textAlignment   = .center
         
-        netCarbsData.text               = (passedData.totalCarbs-passedData.totalFiber).description
+        netCarbsData.text               = (max((Float(passedData.totalCarbs-passedData.totalFiber)),0)).description
         netCarbsData.textAlignment      = .center
         netCarbsLabel.text              = "Net Carbs"
         netCarbsLabel.textAlignment     = .center
@@ -298,8 +275,8 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: sugarStarchContainer.bottomAnchor, constant: 10),
-            collectionView.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: portionContainer.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 10 )
         ])
         
@@ -331,7 +308,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
             
-            cell.cardDescription.text                   = nil
+            cell.cardDescription.text   = nil
             cell.cardLabel.text         = cardsDetails[indexPath.row]
             returnCell = cell
         }
@@ -352,20 +329,15 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         collectionView.reloadData()
     }
     
-    func createDismissKeyboardTapGesture() {
-        let tap = UITapGestureRecognizer(target: self.view, action: #selector(view.endEditing))
-        topContainer.addGestureRecognizer(tap)
-    }
-    
     func updateUserFoodDetails(foodDetails: YourFoodItem) {
         passedData = foodDetails
         
         titleLabel.text         = passedData.description
         portionLabel.text       = "Serving Size:  \(passedData.portionSize.lowercased())"
         totalCarbsData.text     = passedData.totalCarbs.description
-        netCarbsData.text       = (passedData.totalCarbs-passedData.totalFiber).description
+        netCarbsData.text       = (max((Float(passedData.totalCarbs-passedData.totalFiber)),0)).description
         totalSugarsData.text    = passedData.totalSugars.description
-        totalStarchData.text    = (passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars).description
+        totalStarchData.text    = (max((Float(passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars)),0)).description
         
         sugarIngr = findSugars.getSucroseIngredients(productIngredients: passedData.ingredients.lowercased())
         otherIngr = findSugars.getOtherSugarIngredients(productIngredients: passedData.ingredients.lowercased())

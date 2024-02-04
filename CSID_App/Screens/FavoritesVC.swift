@@ -20,6 +20,8 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     var favoriteUSDAData: [USDAFoodDetails] = []
     var filteredUSDAData: [USDAFoodDetails] = []
     var category:   String = ""
+    //Category colors and labels
+    let categories = Category()
     
     var userFavs:               [Int] = []
     
@@ -103,11 +105,13 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
+        let index = categories.list.firstIndex(where: {$0 == filteredUSDAData[indexPath.row].brandedFoodCategory})
         var brandOwner: String
         var brandName: String
         
         cell.backgroundColor                = nil
-        cell.categoryIcon.backgroundColor   = .systemMint
+        cell.categoryIcon.backgroundColor   = categories.colors[index ?? 0]
+        cell.image.image                    = UIImage(named: filteredUSDAData[indexPath.row].brandedFoodCategory)
         cell.layer.cornerRadius             = 0
         
         let description = filteredUSDAData[indexPath.row].description.capitalized

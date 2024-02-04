@@ -410,6 +410,9 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row == 1 {
+            return
+        }
         let element      = cardsColors.remove(at: indexPath.row)
         let elementLabel = cardsDetails.remove(at: indexPath.row)
         cardsDetails.insert(elementLabel, at: indexPath.row+1)
@@ -456,7 +459,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     
     func createDismissKeyboardTapGesture() {
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(view.endEditing))
-        topContainer.addGestureRecognizer(tap)
+        carbsContainer.addGestureRecognizer(tap)
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {

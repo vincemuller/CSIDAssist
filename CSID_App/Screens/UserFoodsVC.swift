@@ -22,6 +22,9 @@ class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDeleg
     var category:   String = ""
     var recordID:   CKRecord.ID?
     
+    //Category colors and labels
+    let categories = Category()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -81,9 +84,10 @@ class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDeleg
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
         
-        cell.backgroundColor                = nil
-        cell.categoryIcon.backgroundColor   = .systemMint
         cell.layer.cornerRadius             = 0
+        cell.backgroundColor                = nil
+        cell.categoryIcon.backgroundColor   = categories.colors[0]
+        cell.image.image                    = UIImage(named: "Your Foods")
         
         cell.descriptionLabel.text = passedUserFoods[indexPath.row].description.capitalized
         
