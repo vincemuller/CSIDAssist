@@ -39,6 +39,7 @@
 		EBA53CA02B0BEB7F000BAB15 /* SeparatorLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53C9F2B0BEB7F000BAB15 /* SeparatorLine.swift */; };
 		EBA53CA22B0D1C96000BAB15 /* ChartCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53CA12B0D1C96000BAB15 /* ChartCircleView.swift */; };
 		EBA53CA62B0FDD32000BAB15 /* CADatabaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53CA52B0FDD32000BAB15 /* CADatabaseHelper.swift */; };
+		EBC15F192B76BF5200378947 /* EmptyCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC15F182B76BF5200378947 /* EmptyCollectionView.swift */; };
 		EBD83F582B3328FA00905E37 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD83F572B3328FA00905E37 /* ErrorMessage.swift */; };
 		EBDA832E2B490CC9004FD96E /* UserFoodDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBDA832D2B490CC9004FD96E /* UserFoodDetailsViewModel.swift */; };
 		EBE2B8D62B1AF34D00B44999 /* CAPortionTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE2B8D52B1AF34D00B44999 /* CAPortionTextField.swift */; };
@@ -83,6 +84,7 @@
 		EBA53C9F2B0BEB7F000BAB15 /* SeparatorLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorLine.swift; sourceTree = "<group>"; };
 		EBA53CA12B0D1C96000BAB15 /* ChartCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartCircleView.swift; sourceTree = "<group>"; };
 		EBA53CA52B0FDD32000BAB15 /* CADatabaseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CADatabaseHelper.swift; sourceTree = "<group>"; };
+		EBC15F182B76BF5200378947 /* EmptyCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionView.swift; sourceTree = "<group>"; };
 		EBD83F572B3328FA00905E37 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		EBDA832D2B490CC9004FD96E /* UserFoodDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFoodDetailsViewModel.swift; sourceTree = "<group>"; };
 		EBE2B8D52B1AF34D00B44999 /* CAPortionTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAPortionTextField.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 				EBF96E7C2B315DFF008B325D /* CSIDAlertVC.swift */,
 				EB85EB2A2B4098DB0037A969 /* SugarCardCollectionViewCell.swift */,
 				EB3BEBF22B5C6B2D00AE70AA /* CategoriesCollectionViewCell.swift */,
+				EBC15F182B76BF5200378947 /* EmptyCollectionView.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBC15F192B76BF5200378947 /* EmptyCollectionView.swift in Sources */,
 				BC5F07F22AB36779007096F8 /* AddNewFoodVC.swift in Sources */,
 				BC5F07EA2AB257C8007096F8 /* FavoritesVC.swift in Sources */,
 				BC8DF8912AEDA1ED00799CB9 /* NewFoodTextField.swift in Sources */,
@@ -470,9 +474,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "VinceMuller.CSID-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -497,9 +504,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "VinceMuller.CSID-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

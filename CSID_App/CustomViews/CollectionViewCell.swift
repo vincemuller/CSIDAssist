@@ -45,7 +45,7 @@ class CollectionViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             
-            categoryIcon.leadingAnchor.constraint(equalTo: leadingAnchor),
+            categoryIcon.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
             categoryIcon.centerYAnchor.constraint(equalTo: centerYAnchor),
             categoryIcon.heightAnchor.constraint(equalToConstant: 50),
             categoryIcon.widthAnchor.constraint(equalToConstant: 50),

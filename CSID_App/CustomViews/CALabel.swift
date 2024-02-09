@@ -16,8 +16,9 @@ class CALabel: UILabel {
     
     init(size: CGFloat, weight: UIFont.Weight, numOfLines: Int) {
         super.init(frame: .zero)
-        font            = UIFont.systemFont(ofSize: size, weight: weight)
-        numberOfLines   = numOfLines
+        font                        = UIFont.systemFont(ofSize: size, weight: weight)
+        numberOfLines               = numOfLines
+        adjustsFontSizeToFitWidth   = true
         configure()
     }
     

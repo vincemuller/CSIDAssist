@@ -20,6 +20,8 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     var favoriteUSDAData: [USDAFoodDetails] = []
     var filteredUSDAData: [USDAFoodDetails] = []
     var category:   String = ""
+    let emptyFavorites = EmptyCollectionView(text: "You have no favorited foods :(")
+    
     //Category colors and labels
     let categories = Category()
     
@@ -40,9 +42,10 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
         configureCollectionView()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         filterUserFavs(favsFDICID: userFavorites)
+        collectionView.backgroundView   = {filteredUSDAData.count == 0 ? emptyFavorites : nil}()
         collectionView.reloadData()
     }
     
@@ -87,6 +90,7 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
         collectionView.delegate             = self
         collectionView.dataSource           = self
         collectionView.backgroundColor      = .systemBackground
+        collectionView.backgroundView       = {filteredUSDAData.count == 0 ? emptyFavorites : nil}()
         collectionView.alwaysBounceVertical = true
         collectionView.bounces              = true
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -106,6 +110,7 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseID, for: indexPath) as! CollectionViewCell
         let index = categories.list.firstIndex(where: {$0 == filteredUSDAData[indexPath.row].brandedFoodCategory})
+        
         var brandOwner: String
         var brandName: String
         
@@ -179,6 +184,7 @@ extension FavoritesVC: UISearchBarDelegate {
     
     func updateFavoritesCollectionView() {
         filterUserFavs(favsFDICID: userFavorites)
+        collectionView.backgroundView   = {filteredUSDAData.count == 0 ? emptyFavorites : nil}()
         collectionView.reloadData()
     }
     
