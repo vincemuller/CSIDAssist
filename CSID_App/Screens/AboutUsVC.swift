@@ -109,8 +109,8 @@ class AboutUsVC: UIViewController {
     }
     
     @objc func emailHyperlink() {
-        let email = "vmuller2529@gmail.com"
-        if let url = URL(string: "mailto:\(email)") {
+        let email = "csidassist@gmail.com"
+        if let url = URL(string: "mailto:\(email)?subject=Issue, Question, Feedback, or Request") {
           if #available(iOS 10.0, *) {
             UIApplication.shared.open(url)
           } else {

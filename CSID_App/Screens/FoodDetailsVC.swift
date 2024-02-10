@@ -88,12 +88,21 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         configureCarbsContainer()
         configureCarbsLabels()
         configureCollectionView()
-        
+        setupToolBar()
         createDismissKeyboardTapGesture()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         configureFavIcon()
+    }
+    
+    func setupToolBar() {
+        let bar = UIToolbar()
+        let doneBtn     = UIBarButtonItem(title: "Done", style: .plain, target: self.view, action: #selector(view.endEditing))
+        let flexSpace   = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        bar.items = [flexSpace, flexSpace, doneBtn]
+        bar.sizeToFit()
+        customPortionTextField.inputAccessoryView = bar
     }
     
     func configureTitleLabel() {

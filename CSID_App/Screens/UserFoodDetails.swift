@@ -112,7 +112,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         NSLayoutConstraint.activate([
             portionContainer.topAnchor.constraint(equalTo: brandCategoryLabel.bottomAnchor, constant: 10),
             portionContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            portionContainer.trailingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
+            portionContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             portionContainer.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
@@ -135,7 +135,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         NSLayoutConstraint.activate([
             sugarStarchContainer.topAnchor.constraint(equalTo: portionContainer.bottomAnchor, constant: 10),
             sugarStarchContainer.leadingAnchor.constraint(equalTo: portionContainer.leadingAnchor),
-            sugarStarchContainer.trailingAnchor.constraint(equalTo: portionContainer.trailingAnchor),
+            sugarStarchContainer.trailingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
             sugarStarchContainer.heightAnchor.constraint(equalToConstant: 125),
         ])
     }
