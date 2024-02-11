@@ -24,6 +24,7 @@ class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDeleg
     
     //Category colors and labels
     let categories = Category()
+    let emptyUserFoods = EmptyCollectionView(text: "You have no added foods :(")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +37,7 @@ class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDeleg
                 }
                 let queriedUserFoods = try await self.queryUserFoods()
                 passedUserFoods = queriedUserFoods
+                collectionView.backgroundView = {passedUserFoods.count == 0 ? emptyUserFoods : nil}()
                 collectionView.reloadData()
             } catch {
                 self.presentGFAlertOnMain(title: CAAlertTitle.iCloudError.rawValue, message: CAAlertMessage.fetchFoodsError.rawValue, buttonTitle: "Ok")
@@ -49,9 +51,9 @@ class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDeleg
         configureCollectionView()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.backgroundView = {passedUserFoods.count == 0 ? emptyUserFoods : nil}()
         collectionView.reloadData()
     }
     
@@ -152,6 +154,7 @@ class UserFoodsVC: UIViewController, RemoveUserFoodDelegate, UpdateUserFoodDeleg
                     let queriedUserFoods = try await self.queryUserFoods()
                     self.passedUserFoods = queriedUserFoods
                     self.presentGFAlertOnMain(title: CAAlertTitle.foodRemoved.rawValue, message: CAAlertMessage.foodRemoved.rawValue, buttonTitle: "Ok")
+                    self.collectionView.backgroundView = {self.passedUserFoods.count == 0 ? self.emptyUserFoods : nil}()
                     self.collectionView.reloadData()
                 } catch {
                     self.presentGFAlertOnMain(title: CAAlertTitle.iCloudError.rawValue, message: CAAlertMessage.fetchFoodsError.rawValue, buttonTitle: "Ok")
