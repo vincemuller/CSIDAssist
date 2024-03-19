@@ -9,7 +9,7 @@ import UIKit
 import CloudKit
 
 class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
-    var yourFoodData: [YourFoodItem] = []
+    var yourFoodData: [UserFoodItem] = []
     let scrollView  = UIScrollView()
     let contentView = UIView()
     
@@ -46,6 +46,22 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(AddNewFoodVC.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
             
         NotificationCenter.default.addObserver(self, selector: #selector(AddNewFoodVC.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        getUserFoods()
+    }
+    
+    func getUserFoods() {
+        PersistenceManager.retrieveUserFoods { result in
+            switch result {
+            case .success(let userFoods):
+                print("user foods: \(String(describing: userFoods))")
+            case .failure(let error):
+                print(error)
+                return
+            }
+        }
     }
     
     func configureScrollView() {
@@ -195,13 +211,17 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         let sugars              = Float(totalSugarsTextField.text!) ?? 0
         let addedSugars         = Float(addedSugarsTextField.text!) ?? 0
         
-        guard userID != "" else {
-            self.presentGFAlertOnMain(title: "Unable to Add Food", message: CAAlertMessage.generaliCloudError.rawValue, buttonTitle: "Ok")
-            resetFields()
-            return
+        let newUserFood = UserFoodItem(category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredientsTextField.text, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
+        PersistenceManager.updateUserFoodWith(userFood: newUserFood, actionType: .create) { [weak self] error in
+            guard let self = self else {return }
+    
+            guard let error = error else {
+                self.presentGFAlertOnMain(title: "Food Created!", message: "You have successfully created and added \(newUserFood.description) to your foods", buttonTitle: "Ok")
+                self.tabBarController?.selectedIndex = 0
+                return
+            }
+            self.presentGFAlertOnMain(title: "\(error)", message: "Your food did not get added, please try again!", buttonTitle: "Ok")
         }
-        
-        ckUserFoodRecordCreation(userID: userID.description, category: "Your Food", description: description, ingredients: ingredientsTextField.text, portionSize: portionSize, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
         resetFields()
     }
     
@@ -221,32 +241,6 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         scrollView.setContentOffset(contentInsets, animated: true)
         scrollView.scrollIndicatorInsets = contentInsets2
         contentView.endEditing(true)
-    }
-    
-    func ckUserFoodRecordCreation(userID: String, category: String, description: String, ingredients: String, portionSize: String, totalCarbs: Float, totalFiber: Float, totalSugars: Float, addedSugars: Float) {
-        let record = CKRecord(recordType: "UserFoods")
-        let container = CKContainer.default()
-        let database = container.privateCloudDatabase
-
-            record.setValuesForKeys([
-                "userID": userID,
-                "category": category,
-                "description": description,
-                "ingredients": ingredients,
-                "portionSize": portionSize,
-                "totalCarbs": totalCarbs,
-                "totalFiber": totalFiber,
-                "totalSugars": totalSugars,
-                "addedSugars": addedSugars
-            ]
-            )
-
-        database.save(record) { record, error in
-            if let error = error {
-                return
-            }
-            self.presentGFAlertOnMain(title: "New Food Added", message: "You have successfully added a new food! Looks yummy!", buttonTitle: "Ok")
-        }
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {

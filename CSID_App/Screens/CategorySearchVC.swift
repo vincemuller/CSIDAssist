@@ -22,6 +22,7 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
     
     let categories = Category()
     var category:   String = ""
+    var wholeFoodsFilter = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +43,9 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
         searchController.searchBar.placeholder      = "Search \(category)"
         navigationItem.searchController             = searchController
         navigationItem.hidesSearchBarWhenScrolling  = false
+        searchController.searchBar.scopeButtonTitles    = ["Whole Foods", "All Foods", "Branded Foods"]
+        searchController.searchBar.selectedScopeButtonIndex = 1
+        searchController.scopeBarActivation                 = .onSearchActivation
     }
     
     func configureViewController() {
@@ -128,6 +132,19 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
 
 extension CategorySearchVC: UISearchBarDelegate {
     
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        
+        if selectedScope == 0 {
+            wholeFoodsFilter = "AND wholeFood='yes'"
+        } else if selectedScope == 2 {
+            wholeFoodsFilter = "AND wholeFood='no'"
+        } else {
+            wholeFoodsFilter = ""
+        }
+        
+        searchBarSearchButtonClicked(searchController.searchBar)
+    }
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         var searchTerms = ""
@@ -143,7 +160,8 @@ extension CategorySearchVC: UISearchBarDelegate {
             count = count + 1
         }
         
-        let queryResult = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: category, searchTerm: searchTerms, databasePointer: passedPointer)
+        
+        let queryResult = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: category, searchTerm: searchTerms, wholeFoodsFilter: wholeFoodsFilter, databasePointer: passedPointer)
         filteredUSDACategoryData = queryResult
         
         collectionView.reloadData()
@@ -158,6 +176,7 @@ extension CategorySearchVC: UISearchBarDelegate {
         filteredUSDACategoryData = passedUSDACategoryData
         collectionView.reloadData()
         collectionView.setCollectionViewLayout(UIHelper.createOneColumnFlowLayout(in: view), animated: false)
+        searchController.searchBar.selectedScopeButtonIndex = 1
     }
     
 }

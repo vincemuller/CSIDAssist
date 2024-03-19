@@ -1,5 +1,5 @@
 //
-//  CSIDFoodDetailsVC.swift
+//  WholeFoodDetailsVC.swift
 //  CSID_App
 //
 //  Created by Vince Muller on 9/27/23.
@@ -7,21 +7,21 @@
 
 import UIKit
 
-protocol FavoriteArtefactsDelegate {
+protocol WholeFoodFavoriteArtefactsDelegate {
     func updateFavoritesCollectionView()
 }
 
-class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
+class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     
     var passedData:             USDAFoodDetails!
     var userFavs:               [USDAFoodDetails]?
     var sugarTypes:             String = ""
     var passedPointer:          OpaquePointer?
-    var nutrientData:           USDANutrientData!
+    var nutrientData:           WholeFoodNutrientData!
     var recordID:               String?
     let findSugars = SucroseCheck()
     
-    var delegate: FavoriteArtefactsDelegate?
+    var delegate: WholeFoodFavoriteArtefactsDelegate?
     var favoritesVC = FavoritesVC()
     
     var sugarIngr: [String] = []
@@ -36,10 +36,6 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     let tapGesture              = UITapGestureRecognizer()
     
     let brandCategoryLabel      = CALabel(size: 12, weight: .semibold, numOfLines: 1)
-    
-    let topContainer            = FoodDetailsContainer()
-    let brandOwnerLabel         = CALabel(size: 12, weight: .semibold, numOfLines: 1)
-    let brandNameLabel          = CALabel(size: 12, weight: .semibold, numOfLines: 1)
     
     let portionContainer        = FoodDetailsContainer()
     let portionLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
@@ -61,15 +57,27 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     let totalSugarsLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
     let totalStarchLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
     
-    var collectionView: UICollectionView!
-    var cardsColors: [UIColor]  = [UIColor.systemOrange,UIColor.systemTeal]
-    var cardsDetails: [String]  = ["Ingredients", "Sugars"]
-    
+    let sugarDetailsContainer   = FoodDetailsContainer()
+    let sucroseCircle           = ChartCircleView(borderColor: UIColor.systemBlue.cgColor, backgroundColor: .clear)
+    let fructoseCircle          = ChartCircleView(borderColor: UIColor.systemRed.cgColor, backgroundColor: .clear)
+    let glucoseCircle           = ChartCircleView(borderColor: UIColor.systemGreen.cgColor, backgroundColor: .clear)
+    let lactoseCircle           = ChartCircleView(borderColor: UIColor.systemPurple.cgColor, backgroundColor: .clear)
+    let maltoseCircle           = ChartCircleView(borderColor: UIColor.systemYellow.cgColor, backgroundColor: .clear)
+    let sucroseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    let fructoseLabel           = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    let glucoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    let lactoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    let maltoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    let sucroseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    let fructoseData            = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    let glucoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    let lactoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    let maltoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        nutrientData = CADatabaseQueryHelper.queryDatabaseNutrientData(fdicID: passedData.fdicID, databasePointer: passedPointer)
+        nutrientData = CADatabaseQueryHelper.queryDatabaseWholeFoodNutrientData(fdicID: passedData.fdicID, databasePointer: passedPointer)
         
         view.backgroundColor = .systemBackground
         
@@ -85,12 +93,16 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         configureSugarStarchLabels()
         configureCarbsContainer()
         configureCarbsLabels()
-        configureCollectionView()
+        configureSugarDetailsContainer()
+        configureSugarDetailsCircles()
+        configureSugarDetailsLabels()
+        configureSugarDetailsData()
         setupToolBar()
         createDismissKeyboardTapGesture()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        print("whole food details vc!")
         getUserFavs()
         configureFavIcon()
     }
@@ -158,40 +170,23 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         
     }
     func configureTopContainers() {
-        view.addSubview(topContainer)
         view.addSubview(portionContainer)
 
         NSLayoutConstraint.activate([
-            topContainer.topAnchor.constraint(equalTo: brandCategoryLabel.bottomAnchor, constant: 10),
-            topContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            topContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            topContainer.heightAnchor.constraint(equalToConstant: 50),
-            
-            portionContainer.topAnchor.constraint(equalTo: topContainer.bottomAnchor, constant: 10),
-            portionContainer.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor),
+            portionContainer.topAnchor.constraint(equalTo: brandCategoryLabel.bottomAnchor, constant: 10),
+            portionContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             portionContainer.trailingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
             portionContainer.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
     
     func configureTopLabels() {
-        topContainer.addSubview(brandOwnerLabel)
-        topContainer.addSubview(brandNameLabel)
         portionContainer.addSubview(portionLabel)
-        
-        brandOwnerLabel.text    = "Brand Owner: \(passedData.brandOwner?.capitalized ?? "N/A")"
-        brandNameLabel.text     = "Brand Name: \(passedData.brandName?.capitalized ?? "N/A")"
         portionLabel.text       = "Serving Size:  \(passedData.servingSize)\(passedData.servingSizeUnit)"
         
         NSLayoutConstraint.activate([
-            brandOwnerLabel.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: 7),
-            brandOwnerLabel.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: 7),
-            
-            brandNameLabel.topAnchor.constraint(equalTo: brandOwnerLabel.bottomAnchor, constant: 7),
-            brandNameLabel.leadingAnchor.constraint(equalTo: brandOwnerLabel.leadingAnchor),
-            
             portionLabel.centerYAnchor.constraint(equalTo: portionContainer.centerYAnchor),
-            portionLabel.leadingAnchor.constraint(equalTo: brandOwnerLabel.leadingAnchor)
+            portionLabel.leadingAnchor.constraint(equalTo: portionContainer.leadingAnchor, constant: 10)
         ])
     }
     
@@ -205,14 +200,13 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         NSLayoutConstraint.activate([
             customPortionTextField.topAnchor.constraint(equalTo: portionContainer.topAnchor),
             customPortionTextField.leadingAnchor.constraint(equalTo: portionContainer.trailingAnchor, constant: 10),
-            customPortionTextField.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor),
+            customPortionTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             customPortionTextField.bottomAnchor.constraint(equalTo: portionContainer.bottomAnchor)
         ])
     }
     
     func configureSugarStarchContainer() {
         view.addSubview(sugarStarchContainer)
-        
         
         NSLayoutConstraint.activate([
             sugarStarchContainer.topAnchor.constraint(equalTo: portionContainer.bottomAnchor, constant: 10),
@@ -272,9 +266,9 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         carbsContainer.addSubview(carbsSeparatorLine)
         
         NSLayoutConstraint.activate([
-            carbsContainer.topAnchor.constraint(equalTo: portionContainer.bottomAnchor, constant: 10),
+            carbsContainer.topAnchor.constraint(equalTo: sugarStarchContainer.topAnchor),
             carbsContainer.leadingAnchor.constraint(equalTo: sugarStarchContainer.trailingAnchor, constant: 10),
-            carbsContainer.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor),
+            carbsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             carbsContainer.heightAnchor.constraint(equalToConstant: 125),
             
             carbsSeparatorLine.centerYAnchor.constraint(equalTo: carbsContainer.centerYAnchor),
@@ -295,7 +289,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         totalCarbsLabel.text            = "Total Carbs"
         totalCarbsLabel.textAlignment   = .center
         
-        netCarbsData.text               = (nutrientData.netCarbs != "N/A" ? (round(Float(nutrientData.netCarbs)!*10)/10.0).description : "N/A")
+        netCarbsData.text               = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
         netCarbsData.textAlignment      = .center
         netCarbsLabel.text              = "Net Carbs"
         netCarbsLabel.textAlignment     = .center
@@ -313,74 +307,122 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         ])
     }
     
-    func configureCollectionView() {
-        
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UIHelper.createOverLappingFlowLayout(in: view))
-        view.addSubview(collectionView)
-        collectionView.register(CardCollectionViewCell.self, forCellWithReuseIdentifier: CardCollectionViewCell.reuseID)
-        collectionView.register(SugarCardCollectionViewCell.self, forCellWithReuseIdentifier: SugarCardCollectionViewCell.reuseID)
-
-        collectionView.delegate         = self
-        collectionView.dataSource       = self
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+    func configureSugarDetailsContainer() {
+        view.addSubview(sugarDetailsContainer)
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: sugarStarchContainer.bottomAnchor, constant: 10),
-            collectionView.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 10 )
+            sugarDetailsContainer.topAnchor.constraint(equalTo: sugarStarchContainer.bottomAnchor, constant: 10),
+            sugarDetailsContainer.leadingAnchor.constraint(equalTo: sugarStarchContainer.leadingAnchor),
+            sugarDetailsContainer.trailingAnchor.constraint(equalTo: carbsContainer.trailingAnchor),
+            sugarDetailsContainer.heightAnchor.constraint(equalToConstant: 260)
         ])
-        
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cardsDetails.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let returnCell: UICollectionViewCell
+    func configureSugarDetailsCircles() {
+        sugarDetailsContainer.addSubview(sucroseCircle)
+        sugarDetailsContainer.addSubview(fructoseCircle)
+        sugarDetailsContainer.addSubview(glucoseCircle)
+        sugarDetailsContainer.addSubview(lactoseCircle)
+        sugarDetailsContainer.addSubview(maltoseCircle)
         
-        if cardsDetails[indexPath.row] == "Ingredients" {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
-            cell.cardLabel.text         = cardsDetails[indexPath.row]
+        sucroseCircle.layer.borderWidth   = 3
+        fructoseCircle.layer.borderWidth  = 3
+        glucoseCircle.layer.borderWidth   = 3
+        lactoseCircle.layer.borderWidth   = 3
+        maltoseCircle.layer.borderWidth   = 3
+        
+        NSLayoutConstraint.activate([
+            sucroseCircle.topAnchor.constraint(equalTo: sugarDetailsContainer.topAnchor, constant: 20),
+            fructoseCircle.topAnchor.constraint(equalTo: sugarDetailsContainer.topAnchor, constant: 20),
+            glucoseCircle.topAnchor.constraint(equalTo: sugarDetailsContainer.topAnchor, constant: 20),
+            lactoseCircle.topAnchor.constraint(equalTo: sugarDetailsContainer.topAnchor, constant: 130),
+            maltoseCircle.topAnchor.constraint(equalTo: sugarDetailsContainer.topAnchor, constant: 130),
             
-            cell.cardDescription.text                   = passedData.ingredients
-            returnCell = cell
-        } else if cardsDetails[indexPath.row] == "Sugars"{
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SugarCardCollectionViewCell.reuseID, for: indexPath) as! SugarCardCollectionViewCell
-            cell.cardLabel.text         = cardsDetails[indexPath.row]
-            sugarIngr = sugarIngr.map({$0.capitalized})
-            otherIngr = otherIngr.map({$0.capitalized})
-            let sI = sugarIngr.joined(separator: "  •")
-            let oI = otherIngr.joined(separator: "  •")
-            cell.sucroseIngr.text       = (sI.isEmpty ? "No sucrose detected. As always, check the ingredients" : "•\(sI)")
-            cell.otherIngr.text         = (oI.isEmpty ? "No other sugars detected. As always, check the ingredients" : "•\(oI)")
-            returnCell = cell
-        } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell
+            fructoseCircle.centerXAnchor.constraint(equalTo: sugarDetailsContainer.centerXAnchor),
+            sucroseCircle.centerXAnchor.constraint(equalTo: sugarDetailsContainer.centerXAnchor, constant: -(view.frame.size.width - 20) / 3),
+            glucoseCircle.centerXAnchor.constraint(equalTo: sugarDetailsContainer.centerXAnchor, constant: (view.frame.size.width - 20) / 3),
+            lactoseCircle.centerXAnchor.constraint(equalTo: sugarDetailsContainer.centerXAnchor, constant: -((view.frame.size.width - 20) / 6)),
+            maltoseCircle.centerXAnchor.constraint(equalTo: sugarDetailsContainer.centerXAnchor, constant: ((view.frame.size.width - 20) / 6)),
             
-            cell.cardDescription.text                   = nil
-            cell.cardLabel.text         = cardsDetails[indexPath.row]
-            returnCell = cell
-        }
+            sucroseCircle.widthAnchor.constraint(equalToConstant: 80),
+            sucroseCircle.heightAnchor.constraint(equalToConstant: 80),
+            fructoseCircle.widthAnchor.constraint(equalToConstant: 80),
+            fructoseCircle.heightAnchor.constraint(equalToConstant: 80),
+            glucoseCircle.widthAnchor.constraint(equalToConstant: 80),
+            glucoseCircle.heightAnchor.constraint(equalToConstant: 80),
+            lactoseCircle.widthAnchor.constraint(equalToConstant: 80),
+            lactoseCircle.heightAnchor.constraint(equalToConstant: 80),
+            maltoseCircle.widthAnchor.constraint(equalToConstant: 80),
+            maltoseCircle.heightAnchor.constraint(equalToConstant: 80),
+       ])
         
-        returnCell.layer.shadowColor = (indexPath.row==0 ? UIColor.clear.cgColor : UIColor.black.cgColor)
-        returnCell.backgroundColor        = cardsColors[indexPath.row]
-        
-        return returnCell
+        sucroseCircle.layer.cornerRadius  = 40
+        fructoseCircle.layer.cornerRadius = 40
+        glucoseCircle.layer.cornerRadius  = 40
+        lactoseCircle.layer.cornerRadius  = 40
+        maltoseCircle.layer.cornerRadius  = 40
     }
-
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row == 1 {
-            return
-        }
-        let element      = cardsColors.remove(at: indexPath.row)
-        let elementLabel = cardsDetails.remove(at: indexPath.row)
-        cardsDetails.insert(elementLabel, at: indexPath.row+1)
-        cardsColors.insert(element, at: (indexPath.row+1))
+    func configureSugarDetailsLabels() {
+        sugarDetailsContainer.addSubview(sucroseLabel)
+        sugarDetailsContainer.addSubview(fructoseLabel)
+        sugarDetailsContainer.addSubview(glucoseLabel)
+        sugarDetailsContainer.addSubview(lactoseLabel)
+        sugarDetailsContainer.addSubview(maltoseLabel)
         
-        collectionView.reloadData()
+        sucroseLabel.text   = "Sucrose"
+        fructoseLabel.text  = "Fructose"
+        glucoseLabel.text   = "Glucose"
+        lactoseLabel.text   = "Lactose"
+        maltoseLabel.text   = "Maltose"
+        
+        NSLayoutConstraint.activate([
+            sucroseLabel.centerXAnchor.constraint(equalTo: sucroseCircle.centerXAnchor),
+            sucroseLabel.topAnchor.constraint(equalTo: sucroseCircle.bottomAnchor, constant: 7),
+            
+            fructoseLabel.centerXAnchor.constraint(equalTo: fructoseCircle.centerXAnchor),
+            fructoseLabel.topAnchor.constraint(equalTo: fructoseCircle.bottomAnchor, constant: 7),
+            
+            glucoseLabel.centerXAnchor.constraint(equalTo: glucoseCircle.centerXAnchor),
+            glucoseLabel.topAnchor.constraint(equalTo: glucoseCircle.bottomAnchor, constant: 7),
+            
+            lactoseLabel.centerXAnchor.constraint(equalTo: lactoseCircle.centerXAnchor),
+            lactoseLabel.topAnchor.constraint(equalTo: lactoseCircle.bottomAnchor, constant: 7),
+            
+            maltoseLabel.centerXAnchor.constraint(equalTo: maltoseCircle.centerXAnchor),
+            maltoseLabel.topAnchor.constraint(equalTo: maltoseCircle.bottomAnchor, constant: 7),
+        ])
+    }
+    
+    func configureSugarDetailsData() {
+        sucroseCircle.addSubview(sucroseData)
+        fructoseCircle.addSubview(fructoseData)
+        glucoseCircle.addSubview(glucoseData)
+        lactoseCircle.addSubview(lactoseData)
+        maltoseCircle.addSubview(maltoseData)
+        
+        sucroseData.text   = "\(nutrientData.sucrose)g"
+        fructoseData.text  = "\(nutrientData.fructose)g"
+        glucoseData.text   = "\(nutrientData.glucose)g"
+        lactoseData.text   = "\(nutrientData.lactose)g"
+        maltoseData.text   = "\(nutrientData.maltose)g"
+        
+        NSLayoutConstraint.activate([
+            sucroseData.centerXAnchor.constraint(equalTo: sucroseCircle.centerXAnchor),
+            sucroseData.centerYAnchor.constraint(equalTo: sucroseCircle.centerYAnchor),
+            
+            fructoseData.centerXAnchor.constraint(equalTo: fructoseCircle.centerXAnchor),
+            fructoseData.centerYAnchor.constraint(equalTo: fructoseCircle.centerYAnchor),
+            
+            glucoseData.centerXAnchor.constraint(equalTo: glucoseCircle.centerXAnchor),
+            glucoseData.centerYAnchor.constraint(equalTo: glucoseCircle.centerYAnchor),
+            
+            lactoseData.centerXAnchor.constraint(equalTo: lactoseCircle.centerXAnchor),
+            lactoseData.centerYAnchor.constraint(equalTo: lactoseCircle.centerYAnchor),
+            
+            maltoseData.centerXAnchor.constraint(equalTo: maltoseCircle.centerXAnchor),
+            maltoseData.centerYAnchor.constraint(equalTo: maltoseCircle.centerYAnchor),
+        ])
     }
     
     @objc func handleFavoriteTapped(_ gesture: UITapGestureRecognizer) {
@@ -422,7 +464,7 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let customPortionText = customPortionTextField.text, customPortionText.count != 0 else {
             totalCarbsData.text     = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
-            netCarbsData.text       = (nutrientData.netCarbs != "N/A" ? (round(Float(nutrientData.netCarbs)!*10)/10.0).description : "N/A")
+            netCarbsData.text       = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
             totalStarchData.text    = (nutrientData.totalStarches != "N/A" ? (round(Float(nutrientData.totalStarches)!*10)/10.0).description : "N/A")
             totalSugarsData.text    = (nutrientData.totalSugars != "N/A" ? (round(Float(nutrientData.totalSugars)!*10)/10.0).description : "N/A")
             return
@@ -436,8 +478,8 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
             totalCarbsData.text = adjustedCarbs.description
         }
         
-        if nutrientData.netCarbs != "N/A" {
-            let adjustedNetCarbs: Float = round(((Float(nutrientData.netCarbs)!*adjustor)*10)/10.0)
+        if nutrientData.carbs != "N/A" {
+            let adjustedNetCarbs: Float = round(((Float(nutrientData.carbs)!*adjustor)*10)/10.0)
             netCarbsData.text   = adjustedNetCarbs.description
         }
             

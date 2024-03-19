@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CloudKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -32,18 +31,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        fetchICloudUserRecordID()
-        Task.init {
-            do {
-                guard userID != "" else {
-                    return
-                }
-                userFavorites = try await queryAllFavs()
-            } catch {
-                userID = ""
-                userFavorites = []
-            }
-        }
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
     }
@@ -51,26 +38,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
-    }
-
-    func fetchICloudUserRecordID() {
-        CKContainer.default().fetchUserRecordID { returnedID, returnedError in
-            userID = returnedID?.recordName ?? ""
-        }
-    }
-    
-    func queryAllFavs() async throws -> [Int] {
-        var userFavs:   [Int] = []
-        let privateDB = CKContainer.default().privateCloudDatabase
-        let predicate = NSPredicate(format: "userID = %@", userID)
-        let query = CKQuery(recordType: "UserFavorites", predicate: predicate)
-        let testResults = try await privateDB.records(matching: query)
-        for t in testResults.matchResults {
-            let a = try t.1.get()
-            let i = a.value(forKey: "fdicID") as! Int
-            userFavs.append(i)
-        }
-        return userFavs
     }
 
 }

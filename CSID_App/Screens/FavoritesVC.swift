@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CloudKit
 
 class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     
@@ -17,7 +16,6 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     var navBarHeight: CGFloat?
     var tabBarHeight: CGFloat?
     
-    var favoriteUSDAData: [USDAFoodDetails] = []
     var filteredUSDAData: [USDAFoodDetails] = []
     var category:   String = ""
     let emptyFavorites = EmptyCollectionView(text: "You have no favorited foods :(")
@@ -25,7 +23,7 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     //Category colors and labels
     let categories = Category()
     
-    var userFavs:               [Int] = []
+    var userFavs: [USDAFoodDetails] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,30 +42,14 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        filterUserFavs(favsFDICID: userFavorites)
+        getUserFavs()
         collectionView.backgroundView   = {filteredUSDAData.count == 0 ? emptyFavorites : nil}()
         collectionView.reloadData()
     }
     
-    func filterUserFavs(favsFDICID: [Int]) {
-        guard userID != "" else {
-            return
-        }
-        var count = 0
-        var fdicIDSearchTerms = ""
-        while count < favsFDICID.count {
-            if count == 0 {
-                fdicIDSearchTerms = "USDAFoodDetails.fdicID = \(favsFDICID[count]) "
-                
-            } else {
-                fdicIDSearchTerms = fdicIDSearchTerms + "OR USDAFoodDetails.fdicID = \(favsFDICID[count]) "
-            }
-            count = count + 1
-        }
-        
-        let queryResult = CADatabaseQueryHelper.queryDatabaseFavorites(searchTerms: fdicIDSearchTerms, databasePointer: passedPointer)
-        favoriteUSDAData = queryResult
-        filteredUSDAData = favoriteUSDAData
+    func getUserFavs() {
+        userFavs = PersistenceManager.getUserFavs()
+        filteredUSDAData = userFavs
     }
     
     func configureSearchController() {
@@ -141,20 +123,28 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let foodDetailsVC = CSIDFoodDetailsVC()
-        foodDetailsVC.delegate = self
+        let foodDetailsVC           = CSIDFoodDetailsVC()
+        let wholeFoodDetailsVC      = WholeFoodDetailsVC()
+        foodDetailsVC.delegate      = self
         
         if let cell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
             cell.backgroundColor = .systemGray5
         }
         
-        foodDetailsVC.passedData                = filteredUSDAData[indexPath.row]
-        foodDetailsVC.passedPointer             = passedPointer
-        foodDetailsVC.modalPresentationStyle    = .popover
-        foodDetailsVC.title                     = "CSIDAssist"
-        
-        self.present(foodDetailsVC, animated: true)
-        
+        if filteredUSDAData[indexPath.row].wholeFood == "yes" {
+            wholeFoodDetailsVC.passedData               = filteredUSDAData[indexPath.row]
+            wholeFoodDetailsVC.passedPointer            = passedPointer
+            wholeFoodDetailsVC.modalPresentationStyle   = .popover
+            wholeFoodDetailsVC.title                    = "CSIDAssist"
+            self.present(wholeFoodDetailsVC, animated: true)
+        } else {
+            foodDetailsVC.passedData                = filteredUSDAData[indexPath.row]
+            foodDetailsVC.passedPointer             = passedPointer
+            foodDetailsVC.modalPresentationStyle    = .popover
+            foodDetailsVC.title                     = "CSIDAssist"
+            
+            self.present(foodDetailsVC, animated: true)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -172,18 +162,18 @@ extension FavoritesVC: UISearchBarDelegate {
         guard let searchTerms = searchBar.text, searchTerms.count > 0 else {
             return
         }
-        filteredUSDAData = favoriteUSDAData.filter( { $0.searchKeyWords.lowercased().contains(searchTerms.lowercased()) } )
+        filteredUSDAData = userFavs.filter( { $0.searchKeyWords.lowercased().contains(searchTerms.lowercased()) } )
 
         collectionView.reloadData()
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        filteredUSDAData = favoriteUSDAData
+        filteredUSDAData = userFavs
         collectionView.reloadData()
     }
     
     func updateFavoritesCollectionView() {
-        filterUserFavs(favsFDICID: userFavorites)
+        getUserFavs()
         collectionView.backgroundView   = {filteredUSDAData.count == 0 ? emptyFavorites : nil}()
         collectionView.reloadData()
     }

@@ -8,8 +8,7 @@
 import UIKit
 import CloudKit
 
-struct YourFoodItem {
-    var recordID:       CKRecord.ID
+struct UserFoodItem: Codable {
     var category:       String
     var description:    String
     var portionSize:    String
@@ -30,6 +29,7 @@ struct USDAFoodDetails: Codable {
     var servingSize:            Float
     var servingSizeUnit:        String
     var ingredients:            String
+    var wholeFood:              String
 }
 
 struct USDANutrientData: Codable {
@@ -42,5 +42,16 @@ struct USDANutrientData: Codable {
     var protein:            String
     var totalFat:           String
     var sodium:             String
+}
+
+struct WholeFoodNutrientData: Codable {
+    var carbs:              String
+    var totalSugars:        String
+    var totalStarches:      String
+    var sucrose:            String
+    var fructose:           String
+    var glucose:            String
+    var lactose:            String
+    var maltose:            String
 }
 

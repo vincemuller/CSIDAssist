@@ -15,9 +15,9 @@ class CADatabaseQueryHelper {
         var filteredUSDAFoodData: [USDAFoodDetails] = []
         var queryStatement: OpaquePointer?
         let queryStatementString = """
-            SELECT searchKeyWords, fdicID, brandOwner, brandName, brandedFoodCategory, description, servingSize, servingSizeUnit, ingredients FROM USDAFoodDetails
+            SELECT searchKeyWords, fdicID, brandOwner, brandName, brandedFoodCategory, description, servingSize, servingSizeUnit, ingredients, wholeFood FROM USDAFoodDetails
             WHERE \(searchTerms)
-            ORDER BY length(description)
+            ORDER BY wholeFood DESC, length(description)
             LIMIT 1000;
             """
         if sqlite3_prepare_v2(
@@ -33,6 +33,7 @@ class CADatabaseQueryHelper {
             var brandCategory: String
             var descr: String
             var ingredients: String
+            var wholeFoods: String
             
           while (sqlite3_step(queryStatement) == SQLITE_ROW) {
               
@@ -75,8 +76,14 @@ class CADatabaseQueryHelper {
                   ingredients   = ""
               }
               
+              if let queryResultIngredients = sqlite3_column_text(queryStatement, 9) {
+                  wholeFoods   = String(cString: queryResultIngredients)
+              } else {
+                  wholeFoods   = ""
+              }
               
-              let tempUSDAData  = [USDAFoodDetails(searchKeyWords: searchKeyWords, fdicID: fdicID, brandOwner: brandOwner, brandName: brandName, brandedFoodCategory: brandCategory, description: descr, servingSize: servingSize, servingSizeUnit: servingSizeUnit, ingredients: ingredients)]
+              
+              let tempUSDAData  = [USDAFoodDetails(searchKeyWords: searchKeyWords, fdicID: fdicID, brandOwner: brandOwner, brandName: brandName, brandedFoodCategory: brandCategory, description: descr, servingSize: servingSize, servingSizeUnit: servingSizeUnit, ingredients: ingredients, wholeFood: wholeFoods)]
               
               filteredUSDAFoodData.append(contentsOf: tempUSDAData)
             }
@@ -88,15 +95,16 @@ class CADatabaseQueryHelper {
     }
     
     
-    static func queryDatabaseCategorySearch(categorySearchTerm: String, searchTerm: String, databasePointer: OpaquePointer?) -> [USDAFoodDetails] {
+    static func queryDatabaseCategorySearch(categorySearchTerm: String, searchTerm: String, wholeFoodsFilter: String, databasePointer: OpaquePointer?) -> [USDAFoodDetails] {
         
         var filteredUSDAFoodData: [USDAFoodDetails] = []
         var queryStatement: OpaquePointer?
         let queryStatementString = """
-            SELECT searchKeyWords, fdicID, brandOwner, brandName, brandedFoodCategory, description, servingSize, servingSizeUnit, ingredients FROM USDAFoodDetails
+            SELECT searchKeyWords, fdicID, brandOwner, brandName, brandedFoodCategory, description, servingSize, servingSizeUnit, ingredients, wholeFood FROM USDAFoodDetails
             WHERE brandedFoodCategory LIKE '\(categorySearchTerm)'
             \(searchTerm)
-            ORDER BY length(description)
+            \(wholeFoodsFilter)
+            ORDER BY wholeFood DESC, length(description)
             LIMIT 1000;
             """
         if sqlite3_prepare_v2(
@@ -112,6 +120,7 @@ class CADatabaseQueryHelper {
             var brandCategory: String
             var descr: String
             var ingredients: String
+            var wholeFoods: String
             
           while (sqlite3_step(queryStatement) == SQLITE_ROW) {
               
@@ -154,7 +163,13 @@ class CADatabaseQueryHelper {
                   ingredients   = ""
               }
               
-              let tempUSDAData  = [USDAFoodDetails(searchKeyWords: searchKeyWords, fdicID: fdicID, brandOwner: brandOwner, brandName: brandName, brandedFoodCategory: brandCategory, description: descr, servingSize: servingSize, servingSizeUnit: servingSizeUnit, ingredients: ingredients)]
+              if let queryResultIngredients = sqlite3_column_text(queryStatement, 9) {
+                  wholeFoods   = String(cString: queryResultIngredients)
+              } else {
+                  wholeFoods   = ""
+              }
+              
+              let tempUSDAData  = [USDAFoodDetails(searchKeyWords: searchKeyWords, fdicID: fdicID, brandOwner: brandOwner, brandName: brandName, brandedFoodCategory: brandCategory, description: descr, servingSize: servingSize, servingSizeUnit: servingSizeUnit, ingredients: ingredients, wholeFood: wholeFoods)]
               
               filteredUSDAFoodData.append(contentsOf: tempUSDAData)
             }
@@ -265,14 +280,94 @@ class CADatabaseQueryHelper {
         return nutrientData!
     }
     
+    static func queryDatabaseWholeFoodNutrientData(fdicID: Int, databasePointer: OpaquePointer?) -> WholeFoodNutrientData {
+        
+        var nutrientData:       WholeFoodNutrientData?
+        var queryStatement:     OpaquePointer?
+        var carbs:              String = "N/A"
+        var totalSugars:        String = "N/A"
+        var fructose:           String = "N/A"
+        var glucose:            String = "N/A"
+        var lactose:            String = "N/A"
+        var maltose:            String = "N/A"
+        var sucrose:            String = "N/A"
+        var starch:             String = "N/A"
+        
+        let queryStatementString = """
+            SELECT carbs, totalSugars, fructose, glucose, lactose, maltose, sucrose, starch FROM USDAFoodNutData
+            WHERE fdicID=\(fdicID);
+            """
+        if sqlite3_prepare_v2(
+          databasePointer,
+          queryStatementString,
+          -1,
+          &queryStatement,
+          nil
+        ) == SQLITE_OK {
+            if sqlite3_step(queryStatement) == SQLITE_ROW {
+                if let queryResultCarbs = sqlite3_column_text(queryStatement, 0) {
+                    carbs    = String(cString: queryResultCarbs)
+                } else {
+                    carbs    = "N/A"
+                }
+                if let queryResultTotalSugars = sqlite3_column_text(queryStatement, 1) {
+                    totalSugars = String(cString: queryResultTotalSugars)
+                } else {
+                    totalSugars = "N/A"
+                }
+                if let queryResultFructose = sqlite3_column_text(queryStatement, 2) {
+                    fructose = String(cString: queryResultFructose)
+                } else {
+                    fructose = "N/A"
+                }
+                if let queryResultGlucose = sqlite3_column_text(queryStatement, 3) {
+                    glucose = String(cString: queryResultGlucose)
+                } else {
+                    glucose = "N/A"
+                }
+                if let queryResultLactose = sqlite3_column_text(queryStatement, 4) {
+                    lactose = String(cString: queryResultLactose)
+                } else {
+                    lactose = "N/A"
+                }
+                if let queryResultMaltose = sqlite3_column_text(queryStatement, 5) {
+                    maltose = String(cString: queryResultMaltose)
+                } else {
+                    maltose = "N/A"
+                }
+                if let queryResultSucrose = sqlite3_column_text(queryStatement, 6) {
+                    sucrose = String(cString: queryResultSucrose)
+                } else {
+                    sucrose = "N/A"
+                }
+                if let queryResultStarch = sqlite3_column_text(queryStatement, 7) {
+                    starch = String(cString: queryResultStarch)
+                } else {
+                    starch = "N/A"
+                }
+            }
+          } else {
+              let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
+
+          }
+          sqlite3_finalize(queryStatement)
+        
+        carbs       = (carbs != "N/A" ? ((Float(carbs)!).description) : "N/A")
+        totalSugars = (totalSugars != "N/A" ? ((Float(totalSugars)!).description) : "N/A")
+        
+        nutrientData = WholeFoodNutrientData(carbs: carbs, totalSugars: totalSugars, totalStarches: starch, sucrose: sucrose, fructose: fructose, glucose: glucose, lactose: lactose, maltose: maltose)
+        
+        return nutrientData!
+    }
+    
     static func queryDatabaseFavorites(searchTerms: String, databasePointer: OpaquePointer?) -> [USDAFoodDetails] {
         
         var filteredUSDAFoodData: [USDAFoodDetails] = []
         var queryStatement: OpaquePointer?
         let queryStatementString = """
-            SELECT searchKeyWords, fdicID, brandOwner, brandName, brandedFoodCategory, description, servingSize, servingSizeUnit, ingredients FROM USDAFoodDetails
+            SELECT searchKeyWords, fdicID, brandOwner, brandName, brandedFoodCategory, description, servingSize, servingSizeUnit, ingredients, wholeFood FROM USDAFoodDetails
             WHERE \(searchTerms)
-            ORDER BY length(description);
+            ORDER BY wholeFood DESC, length(description)
             """
         if sqlite3_prepare_v2(
           databasePointer,
@@ -287,6 +382,7 @@ class CADatabaseQueryHelper {
             var brandCategory: String
             var descr: String
             var ingredients: String
+            var wholeFoods: String
             
           while (sqlite3_step(queryStatement) == SQLITE_ROW) {
               
@@ -329,8 +425,14 @@ class CADatabaseQueryHelper {
                   ingredients   = ""
               }
               
+              if let queryResultIngredients = sqlite3_column_text(queryStatement, 9) {
+                  wholeFoods   = String(cString: queryResultIngredients)
+              } else {
+                  wholeFoods   = ""
+              }
               
-              let tempUSDAData  = [USDAFoodDetails(searchKeyWords: searchKeyWords, fdicID: fdicID, brandOwner: brandOwner, brandName: brandName, brandedFoodCategory: brandCategory, description: descr, servingSize: servingSize, servingSizeUnit: servingSizeUnit, ingredients: ingredients)]
+              
+              let tempUSDAData  = [USDAFoodDetails(searchKeyWords: searchKeyWords, fdicID: fdicID, brandOwner: brandOwner, brandName: brandName, brandedFoodCategory: brandCategory, description: descr, servingSize: servingSize, servingSizeUnit: servingSizeUnit, ingredients: ingredients, wholeFood: wholeFoods)]
               
               filteredUSDAFoodData.append(contentsOf: tempUSDAData)
             }

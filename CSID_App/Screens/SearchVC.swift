@@ -21,7 +21,8 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     
     //Category colors and labels
     let categories = Category()
-
+    var wholeFoodsFilter = ""
+    
     
     //Variable for filtered search results
     var filteredUSDAFoodData: [USDAFoodDetails] = []
@@ -36,8 +37,8 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
             pointer = dbPointer
         } else {
         }
-        let queryPrimer = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: "", searchTerm: "", databasePointer: pointer)
-
+        let queryPrimer = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: "", searchTerm: "", wholeFoodsFilter: "", databasePointer: pointer)
+        
         configureViewController()
         configureSearchController()
         configureCollectionView()
@@ -48,11 +49,14 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     }
     
     func configureSearchController() {
-        let searchBar                               = searchController.searchBar
-        searchBar.delegate                          = self
-        searchController.searchBar.placeholder      = "Whole foods, packaged meals, and more"
-        navigationItem.searchController             = searchController
-        navigationItem.hidesSearchBarWhenScrolling  = false
+        let searchBar                                   = searchController.searchBar
+        searchBar.delegate                              = self
+        searchController.searchBar.placeholder          = "Whole foods, packaged meals, and more"
+        navigationItem.searchController                 = searchController
+        navigationItem.hidesSearchBarWhenScrolling      = false
+        searchController.searchBar.scopeButtonTitles    = ["Whole Foods", "All Foods", "Branded Foods"]
+        searchController.searchBar.selectedScopeButtonIndex = 1
+        searchController.scopeBarActivation                 = .onSearchActivation
     }
     
     func configureViewController() {
@@ -65,7 +69,7 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.reuseID)
         collectionView.register(CategoriesCollectionViewCell.self, forCellWithReuseIdentifier: CategoriesCollectionViewCell.reuseID)
-
+        
         collectionView.delegate         = self
         collectionView.dataSource       = self
         collectionView.backgroundColor  = .systemBackground
@@ -124,7 +128,7 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
                 brandOwner = filteredUSDAFoodData[indexPath.row].brandOwner?.capitalized ?? ""
                 cell.descriptionLabel.text = "\(brandOwner)\n\(description)"
             }
- 
+            
             cell.separatorLine.backgroundColor  = .label
             
             return cell
@@ -133,22 +137,30 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let foodDetailsVC                       = CSIDFoodDetailsVC()
+        let wholeFoodDetailsVC                  = WholeFoodDetailsVC()
         let categorySearchVC                    = CategorySearchVC()
         let userFoodsVC                         = UserFoodsVC()
         var queryResult: [USDAFoodDetails]      = []
-        var queriedUserFoods: [YourFoodItem]    = []
+        var queriedUserFoods: [UserFoodItem]    = []
         
-        if searchInProgress == true {
+        if searchInProgress == true && filteredUSDAFoodData[indexPath.row].wholeFood != "yes" {
             foodDetailsVC.passedData                = filteredUSDAFoodData[indexPath.row]
             foodDetailsVC.passedPointer             = pointer
             foodDetailsVC.modalPresentationStyle    = .popover
             foodDetailsVC.title                     = "CSIDAssist"
             self.present(foodDetailsVC, animated: true)
-        } else {
+        } else if searchInProgress == true && filteredUSDAFoodData[indexPath.row].wholeFood == "yes" {
+            wholeFoodDetailsVC.passedData                = filteredUSDAFoodData[indexPath.row]
+            wholeFoodDetailsVC.passedPointer             = pointer
+            wholeFoodDetailsVC.modalPresentationStyle    = .popover
+            wholeFoodDetailsVC.title                     = "CSIDAssist"
+            self.present(wholeFoodDetailsVC, animated: true)
+        }
+        else {
             //let queryResult: [USDAFoodDetails] = []
             let selection   = categories.list[indexPath.row]
             if selection != "Your Foods" {
-                queryResult = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: selection, searchTerm: "", databasePointer: pointer)
+                queryResult = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: selection, searchTerm: "", wholeFoodsFilter: "", databasePointer: pointer)
                 categorySearchVC.category                 = selection
                 categorySearchVC.passedUSDACategoryData   = queryResult
                 categorySearchVC.passedPointer            = pointer
@@ -159,32 +171,23 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
             
         }
     }
-    
-    func queryUserFoods() async throws -> [YourFoodItem] {
-        var userFoods:   [YourFoodItem] = []
-        let privateDB = CKContainer.default().privateCloudDatabase
-        let predicate = NSPredicate(format: "userID = %@", userID)
-        let query = CKQuery(recordType: "UserFoods", predicate: predicate)
-        let testResults = try await privateDB.records(matching: query)
-
-        for t in testResults.matchResults {
-            let a = try t.1.get()
-            let description     = a.value(forKey: "description") as! String
-            let ingredients     = a.value(forKey: "ingredients") as! String
-            let portionSize     = a.value(forKey: "portionSize") as! String
-            let totalCarbs      = a.value(forKey: "totalCarbs") as! Float
-            let totalFiber      = a.value(forKey: "totalFiber") as! Float
-            let totalSugars     = a.value(forKey: "totalSugars") as! Float
-            let addedSugars     = a.value(forKey: "addedSugars") as! Float
-            let x = YourFoodItem(recordID: a.recordID, category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredients, totalCarbs: totalCarbs, totalFiber: totalFiber, totalSugars: totalSugars, addedSugars: addedSugars)
-            userFoods.append(x)
-        }
-        return userFoods
-    }
-    
 }
 
 extension SearchVC: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        
+        if selectedScope == 0 {
+            wholeFoodsFilter = "USDAFoodDetails.wholeFood='yes' AND"
+        } else if selectedScope == 2 {
+            wholeFoodsFilter = "USDAFoodDetails.wholeFood='no' AND"
+        } else {
+            wholeFoodsFilter = ""
+        }
+        
+        guard let searchComponents = searchController.searchBar.text, searchComponents.count > 1 else { return }
+        searchBarSearchButtonClicked(searchController.searchBar)
+    }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
@@ -201,7 +204,7 @@ extension SearchVC: UISearchBarDelegate {
         var count = 0
         while count < searchComponents.count {
             if count==0 {
-                searchTerms = "USDAFoodDetails.searchKeyWords LIKE '%\(searchComponents[count])%' "
+                searchTerms = "\(wholeFoodsFilter) USDAFoodDetails.searchKeyWords LIKE '%\(searchComponents[count])%' "
             } else {
                 searchTerms = searchTerms + "AND USDAFoodDetails.searchKeyWords LIKE '%\(searchComponents[count])%'"
             }
@@ -224,6 +227,7 @@ extension SearchVC: UISearchBarDelegate {
         searchController.searchBar.showsCancelButton = false
         collectionView.reloadData()
         collectionView.setCollectionViewLayout(UIHelper.createTwoColumnFlowLayout(in: view), animated: false)
+        searchController.searchBar.selectedScopeButtonIndex = 1
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {

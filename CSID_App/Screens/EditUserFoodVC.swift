@@ -6,23 +6,20 @@
 //
 
 import UIKit
-import CloudKit
 
-protocol EditUserFoodDelegate {
-    func updateUserFoodDetails(foodDetails: YourFoodItem)
+protocol UpdateUserFood {
+    func updateUserFood()
     func removeUserFood()
 }
 
 class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
-    var yourFoodData: [YourFoodItem] = []
-    var passedData: YourFoodItem!
+    var yourFoodData: [UserFoodItem] = []
+    var passedData: UserFoodItem!
     var passedVC: UserFoodDetails!
     let scrollView  = UIScrollView()
     let contentView = UIView()
     
-    var delegate: EditUserFoodDelegate?
-    
-    let deleteIcon              = UIImageView()
+    let deleteIcon              = DeleteIconView(frame: .zero)
     
     var config                  = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
     var addNewSymbol: UIImage?
@@ -44,6 +41,8 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
     let addedSugarsTextField    = NewFoodTextField(placeholder: "Added sugars")
     
     let ctaButton               = UIButton()
+    
+    var delegate: UpdateUserFood?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,18 +109,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
     func configureDeleteIcon() {
         view.addSubview(deleteIcon)
         
-        addNewSymbol           = UIImage(systemName: "trash", withConfiguration: config)
-        deleteIcon.image       = addNewSymbol
-        deleteIcon.tintColor   = .systemRed
-        
-        tapGesture.addTarget(self, action: #selector(handleDeleteTapped))
-        tapGesture.isEnabled            = true
-        tapGesture.numberOfTapsRequired = 1
-
-        deleteIcon.translatesAutoresizingMaskIntoConstraints = false
-        
-        deleteIcon.isUserInteractionEnabled    = true
-        deleteIcon.addGestureRecognizer(tapGesture)
+        deleteIcon.gestureRecognizers?[0].addTarget(self, action: #selector(handleDeleteTapped))
         
         NSLayoutConstraint.activate([
             deleteIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 25),
@@ -243,18 +231,8 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         let sugars              = Float(totalSugarsTextField.text!) ?? 0
         let addedSugars         = Float(addedSugarsTextField.text!) ?? 0
         
-        guard userID != "" else {
-            self.presentGFAlertOnMain(title: CAAlertTitle.unableToUpdate.rawValue, message: CAAlertMessage.generaliCloudError.rawValue, buttonTitle: "Ok")
-            resetFields()
-            return
-        }
-        passedData = YourFoodItem(recordID: passedData.recordID, category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredientsTextField.text, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
-        
-        ckUserFoodRecordUpdate(userID: userID.description, category: "Your Food", description: description, ingredients: ingredientsTextField.text, portionSize: portionSize, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
-        
-        self.dismiss(animated: true) {
-            self.delegate?.updateUserFoodDetails(foodDetails: self.passedData)
-        }
+        passedData = UserFoodItem(category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredientsTextField.text, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
+
     }
     
     func resetFields() {
@@ -265,31 +243,6 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         scrollView.setContentOffset(contentInsets, animated: true)
         scrollView.scrollIndicatorInsets = contentInsets2
         contentView.endEditing(true)
-    }
-    
-    func ckUserFoodRecordUpdate(userID: String, category: String, description: String, ingredients: String, portionSize: String, totalCarbs: Float, totalFiber: Float, totalSugars: Float, addedSugars: Float) {
-        let container = CKContainer.default()
-        let database = container.privateCloudDatabase
-        
-        database.fetch(withRecordID: passedData.recordID) { record, error in
-            if let record = record, error == nil {
-
-                record.setValuesForKeys([
-                    "userID": userID,
-                    "category": category,
-                    "description": description,
-                    "ingredients": ingredients,
-                    "portionSize": portionSize,
-                    "totalCarbs": totalCarbs,
-                    "totalFiber": totalFiber,
-                    "totalSugars": totalSugars,
-                    "addedSugars": addedSugars
-                ]
-                )
-                database.save(record) { _, error in
-                }
-            }
-        }
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -318,23 +271,17 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
     }
     
     @objc func handleDeleteTapped(_ gesture: UITapGestureRecognizer) {
-        ckRecordDeletion(id: passedData.recordID)
-        }
+        PersistenceManager.updateUserFoodWith(userFood: passedData, actionType: .delete) { [weak self] error in
+            guard let self = self else {return }
     
-    func ckRecordDeletion(id: CKRecord.ID) {
-        let container = CKContainer.default()
-        let database = container.privateCloudDatabase
-        
-        database.delete(withRecordID: id) { id, error in
-            if let error = error {
-                self.presentGFAlertOnMain(title: "Unable to Remove Food", message: error.localizedDescription, buttonTitle: "Ok")
+            guard let error = error else {
+                self.dismiss(animated: false)
+                delegate?.removeUserFood()
                 return
             }
+            self.presentGFAlertOnMain(title: "Something Went Wrong!", message: "\(error)", buttonTitle: "Ok")
         }
-        self.dismiss(animated: true) {
-            self.delegate?.removeUserFood()
         }
-    }
     
 }
 

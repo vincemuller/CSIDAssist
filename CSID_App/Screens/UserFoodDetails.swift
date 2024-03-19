@@ -6,30 +6,21 @@
 //
 
 import UIKit
-import CloudKit
 
-protocol RemoveUserFoodDelegate {
-    func removeUserFood()
+protocol UpdateUserFoodsVC {
+    func updateUserFood()
+    func removeUserFoods()
 }
 
-protocol UpdateUserFoodDelegate {
-    func updateUserFoods()
-}
-
-class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate {
+class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate, UpdateUserFood {
     
-    var passedData:             YourFoodItem!
+    var passedData:             UserFoodItem!
     var sugarTypes:             String = ""
     
     let findSugars = SucroseCheck()
     
     var sugarIngr: [String] = []
     var otherIngr: [String] = []
-    
-    var removeDelegate: RemoveUserFoodDelegate?
-    var updateDelegate: UpdateUserFoodDelegate?
-    
-    var foodItemRecordID:       CKRecord.ID?
     
     let titleLabel              = CALabel(size: 20, weight: .bold, numOfLines: 3)
     
@@ -62,6 +53,8 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     var collectionView: UICollectionView!
     var cardsColors: [UIColor]      = [UIColor.systemOrange,UIColor.systemTeal]
     var cardsDetails: [String]      = ["Ingredients/Recipe", "Sugars"]
+    
+    var delegate: UpdateUserFoodsVC?
     
     
     override func viewDidLoad() {
@@ -211,8 +204,8 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
     
     @objc func handleEditTapped(_ gesture: UITapGestureRecognizer) {
         let editUserFoodVC          = EditUserFoodVC()
-        editUserFoodVC.delegate = self
         editUserFoodVC.passedData   = passedData
+        editUserFoodVC.delegate     = self
         self.present(editUserFoodVC, animated: true)
         }
     
@@ -329,7 +322,7 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         collectionView.reloadData()
     }
     
-    func updateUserFoodDetails(foodDetails: YourFoodItem) {
+    func updateUserFoodDetails(foodDetails: UserFoodItem) {
         passedData = foodDetails
         
         titleLabel.text         = passedData.description
@@ -343,17 +336,17 @@ class UserFoodDetails: UIViewController, EditUserFoodDelegate, UICollectionViewD
         otherIngr = findSugars.getOtherSugarIngredients(productIngredients: passedData.ingredients.lowercased())
         
         collectionView.reloadData()
-        updateDelegate?.updateUserFoods()
         
         self.presentGFAlertOnMain(title: CAAlertTitle.foodUpdated.rawValue, message: CAAlertMessage.foodUpdated.rawValue, buttonTitle: "Ok")
         
     }
+
+    func updateUserFood() {
+    }
     
     func removeUserFood() {
-        self.dismiss(animated: true) {
-            self.removeDelegate?.removeUserFood()
-        }
+        delegate?.removeUserFoods()
+        self.dismiss(animated: true)
     }
-
 }
 
