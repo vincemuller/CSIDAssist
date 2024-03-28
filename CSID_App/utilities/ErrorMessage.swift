@@ -8,25 +8,30 @@
 import Foundation
 
 enum CAAlertTitle: String, Error {
-    case iCloudError        = "iCloud Error"
-    case foodUpdated        = "Food Updated"
-    case foodFavorited      = "Food Favorited"
-    case foodRemoved        = "Food Removed"
-    case unableToRemove     = "Unable to Remove"
+    case foodAdded          = "Food Added"
     case unableToAdd        = "Unable to Add"
-    case unableToUpdate     = "Unable to Update"
+    case foodFavorited      = "Food Favorited"
     case unableToFavorite   = "Unable to Favorite"
-    case invalidResponse    = "Servor Error"
+    case favoriteRemoved    = "Favorite Removed"
+    case favoriteNotRemoved = "Unable to Remove Favorite"
+    case foodDeleted        = "Food Deleted"
+    case foodUpdated        = "Food Updated"
+    case unableToUpdate     = "Unable to Update"
+    case unableToDelete     = "Unable to Delete"
+    case alreadyInFavs      = "Already in Favorites"
     
 }
 
 enum CAAlertMessage: String, Error {
-    case generaliCloudError = "Unable to retrieve iCloud details, please make sure you have a secure internet connection & are signed into your iCloud account."
-    case fetchFoodsError    = "Not able to fetch your foods"
-    case unableToRemove     = "This item is still being saved to your favorites, please try again"
-    case invalidResponse    = "Invalid response from the server. Please try again."
-    case foodUpdated        = "You have successfully updated your food"
+    case foodAdded          = "You have successfully created and added this food to your foods"
+    case unableToAdd        = "Your food did not get added, please try again"
     case foodFavorited      = "You have added this food to your favorites"
-    case favoriteRemoved    = "You successfully removed this food from your favorites"
-    case foodRemoved        = "You have successfully removed this item from your foods"
+    case unableToFavorite   = "Unfortunately your food was not favorited, please try again"
+    case favoriteRemoved    = "You have successfully removed this food from your favorites"
+    case favoriteNotRemoved = "Unfortunately your favorite was not able to be removed, please try again"
+    case foodDeleted        = "You have successfully deleted your food item"
+    case foodUpdated        = "You have successfully updated your food item"
+    case unableToUpdate     = "Unfortunately your food was not able to be updated, please try again"
+    case unableToDelete     = "Unfortunately your food was not able to be deleted, please try again"
+    case alreadyInFavs      = "This food is already in your favorites"
 }

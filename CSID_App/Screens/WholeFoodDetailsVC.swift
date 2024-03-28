@@ -14,77 +14,63 @@ protocol WholeFoodFavoriteArtefactsDelegate {
 class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     
     var passedData:             USDAFoodDetails!
-    var userFavs:               [USDAFoodDetails]?
-    var sugarTypes:             String = ""
-    var passedPointer:          OpaquePointer?
     var nutrientData:           WholeFoodNutrientData!
-    var recordID:               String?
-    let findSugars = SucroseCheck()
+    
+    private let viewModel = WholeFoodDetailsViewModel()
     
     var delegate: WholeFoodFavoriteArtefactsDelegate?
-    var favoritesVC = FavoritesVC()
+    private var favoritesVC = FavoritesVC()
     
-    var sugarIngr: [String] = []
-    var otherIngr: [String] = []
+    private let titleLabel              = CALabel(size: 20, weight: .bold, numOfLines: 3)
     
-    let titleLabel              = CALabel(size: 20, weight: .bold, numOfLines: 3)
+    private var favCheck: Bool          = false
+    private let favIcon                 = FavoriteIconImageView(frame: .zero)
     
-    let favIcon                 = UIImageView()
-    var favIconEnabled: Bool    = false
-    var config                  = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
-    var addNewSymbol: UIImage?
-    let tapGesture              = UITapGestureRecognizer()
+    private let brandCategoryLabel      = CALabel(size: 12, weight: .semibold, numOfLines: 1)
     
-    let brandCategoryLabel      = CALabel(size: 12, weight: .semibold, numOfLines: 1)
+    private let portionContainer        = FoodDetailsContainer()
+    private let portionLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
     
-    let portionContainer        = FoodDetailsContainer()
-    let portionLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let customPortionTextField  = CAPortionTextField(placeholder: "Custom Serving")
     
-    let customPortionTextField  = CAPortionTextField(placeholder: "Custom Serving")
-    
-    let carbsContainer          = FoodDetailsContainer()
-    let carbsSeparatorLine      = SeparatorLine()
-    var totalCarbsData          = CALabel(size: 20, weight: .bold, numOfLines: 1)
-    let totalCarbsLabel         = CALabel(size: 14, weight: .semibold, numOfLines: 1)
-    let netCarbsData            = CALabel(size: 20, weight: .bold, numOfLines: 1)
-    let netCarbsLabel           = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let carbsContainer          = FoodDetailsContainer()
+    private let carbsSeparatorLine      = SeparatorLine()
+    private var totalCarbsData          = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let totalCarbsLabel         = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let netCarbsData            = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let netCarbsLabel           = CALabel(size: 14, weight: .semibold, numOfLines: 1)
 
-    let sugarStarchContainer    = FoodDetailsContainer()
-    let totalSugarsCircle       = ChartCircleView(borderColor: UIColor.systemTeal.cgColor, backgroundColor: .clear)
-    let totalStarchCircle       = ChartCircleView(borderColor: UIColor.systemOrange.cgColor, backgroundColor: .clear)
-    let totalSugarsData         = CALabel(size: 20, weight: .bold, numOfLines: 1)
-    let totalStarchData         = CALabel(size: 20, weight: .bold, numOfLines: 1)
-    let totalSugarsLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
-    let totalStarchLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let sugarStarchContainer    = FoodDetailsContainer()
+    private let totalSugarsCircle       = ChartCircleView(borderColor: UIColor.systemTeal.cgColor, backgroundColor: .clear)
+    private let totalStarchCircle       = ChartCircleView(borderColor: UIColor.systemOrange.cgColor, backgroundColor: .clear)
+    private let totalSugarsData         = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let totalStarchData         = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let totalSugarsLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let totalStarchLabel        = CALabel(size: 14, weight: .semibold, numOfLines: 1)
     
-    let sugarDetailsContainer   = FoodDetailsContainer()
-    let sucroseCircle           = ChartCircleView(borderColor: UIColor.systemBlue.cgColor, backgroundColor: .clear)
-    let fructoseCircle          = ChartCircleView(borderColor: UIColor.systemRed.cgColor, backgroundColor: .clear)
-    let glucoseCircle           = ChartCircleView(borderColor: UIColor.systemGreen.cgColor, backgroundColor: .clear)
-    let lactoseCircle           = ChartCircleView(borderColor: UIColor.systemPurple.cgColor, backgroundColor: .clear)
-    let maltoseCircle           = ChartCircleView(borderColor: UIColor.systemYellow.cgColor, backgroundColor: .clear)
-    let sucroseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
-    let fructoseLabel           = CALabel(size: 14, weight: .semibold, numOfLines: 1)
-    let glucoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
-    let lactoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
-    let maltoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
-    let sucroseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
-    let fructoseData            = CALabel(size: 20, weight: .bold, numOfLines: 1)
-    let glucoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
-    let lactoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
-    let maltoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let sugarDetailsContainer   = FoodDetailsContainer()
+    private let sucroseCircle           = ChartCircleView(borderColor: UIColor.systemBlue.cgColor, backgroundColor: .clear)
+    private let fructoseCircle          = ChartCircleView(borderColor: UIColor.systemRed.cgColor, backgroundColor: .clear)
+    private let glucoseCircle           = ChartCircleView(borderColor: UIColor.systemGreen.cgColor, backgroundColor: .clear)
+    private let lactoseCircle           = ChartCircleView(borderColor: UIColor.systemPurple.cgColor, backgroundColor: .clear)
+    private let maltoseCircle           = ChartCircleView(borderColor: UIColor.systemYellow.cgColor, backgroundColor: .clear)
+    private let sucroseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let fructoseLabel           = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let glucoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let lactoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let maltoseLabel            = CALabel(size: 14, weight: .semibold, numOfLines: 1)
+    private let sucroseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let fructoseData            = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let glucoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let lactoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
+    private let maltoseData             = CALabel(size: 20, weight: .bold, numOfLines: 1)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        nutrientData = CADatabaseQueryHelper.queryDatabaseWholeFoodNutrientData(fdicID: passedData.fdicID, databasePointer: passedPointer)
-        
         view.backgroundColor = .systemBackground
         
-        let uniqueIngredients = findSugars.makingIngredientsUnique(productIngredients: passedData.ingredients.lowercased())
-        sugarIngr = findSugars.getSucroseIngredients(productIngredients: uniqueIngredients)
-        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: uniqueIngredients)
-        
+        getNutrientData()
         configureTitleLabel()
         configureTopContainers()
         configureTopLabels()
@@ -102,12 +88,14 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        print("whole food details vc!")
-        getUserFavs()
         configureFavIcon()
     }
     
-    func setupToolBar() {
+    private func getNutrientData() {
+        nutrientData = viewModel.getNutrientData(fdicID: passedData.fdicID)
+    }
+    
+    private func setupToolBar() {
         let bar = UIToolbar()
         let doneBtn     = UIBarButtonItem(title: "Done", style: .plain, target: self.view, action: #selector(view.endEditing))
         let flexSpace   = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -116,7 +104,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         customPortionTextField.inputAccessoryView = bar
     }
     
-    func configureTitleLabel() {
+    private func configureTitleLabel() {
         view.addSubview(titleLabel)
         view.addSubview(brandCategoryLabel)
         
@@ -136,40 +124,29 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
             
         ])
     }
+
     
-    func getUserFavs() {
-        userFavs = PersistenceManager.getUserFavs()
-    }
-    
-    func configureFavIcon() {
+    private func configureFavIcon() {
         view.addSubview(favIcon)
-        let favCheck = userFavs?.contains(where: { $0.fdicID == passedData.fdicID })
+        
+        favCheck = viewModel.userFavoriteCheck(fdicID: passedData.fdicID)
         
         if favCheck==true {
-            favIconEnabled=true
+            favIcon.updateFavs(favIconEnabled: favCheck)
+        } else {
+            favIcon.updateFavs(favIconEnabled: favCheck)
         }
         
-        addNewSymbol        = (favIconEnabled==false ? UIImage(systemName: "star", withConfiguration: config) : UIImage(systemName: "star.fill", withConfiguration: config))
-        favIcon.image       = addNewSymbol
-        favIcon.tintColor   = .systemGreen
-        
-        tapGesture.addTarget(self, action: #selector(handleFavoriteTapped))
-        tapGesture.isEnabled            = true
-        tapGesture.numberOfTapsRequired = 1
-
-        favIcon.translatesAutoresizingMaskIntoConstraints = false
-        
-        favIcon.isUserInteractionEnabled    = true
-        favIcon.addGestureRecognizer(tapGesture)
+        favIcon.tapGesture.addTarget(self, action: #selector(handleFavoriteTapped))
+        favIcon.addGestureRecognizer(favIcon.tapGesture)
         
         NSLayoutConstraint.activate([
             favIcon.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
             favIcon.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 5)
         ])
-        
-        
     }
-    func configureTopContainers() {
+    
+    private func configureTopContainers() {
         view.addSubview(portionContainer)
 
         NSLayoutConstraint.activate([
@@ -180,7 +157,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         ])
     }
     
-    func configureTopLabels() {
+    private func configureTopLabels() {
         portionContainer.addSubview(portionLabel)
         portionLabel.text       = "Serving Size:  \(passedData.servingSize)\(passedData.servingSizeUnit)"
         
@@ -190,7 +167,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         ])
     }
     
-    func configureCustomPortion() {
+    private func configureCustomPortion() {
         view.addSubview(customPortionTextField)
         
         customPortionTextField.delegate = self
@@ -205,7 +182,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         ])
     }
     
-    func configureSugarStarchContainer() {
+    private func configureSugarStarchContainer() {
         view.addSubview(sugarStarchContainer)
         
         NSLayoutConstraint.activate([
@@ -216,7 +193,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         ])
     }
     
-    func configureSugarStarchLabels() {
+    private func configureSugarStarchLabels() {
         sugarStarchContainer.addSubview(totalSugarsCircle)
         sugarStarchContainer.addSubview(totalStarchCircle)
         totalStarchCircle.addSubview(totalStarchData)
@@ -227,8 +204,8 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         totalStarchCircle.layer.borderWidth   = 3
         totalSugarsCircle.layer.borderWidth   = 3
         
-        totalSugarsData.text    = (nutrientData.totalSugars != "N/A" ? (round(Float(nutrientData.totalSugars)!*10)/10.0).description : "N/A")
-        totalStarchData.text    = (nutrientData.totalStarches != "N/A" ? (round(Float(nutrientData.totalStarches)!*10)/10.0).description : "N/A")
+        totalSugarsData.text    = "\(nutrientData.totalSugars)g"
+        totalStarchData.text    = "\(nutrientData.totalStarches)g"
         totalSugarsLabel.text   = "Total Sugars"
         totalStarchLabel.text   = "Total Starches"
         
@@ -261,7 +238,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         totalSugarsCircle.layer.cornerRadius  = 40
     }
     
-    func configureCarbsContainer() {
+    private func configureCarbsContainer() {
         view.addSubview(carbsContainer)
         carbsContainer.addSubview(carbsSeparatorLine)
         
@@ -278,18 +255,18 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         ])
     }
     
-    func configureCarbsLabels() {
+    private func configureCarbsLabels() {
         carbsContainer.addSubview(totalCarbsData)
         carbsContainer.addSubview(netCarbsData)
         carbsContainer.addSubview(totalCarbsLabel)
         carbsContainer.addSubview(netCarbsLabel)
 
-        totalCarbsData.text             = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
+        totalCarbsData.text             = "\(nutrientData.carbs)g"
         totalCarbsData.textAlignment    = .center
         totalCarbsLabel.text            = "Total Carbs"
         totalCarbsLabel.textAlignment   = .center
         
-        netCarbsData.text               = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
+        netCarbsData.text               = "\(nutrientData.carbs)g"
         netCarbsData.textAlignment      = .center
         netCarbsLabel.text              = "Net Carbs"
         netCarbsLabel.textAlignment     = .center
@@ -307,7 +284,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         ])
     }
     
-    func configureSugarDetailsContainer() {
+    private func configureSugarDetailsContainer() {
         view.addSubview(sugarDetailsContainer)
         
         NSLayoutConstraint.activate([
@@ -318,7 +295,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         ])
     }
     
-    func configureSugarDetailsCircles() {
+    private func configureSugarDetailsCircles() {
         sugarDetailsContainer.addSubview(sucroseCircle)
         sugarDetailsContainer.addSubview(fructoseCircle)
         sugarDetailsContainer.addSubview(glucoseCircle)
@@ -363,7 +340,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         maltoseCircle.layer.cornerRadius  = 40
     }
     
-    func configureSugarDetailsLabels() {
+    private func configureSugarDetailsLabels() {
         sugarDetailsContainer.addSubview(sucroseLabel)
         sugarDetailsContainer.addSubview(fructoseLabel)
         sugarDetailsContainer.addSubview(glucoseLabel)
@@ -394,7 +371,7 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
         ])
     }
     
-    func configureSugarDetailsData() {
+    private func configureSugarDetailsData() {
         sucroseCircle.addSubview(sucroseData)
         fructoseCircle.addSubview(fructoseData)
         glucoseCircle.addSubview(glucoseData)
@@ -426,74 +403,68 @@ class WholeFoodDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     @objc func handleFavoriteTapped(_ gesture: UITapGestureRecognizer) {
-        if favIconEnabled == false {
-            addNewSymbol        = UIImage(systemName: "star.fill", withConfiguration: config)
-            favIcon.image       = addNewSymbol
-            favIconEnabled      = true
+        if favCheck == false {
+            favCheck.toggle()
+            favIcon.updateFavs(favIconEnabled: favCheck)
             PersistenceManager.updateWith(favorite: passedData, actionType: .add) { [weak self] error in
                 guard let self = self else {return }
         
                 guard let error = error else {
-                    self.presentGFAlertOnMain(title: "Food Favorited", message: "You have successfully added \(passedData.description.capitalized) to your favorites", buttonTitle: "Ok")
+                    self.presentGFAlertOnMain(title: CAAlertTitle.foodFavorited.rawValue, message: CAAlertMessage.foodFavorited.rawValue, buttonTitle: "Ok")
                     return
                 }
-                self.presentGFAlertOnMain(title: "Something Went Wrong!", message: "Your food did not favorite, please try again!", buttonTitle: "Ok")
+                print(error)
+                self.presentGFAlertOnMain(title: CAAlertTitle.unableToFavorite.rawValue, message: CAAlertMessage.unableToFavorite.rawValue, buttonTitle: "Ok")
             }
         } else {
-            addNewSymbol        = UIImage(systemName: "star", withConfiguration: config)
-            favIcon.image       = addNewSymbol
-            favIconEnabled      = false
+            favCheck.toggle()
+            favIcon.updateFavs(favIconEnabled: favCheck)
             PersistenceManager.updateWith(favorite: passedData, actionType: .remove) { [weak self] error in
                 guard let self = self else {return }
         
                 guard let error = error else {
-                    self.presentGFAlertOnMain(title: "Food Removed!", message: "You have successfully removed \(passedData.description.capitalized) from your favorites", buttonTitle: "Ok")
+                    self.presentGFAlertOnMain(title: CAAlertTitle.favoriteRemoved.rawValue, message: CAAlertMessage.favoriteRemoved.rawValue, buttonTitle: "Ok")
                     return
                 }
-                self.presentGFAlertOnMain(title: "Something Went Wrong!", message: "Your food did not favorite, please try again!", buttonTitle: "Ok")
+                print(error)
+                self.presentGFAlertOnMain(title: CAAlertTitle.favoriteNotRemoved.rawValue, message: CAAlertMessage.favoriteNotRemoved.rawValue, buttonTitle: "Ok")
             }
             delegate?.updateFavoritesCollectionView()
         }
     }
     
-    func createDismissKeyboardTapGesture() {
+    private func createDismissKeyboardTapGesture() {
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(view.endEditing))
         carbsContainer.addGestureRecognizer(tap)
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let customPortionText = customPortionTextField.text, customPortionText.count != 0 else {
-            totalCarbsData.text     = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
-            netCarbsData.text       = (nutrientData.carbs != "N/A" ? (round(Float(nutrientData.carbs)!*10)/10.0).description : "N/A")
-            totalStarchData.text    = (nutrientData.totalStarches != "N/A" ? (round(Float(nutrientData.totalStarches)!*10)/10.0).description : "N/A")
-            totalSugarsData.text    = (nutrientData.totalSugars != "N/A" ? (round(Float(nutrientData.totalSugars)!*10)/10.0).description : "N/A")
+            totalCarbsData.text     = "\(nutrientData.carbs)g"
+            netCarbsData.text       = "\(nutrientData.carbs)g"
+            totalStarchData.text    = "\(nutrientData.totalStarches)g"
+            totalSugarsData.text    = "\(nutrientData.totalSugars)g"
+            sucroseData.text        = "\(nutrientData.sucrose)g"
+            fructoseData.text       = "\(nutrientData.fructose)g"
+            glucoseData.text        = "\(nutrientData.glucose)g"
+            lactoseData.text        = "\(nutrientData.lactose)g"
+            maltoseData.text        = "\(nutrientData.maltose)g"
             return
         }
         
-        let customPortion: Float   = Float(customPortionTextField.text ?? "1") ?? 1
-        let adjustor:      Float   = customPortion/Float(passedData.servingSize)
+        let adjustor = viewModel.getAdjustor(servingSize: passedData.servingSize, customPortion: customPortionTextField.text ?? "1")
         
-        if nutrientData.carbs != "N/A" {
-            let adjustedCarbs:  Float   = round(((Float(nutrientData.carbs)!*adjustor)*10)/10.0)
-            totalCarbsData.text = adjustedCarbs.description
-        }
+        let adjustedNutrientData = viewModel.customPortionAdjustment(nutrientData: nutrientData, adjustor: adjustor)
         
-        if nutrientData.carbs != "N/A" {
-            let adjustedNetCarbs: Float = round(((Float(nutrientData.carbs)!*adjustor)*10)/10.0)
-            netCarbsData.text   = adjustedNetCarbs.description
-        }
-            
-        if nutrientData.totalStarches != "N/A" {
-            let adjustedTotalStarches: Float = round(((Float(nutrientData.totalStarches)!*adjustor)*10)/10.0)
-            totalStarchData.text    = adjustedTotalStarches.description
-        }
-        
-        if nutrientData.totalSugars != "N/A" {
-            let adjustedTotalSugars: Float = round(((Float(nutrientData.totalSugars)!*adjustor)*10)/10.0)
-            totalSugarsData.text    = adjustedTotalSugars.description
-        }
-
-            
-        }
+        totalCarbsData.text     = "\(adjustedNutrientData.carbs)g"
+        netCarbsData.text       = "\(adjustedNutrientData.carbs)g"
+        totalStarchData.text    = "\(adjustedNutrientData.totalStarches)g"
+        totalSugarsData.text    = "\(adjustedNutrientData.totalSugars)g"
+        sucroseData.text        = "\(adjustedNutrientData.sucrose)g"
+        fructoseData.text       = "\(adjustedNutrientData.fructose)g"
+        glucoseData.text        = "\(adjustedNutrientData.glucose)g"
+        lactoseData.text        = "\(adjustedNutrientData.lactose)g"
+        maltoseData.text        = "\(adjustedNutrientData.maltose)g"
+    }
     
 }

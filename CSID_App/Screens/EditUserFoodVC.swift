@@ -8,13 +8,14 @@
 import UIKit
 
 protocol UpdateUserFood {
-    func updateUserFood()
+    func updateUserFoodDetails(foodDetails: UserFoodItem)
     func removeUserFood()
 }
 
 class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     var yourFoodData: [UserFoodItem] = []
     var passedData: UserFoodItem!
+    var updatedData: UserFoodItem!
     var passedVC: UserFoodDetails!
     let scrollView  = UIScrollView()
     let contentView = UIView()
@@ -231,8 +232,19 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
         let sugars              = Float(totalSugarsTextField.text!) ?? 0
         let addedSugars         = Float(addedSugarsTextField.text!) ?? 0
         
-        passedData = UserFoodItem(category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredientsTextField.text, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
-
+        updatedData = UserFoodItem(category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredientsTextField.text, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
+        
+        PersistenceManager.updateUserFoodWith(userFood: passedData, updatedUserFood: updatedData, actionType: .modify) { [weak self] error in
+            guard let self = self else {return }
+            
+            guard let error = error else {
+                self.dismiss(animated: false)
+                delegate?.updateUserFoodDetails(foodDetails: updatedData)
+                return
+            }
+            print(error)
+            self.presentGFAlertOnMain(title: CAAlertTitle.unableToUpdate.rawValue, message: CAAlertMessage.unableToUpdate.rawValue, buttonTitle: "Ok")
+        }
     }
     
     func resetFields() {
@@ -271,7 +283,7 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
     }
     
     @objc func handleDeleteTapped(_ gesture: UITapGestureRecognizer) {
-        PersistenceManager.updateUserFoodWith(userFood: passedData, actionType: .delete) { [weak self] error in
+        PersistenceManager.updateUserFoodWith(userFood: passedData, updatedUserFood: nil, actionType: .delete) { [weak self] error in
             guard let self = self else {return }
     
             guard let error = error else {
@@ -279,7 +291,8 @@ class EditUserFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate 
                 delegate?.removeUserFood()
                 return
             }
-            self.presentGFAlertOnMain(title: "Something Went Wrong!", message: "\(error)", buttonTitle: "Ok")
+            print(error)
+            self.presentGFAlertOnMain(title: CAAlertTitle.unableToDelete.rawValue, message: CAAlertMessage.unableToDelete.rawValue, buttonTitle: "Ok")
         }
         }
     

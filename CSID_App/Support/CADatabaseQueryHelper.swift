@@ -7,9 +7,105 @@
 
 import UIKit
 import SQLite3
+import Foundation
 
 class CADatabaseQueryHelper {
 
+    static func dataFormater(value: String) -> String {
+        guard value != "N/A" else {
+            let formattedValue = "N/A"
+            return formattedValue
+        }
+        
+        guard let floatValue = Float(value) else { return "N/A" }
+        
+        let formattedValue = String(format: "%.1f",floatValue)
+        
+        return formattedValue
+    }
+    
+    static func queryiCloudFavs(searchTerms: String, databasePointer: OpaquePointer?) -> [USDAFoodDetails] {
+        var filteredUSDAFoodData: [USDAFoodDetails] = []
+        var queryStatement: OpaquePointer?
+        let queryStatementString = """
+            SELECT searchKeyWords, fdicID, brandOwner, brandName, brandedFoodCategory, description, servingSize, servingSizeUnit, ingredients, wholeFood FROM USDAFoodDetails
+            WHERE \(searchTerms)
+            ORDER BY wholeFood DESC, length(description);
+            """
+        if sqlite3_prepare_v2(
+          databasePointer,
+          queryStatementString,
+          -1,
+          &queryStatement,
+          nil
+        ) == SQLITE_OK {
+            
+            var brandOwner: String
+            var brandName: String
+            var brandCategory: String
+            var descr: String
+            var ingredients: String
+            var wholeFoods: String
+            
+          while (sqlite3_step(queryStatement) == SQLITE_ROW) {
+              
+              let searchKeyWords = String(cString: sqlite3_column_text(queryStatement, 0))
+            
+              let fdicID = Int(sqlite3_column_int(queryStatement, 1))
+              
+              if let queryResultBrandOwner = sqlite3_column_text(queryStatement, 2) {
+                  brandOwner    = String(cString: queryResultBrandOwner)
+              } else {
+                  brandOwner    = ""
+              }
+              
+              if let queryResultBrandName = sqlite3_column_text(queryStatement, 3) {
+                  brandName     = String(cString: queryResultBrandName)
+              } else {
+                  brandName     = ""
+              }
+              
+              if let queryResultBrandedCategory = sqlite3_column_text(queryStatement, 4) {
+                  brandCategory = String(cString: queryResultBrandedCategory)
+              } else {
+                  brandCategory = ""
+              }
+              
+              if let queryResultDescription = sqlite3_column_text(queryStatement, 5) {
+                  descr   = String(cString: queryResultDescription)
+              } else {
+                  descr   = ""
+              }
+              
+              let servingSize = Float(sqlite3_column_double(queryStatement, 6))
+              
+              let servingSizeUnit = String(cString: sqlite3_column_text(queryStatement, 7))
+              
+              
+              if let queryResultIngredients = sqlite3_column_text(queryStatement, 8) {
+                  ingredients   = String(cString: queryResultIngredients)
+              } else {
+                  ingredients   = ""
+              }
+              
+              if let queryResultIngredients = sqlite3_column_text(queryStatement, 9) {
+                  wholeFoods   = String(cString: queryResultIngredients)
+              } else {
+                  wholeFoods   = ""
+              }
+              
+              
+              let tempUSDAData  = [USDAFoodDetails(searchKeyWords: searchKeyWords, fdicID: fdicID, brandOwner: brandOwner, brandName: brandName, brandedFoodCategory: brandCategory, description: descr, servingSize: servingSize, servingSizeUnit: servingSizeUnit, ingredients: ingredients, wholeFood: wholeFoods)]
+              
+              filteredUSDAFoodData.append(contentsOf: tempUSDAData)
+            }
+        } else {
+            let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
+        }
+        sqlite3_finalize(queryStatement)
+        return filteredUSDAFoodData
+    }
+    
     static func queryDatabaseGeneralSearch(searchTerms: String, databasePointer: OpaquePointer?) -> [USDAFoodDetails] {
         
         var filteredUSDAFoodData: [USDAFoodDetails] = []
@@ -246,6 +342,7 @@ class CADatabaseQueryHelper {
             
           } else {
               let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
+              print("error originating from queryDatabaseNutrientData in CADatabaseQueryHelper \(errorMessage)")
 
           }
           sqlite3_finalize(queryStatement)
@@ -255,25 +352,33 @@ class CADatabaseQueryHelper {
         if carbs == "N/A" {
             netCarbs = "N/A"
         } else if fiber == "N/A" {
-            netCarbs = (Float(carbs)!).description
+            netCarbs = String(format: "%.1f",Float(carbs) ?? 0)
         } else if totalSugarAlcohols == "N/A" {
-            netCarbs = (max((Float(carbs)!)-(Float(fiber)!), 0)).description
+            let nC = (max((Float(carbs)!)-(Float(fiber)!), 0))
+            netCarbs = String(format: "%.1f",Float(nC))
         } else {
-            netCarbs = (max((Float(carbs)!)-(Float(fiber)!)-(Float(totalSugarAlcohols)!), 0)).description
+            let nC = (max((Float(carbs)!)-(Float(fiber)!)-(Float(totalSugarAlcohols)!), 0))
+            netCarbs = String(format: "%.1f",Float(nC))
         }
         
         //Total Starches
         if carbs == "N/A" || totalSugars == "N/A" {
             totalStarches   = "N/A"
         } else if fiber == "N/A" {
-            totalStarches   = (max((Float(carbs)!)-(Float(totalSugars)!), 0)).description
+            let tS   = (max((Float(carbs)!)-(Float(totalSugars)!), 0))
+            totalStarches = String(format: "%.1f",Float(tS))
         } else {
-            totalStarches   = (max((Float(carbs)!)-(Float(fiber)!)-(Float(totalSugars)!), 0)).description
+            let tS = (max((Float(carbs)!)-(Float(fiber)!)-(Float(totalSugars)!), 0))
+            totalStarches = String(format: "%.1f",Float(tS))
         }
         
-        carbs       = (carbs != "N/A" ? ((Float(carbs)!).description) : "N/A")
-        totalSugars = (totalSugars != "N/A" ? ((Float(totalSugars)!).description) : "N/A")
-        fiber       = (fiber != "N/A" ? ((Float(fiber)!).description) : "N/A")
+        carbs       = dataFormater(value: carbs)
+        totalSugars = dataFormater(value: totalSugars)
+        fiber       = dataFormater(value: fiber)
+        totalSugarAlcohols = dataFormater(value: totalSugarAlcohols)
+        protein     = dataFormater(value: protein)
+        totalFat    = dataFormater(value: totalFat)
+        sodium      = dataFormater(value: sodium)
         
         nutrientData = USDANutrientData(carbs: carbs, fiber: fiber, netCarbs: netCarbs, totalSugars: totalSugars, totalStarches: totalStarches, totalSugarAlcohols: totalSugarAlcohols, protein: protein, totalFat: totalFat, sodium: sodium)
         
@@ -348,12 +453,20 @@ class CADatabaseQueryHelper {
             }
           } else {
               let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
+              print("Error message from CADatabaseQueryHelper Whole Food func: \(errorMessage)")
 
           }
           sqlite3_finalize(queryStatement)
         
-        carbs       = (carbs != "N/A" ? ((Float(carbs)!).description) : "N/A")
-        totalSugars = (totalSugars != "N/A" ? ((Float(totalSugars)!).description) : "N/A")
+        carbs       = dataFormater(value: carbs)
+        totalSugars = dataFormater(value: totalSugars)
+        starch      = dataFormater(value: starch)
+        sucrose     = dataFormater(value: sucrose)
+        fructose    = dataFormater(value: fructose)
+        glucose     = dataFormater(value: glucose)
+        lactose     = dataFormater(value: lactose)
+        maltose     = dataFormater(value: maltose)
+        
         
         nutrientData = WholeFoodNutrientData(carbs: carbs, totalSugars: totalSugars, totalStarches: starch, sucrose: sucrose, fructose: fructose, glucose: glucose, lactose: lactose, maltose: maltose)
         
@@ -438,6 +551,7 @@ class CADatabaseQueryHelper {
             }
         } else {
             let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
+            print(errorMessage)
         }
         sqlite3_finalize(queryStatement)
         return filteredUSDAFoodData

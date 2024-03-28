@@ -44,6 +44,11 @@
 		EBEB385A2B9AB355009C5321 /* WholeFoodDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB38592B9AB355009C5321 /* WholeFoodDetailsVC.swift */; };
 		EBEB385C2B9E0FA8009C5321 /* PersistanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB385B2B9E0FA8009C5321 /* PersistanceManager.swift */; };
 		EBEB385E2BA10F87009C5321 /* DeleteIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB385D2BA10F87009C5321 /* DeleteIconView.swift */; };
+		EBEB38722BADCAE5009C5321 /* FoodDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB38712BADCAE5009C5321 /* FoodDetailsViewModel.swift */; };
+		EBEB38742BADE45D009C5321 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB38732BADE45D009C5321 /* GlobalVariables.swift */; };
+		EBEB38762BAE160C009C5321 /* FavoriteIconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB38752BAE160C009C5321 /* FavoriteIconImageView.swift */; };
+		EBEB38782BAE225F009C5321 /* WholeFoodDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB38772BAE225F009C5321 /* WholeFoodDetailsViewModel.swift */; };
+		EBEB387C2BB4C282009C5321 /* UpdateNotificationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB387B2BB4C281009C5321 /* UpdateNotificationVC.swift */; };
 		EBEB60702B1926CA00DE0EAA /* CategorySearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB606F2B1926CA00DE0EAA /* CategorySearchVC.swift */; };
 		EBF96E7D2B315DFF008B325D /* CSIDAlertVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF96E7C2B315DFF008B325D /* CSIDAlertVC.swift */; };
 		EBF96E7F2B3160EC008B325D /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF96E7E2B3160EC008B325D /* UIViewController+Extension.swift */; };
@@ -90,6 +95,11 @@
 		EBEB38592B9AB355009C5321 /* WholeFoodDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholeFoodDetailsVC.swift; sourceTree = "<group>"; };
 		EBEB385B2B9E0FA8009C5321 /* PersistanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistanceManager.swift; sourceTree = SOURCE_ROOT; };
 		EBEB385D2BA10F87009C5321 /* DeleteIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteIconView.swift; sourceTree = "<group>"; };
+		EBEB38712BADCAE5009C5321 /* FoodDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodDetailsViewModel.swift; sourceTree = "<group>"; };
+		EBEB38732BADE45D009C5321 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GlobalVariables.swift; path = CSID_App/Model/GlobalVariables.swift; sourceTree = SOURCE_ROOT; };
+		EBEB38752BAE160C009C5321 /* FavoriteIconImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteIconImageView.swift; sourceTree = "<group>"; };
+		EBEB38772BAE225F009C5321 /* WholeFoodDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholeFoodDetailsViewModel.swift; sourceTree = "<group>"; };
+		EBEB387B2BB4C281009C5321 /* UpdateNotificationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNotificationVC.swift; sourceTree = "<group>"; };
 		EBEB606F2B1926CA00DE0EAA /* CategorySearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySearchVC.swift; sourceTree = "<group>"; };
 		EBF96E7C2B315DFF008B325D /* CSIDAlertVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSIDAlertVC.swift; sourceTree = "<group>"; };
 		EBF96E7E2B3160EC008B325D /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIViewController+Extension.swift"; path = "CSID_App/CustomViews/UIViewController+Extension.swift"; sourceTree = SOURCE_ROOT; };
@@ -110,19 +120,22 @@
 			isa = PBXGroup;
 			children = (
 				EBEB385B2B9E0FA8009C5321 /* PersistanceManager.swift */,
+				EBEB38732BADE45D009C5321 /* GlobalVariables.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
 		};
-		BC3386372AD7CB8A004D2FED /* Modal */ = {
+		BC3386372AD7CB8A004D2FED /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				EB9EEE402B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db */,
 				BCA26D3B2ACB588C00E749B7 /* USDAFoodDataStruct.swift */,
 				EBA53C9D2B0BBA35000BAB15 /* CategoryStruct.swift */,
 				EB85EB282B3E88B80037A969 /* SucroseIngredientClass.swift */,
+				EBEB38712BADCAE5009C5321 /* FoodDetailsViewModel.swift */,
+				EBEB38772BAE225F009C5321 /* WholeFoodDetailsViewModel.swift */,
 			);
-			path = Modal;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		BC3386382AD7CBD9004D2FED /* Screens */ = {
@@ -162,6 +175,8 @@
 				EB3BEBF22B5C6B2D00AE70AA /* CategoriesCollectionViewCell.swift */,
 				EBC15F182B76BF5200378947 /* EmptyCollectionView.swift */,
 				EBEB385D2BA10F87009C5321 /* DeleteIconView.swift */,
+				EBEB38752BAE160C009C5321 /* FavoriteIconImageView.swift */,
+				EBEB387B2BB4C281009C5321 /* UpdateNotificationVC.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -204,7 +219,7 @@
 				BC33863A2AD7CC3B004D2FED /* Support */,
 				BC3386392AD7CC20004D2FED /* CustomViews */,
 				BC3386382AD7CBD9004D2FED /* Screens */,
-				BC3386372AD7CB8A004D2FED /* Modal */,
+				BC3386372AD7CB8A004D2FED /* Model */,
 				BC3386362AD7CB42004D2FED /* Managers */,
 				BC5F07E12AB25582007096F8 /* Info.plist */,
 			);
@@ -311,6 +326,8 @@
 				EBA53CA22B0D1C96000BAB15 /* ChartCircleView.swift in Sources */,
 				EBF96E7D2B315DFF008B325D /* CSIDAlertVC.swift in Sources */,
 				BC8DF8932AEDCA6500799CB9 /* NewFoodLabel.swift in Sources */,
+				EBEB38722BADCAE5009C5321 /* FoodDetailsViewModel.swift in Sources */,
+				EBEB38762BAE160C009C5321 /* FavoriteIconImageView.swift in Sources */,
 				EBA53CA62B0FDD32000BAB15 /* CADatabaseHelper.swift in Sources */,
 				BC6F5D772AD6622C005F9257 /* CSIDIconImageView.swift in Sources */,
 				EBEB385E2BA10F87009C5321 /* DeleteIconView.swift in Sources */,
@@ -322,14 +339,17 @@
 				BCB71C7E2B0282A20032D56A /* CardCollectionViewCell.swift in Sources */,
 				BC5F07D42AB2557C007096F8 /* AppDelegate.swift in Sources */,
 				EB3F10EB2B5DC08D0053340F /* AboutUsVC.swift in Sources */,
+				EBEB387C2BB4C282009C5321 /* UpdateNotificationVC.swift in Sources */,
 				BC5F07D62AB2557C007096F8 /* SceneDelegate.swift in Sources */,
 				EB67A1082B4233B1003A646C /* UserFoodDetails.swift in Sources */,
 				BC03D97B2B033B5000257B5A /* FoodDetailsContainer.swift in Sources */,
 				EB5BFE242B14ED810063FA4F /* CADatabaseQueryHelper.swift in Sources */,
 				BC5F07F42AB3891E007096F8 /* TabBarVC.swift in Sources */,
 				EBE2B8D62B1AF34D00B44999 /* CAPortionTextField.swift in Sources */,
+				EBEB38782BAE225F009C5321 /* WholeFoodDetailsViewModel.swift in Sources */,
 				BCC2C5342AC5163E00546D52 /* FoodDetailsVC.swift in Sources */,
 				EB3BEBF32B5C6B2D00AE70AA /* CategoriesCollectionViewCell.swift in Sources */,
+				EBEB38742BADE45D009C5321 /* GlobalVariables.swift in Sources */,
 				BCA26D3C2ACB588C00E749B7 /* USDAFoodDataStruct.swift in Sources */,
 				EBD83F582B3328FA00905E37 /* ErrorMessage.swift in Sources */,
 				BC8BD0F72AEF635E00611165 /* MultiLineTextField.swift in Sources */,

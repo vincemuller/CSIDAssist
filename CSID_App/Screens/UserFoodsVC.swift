@@ -47,6 +47,7 @@ class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     func configureViewController() {
         view.backgroundColor = .systemBackground
+        title                = "Your Foods"
     }
     
     func configureCollectionView() {
@@ -116,13 +117,13 @@ class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
 
     func updateUserFood() {
-        
+        getUserFoods()
     }
     
     func removeUserFoods() {
         getUserFoods()
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-            self.presentGFAlertOnMain(title: "Food Removed!", message: "You have successfully removed your food item", buttonTitle: "Ok")
+            self.presentGFAlertOnMain(title: CAAlertTitle.foodDeleted.rawValue, message: CAAlertMessage.foodDeleted.rawValue, buttonTitle: "Ok")
         })
     }
 }

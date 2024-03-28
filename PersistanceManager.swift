@@ -20,9 +20,23 @@ enum PersistenceManager {
     static private let defaults = UserDefaults.standard
     
     enum Keys {
-        static let firstLaunchIcloudRetrieve = "retrieveIcloud"
+        static let firstLaunchIcloudRetrieve = "firstLaunch"
         static let favorites = "favorites"
         static let userFoods = "userFoods"
+    }
+    
+    static func getUserLaunchDetails() -> Bool {
+        var firstLaunch = defaults.bool(forKey:"firstLaunch")
+        print(firstLaunch)
+        firstLaunch.toggle()
+        print(firstLaunch)
+        
+        guard firstLaunch == true else {
+            return firstLaunch
+        }
+        
+        defaults.set(true, forKey: Keys.firstLaunchIcloudRetrieve)
+        return firstLaunch
     }
     
     static func updateWith(favorite: USDAFoodDetails, actionType: FavoriteActionType, completed: @escaping (Error?) -> Void) {
@@ -36,11 +50,9 @@ enum PersistenceManager {
                         print("already in favorites!")
                         return
                     }
-                    print("favorite worked!")
                     retrievedFavorites.append(favorite)
                 case .remove:
                     retrievedFavorites.removeAll { $0.fdicID == favorite.fdicID }
-                    print("removed worked")
                 }
                 
                 completed(save(favorites: retrievedFavorites))
@@ -55,7 +67,6 @@ enum PersistenceManager {
     static func retrieveFavorites(completed: @escaping (Result<[USDAFoodDetails], Error>) -> Void) {
         guard let favoritesData = defaults.object(forKey: Keys.favorites) as? Data else {
             completed(.success([]))
-            print("retrieved!")
             return
         }
         
@@ -64,7 +75,7 @@ enum PersistenceManager {
             let favorites = try decoder.decode([USDAFoodDetails].self, from: favoritesData)
             completed(.success(favorites))
         } catch {
-            print("Unable to favorite!")
+            print("Unable to favorite!, check PersistenceManager")
             completed(.failure(error))
         }
     }
@@ -88,10 +99,9 @@ enum PersistenceManager {
             let encoder = JSONEncoder()
             let encodedFavorites = try encoder.encode(favorites)
             defaults.set(encodedFavorites, forKey: Keys.favorites)
-            print("save was successful")
             return nil
         } catch {
-            print("Unable to favorite from save func")
+            print("Unable to favorite from save func in PersistenceManager")
             return error
         }
     }
@@ -99,7 +109,6 @@ enum PersistenceManager {
     static func retrieveUserFoods(completed: @escaping (Result<[UserFoodItem], Error>) -> Void) {
         guard let userFoodData = defaults.object(forKey: Keys.userFoods) as? Data else {
             completed(.success([]))
-            print("User Foods Retrieved!")
             return
         }
         
@@ -108,7 +117,7 @@ enum PersistenceManager {
             let userFoods = try decoder.decode([UserFoodItem].self, from: userFoodData)
             completed(.success(userFoods))
         } catch {
-            print("Unable to favorite!")
+            print("Unable to retrieve favs from PersistenceManager in retrievUserFoods func")
             completed(.failure(error))
         }
     }
@@ -120,7 +129,7 @@ enum PersistenceManager {
             case .success(let foods):
                 userFoods = foods
             case .failure(let error):
-                print(error)
+                print("\(error) This failure is coming from getUserFoods func in PersistenceManager")
             }
         })
         return userFoods
@@ -131,15 +140,14 @@ enum PersistenceManager {
             let encoder = JSONEncoder()
             let encodedUserFoods = try encoder.encode(userFoods)
             defaults.setValue(encodedUserFoods, forKey: Keys.userFoods)
-            print("User food created!")
             return nil
         } catch {
-            print("Unable to create new food!")
+            print("Unable to create new food, check createUserFood in PersistenceManager")
             return error
         }
     }
     
-    static func updateUserFoodWith(userFood: UserFoodItem, actionType: CreateActionType, completed: @escaping (Error?) -> Void) {
+    static func updateUserFoodWith(userFood: UserFoodItem, updatedUserFood: UserFoodItem?, actionType: CreateActionType, completed: @escaping (Error?) -> Void) {
         retrieveUserFoods { result in
             switch result {
             case .success(let userFoods):
@@ -147,24 +155,22 @@ enum PersistenceManager {
                 switch actionType {
                 case .create:
                     guard !retrievedUserFoods.contains(where: { $0.description == userFood.description }) else {
-                        print("already in favorites!")
+                        print("This food already exists! Persistence Manager")
                         return
                     }
-                    print("favorite worked!")
                     retrievedUserFoods.append(userFood)
                 case .delete:
                     retrievedUserFoods.removeAll { $0.description == userFood.description }
-                    print("removed worked")
                 case .modify:
                     retrievedUserFoods.removeAll {$0.description == userFood.description}
-                    retrievedUserFoods.append(userFood)
+                    retrievedUserFoods.append(updatedUserFood ?? userFood)
                 }
                 
                 completed(createUserFood(userFoods: retrievedUserFoods))
                 
             case .failure(let error):
                 completed(error)
-                print(error)
+                print("\(error) coming from updateUserFoodWith in PersistenceManager")
             }
         }
     }

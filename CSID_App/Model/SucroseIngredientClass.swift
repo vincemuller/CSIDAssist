@@ -165,7 +165,8 @@ class SucroseCheck {
     ]
     
     
-    func makingIngredientsUnique(productIngredients: String) -> String {
+    func makingIngredientsUnique(originalIngredients: String) -> String {
+        let productIngredients = originalIngredients.lowercased().replacingOccurrences(of: "sugar free", with: "")
         var replacedProductIngredients = productIngredients
         var x: Int = 0
         

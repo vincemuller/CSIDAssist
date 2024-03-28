@@ -50,6 +50,7 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
     
     func configureViewController() {
         view.backgroundColor = .systemBackground
+        title                = "Category Search"
     }
     
     func configureCollectionView() {
@@ -108,18 +109,24 @@ class CategorySearchVC: UIViewController, UICollectionViewDelegate, UICollection
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let foodDetailsVC = CSIDFoodDetailsVC()
+        let wholeFoodDetailsVC      = WholeFoodDetailsVC()
         
         if let cell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
             cell.backgroundColor = .systemGray5
         }
         
-        foodDetailsVC.passedData                = filteredUSDACategoryData[indexPath.row]
-        foodDetailsVC.passedPointer             = passedPointer
-        foodDetailsVC.modalPresentationStyle    = .popover
-        foodDetailsVC.title                     = "CSIDAssist"
-        
-        self.present(foodDetailsVC, animated: true)
-        
+        if filteredUSDACategoryData[indexPath.row].wholeFood == "yes" {
+            wholeFoodDetailsVC.passedData               = filteredUSDACategoryData[indexPath.row]
+            wholeFoodDetailsVC.modalPresentationStyle   = .popover
+            wholeFoodDetailsVC.title                    = "CSIDAssist"
+            self.present(wholeFoodDetailsVC, animated: true)
+        } else {
+            foodDetailsVC.passedData                = filteredUSDACategoryData[indexPath.row]
+            foodDetailsVC.modalPresentationStyle    = .popover
+            foodDetailsVC.title                     = "CSIDAssist"
+            
+            self.present(foodDetailsVC, animated: true)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

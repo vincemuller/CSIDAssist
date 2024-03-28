@@ -14,8 +14,8 @@ protocol UpdateUserFoodsVC {
 
 class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate, UITextViewDelegate, UpdateUserFood {
     
-    var passedData:             UserFoodItem!
-    var sugarTypes:             String = ""
+    var passedData: UserFoodItem!
+    var sugarTypes: String = ""
     
     let findSugars = SucroseCheck()
     
@@ -60,8 +60,9 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBackground
-        let uniqueIngredients = findSugars.makingIngredientsUnique(productIngredients: passedData.ingredients.lowercased())
+        view.backgroundColor    = .systemBackground
+        
+        let uniqueIngredients   = findSugars.makingIngredientsUnique(originalIngredients: passedData.ingredients.lowercased())
         sugarIngr = findSugars.getSucroseIngredients(productIngredients: uniqueIngredients)
         otherIngr = findSugars.getOtherSugarIngredients(productIngredients: uniqueIngredients)
         
@@ -81,10 +82,10 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         view.addSubview(titleLabel)
         view.addSubview(brandCategoryLabel)
         
-        titleLabel.text = passedData.description.capitalized
-        brandCategoryLabel.text = "Category: Your Foods"
+        titleLabel.text                 = passedData.description.capitalized
+        brandCategoryLabel.text         = "Category: Your Foods"
         
-        brandCategoryLabel.textColor = .systemGray2
+        brandCategoryLabel.textColor    = .systemGray2
         
         
         NSLayoutConstraint.activate([
@@ -332,16 +333,16 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         totalSugarsData.text    = passedData.totalSugars.description
         totalStarchData.text    = (max((Float(passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars)),0)).description
         
-        sugarIngr = findSugars.getSucroseIngredients(productIngredients: passedData.ingredients.lowercased())
-        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: passedData.ingredients.lowercased())
+        let uniqueIngredients = findSugars.makingIngredientsUnique(originalIngredients: passedData.ingredients.lowercased())
+        sugarIngr = findSugars.getSucroseIngredients(productIngredients: uniqueIngredients)
+        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: uniqueIngredients)
         
         collectionView.reloadData()
         
+        delegate?.updateUserFood()
+        
         self.presentGFAlertOnMain(title: CAAlertTitle.foodUpdated.rawValue, message: CAAlertMessage.foodUpdated.rawValue, buttonTitle: "Ok")
         
-    }
-
-    func updateUserFood() {
     }
     
     func removeUserFood() {

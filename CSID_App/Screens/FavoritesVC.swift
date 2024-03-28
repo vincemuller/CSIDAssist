@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
+class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, WholeFoodFavoriteArtefactsDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     
     var passedPointer: OpaquePointer?
     var collectionView: UICollectionView!
@@ -126,6 +126,7 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
         let foodDetailsVC           = CSIDFoodDetailsVC()
         let wholeFoodDetailsVC      = WholeFoodDetailsVC()
         foodDetailsVC.delegate      = self
+        wholeFoodDetailsVC.delegate = self
         
         if let cell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
             cell.backgroundColor = .systemGray5
@@ -133,13 +134,11 @@ class FavoritesVC: UIViewController, FavoriteArtefactsDelegate, UICollectionView
         
         if filteredUSDAData[indexPath.row].wholeFood == "yes" {
             wholeFoodDetailsVC.passedData               = filteredUSDAData[indexPath.row]
-            wholeFoodDetailsVC.passedPointer            = passedPointer
             wholeFoodDetailsVC.modalPresentationStyle   = .popover
             wholeFoodDetailsVC.title                    = "CSIDAssist"
             self.present(wholeFoodDetailsVC, animated: true)
         } else {
             foodDetailsVC.passedData                = filteredUSDAData[indexPath.row]
-            foodDetailsVC.passedPointer             = passedPointer
             foodDetailsVC.modalPresentationStyle    = .popover
             foodDetailsVC.title                     = "CSIDAssist"
             
@@ -173,6 +172,7 @@ extension FavoritesVC: UISearchBarDelegate {
     }
     
     func updateFavoritesCollectionView() {
+        print("this func has been called!")
         getUserFavs()
         collectionView.backgroundView   = {filteredUSDAData.count == 0 ? emptyFavorites : nil}()
         collectionView.reloadData()

@@ -210,17 +210,19 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         let fiber               = Float(totalFiberTextField.text!) ?? 0
         let sugars              = Float(totalSugarsTextField.text!) ?? 0
         let addedSugars         = Float(addedSugarsTextField.text!) ?? 0
+        let userFoodsVC         = UserFoodsVC()
         
         let newUserFood = UserFoodItem(category: "Your Foods", description: description, portionSize: portionSize, ingredients: ingredientsTextField.text, totalCarbs: carbs, totalFiber: fiber, totalSugars: sugars, addedSugars: addedSugars)
-        PersistenceManager.updateUserFoodWith(userFood: newUserFood, actionType: .create) { [weak self] error in
+        PersistenceManager.updateUserFoodWith(userFood: newUserFood, updatedUserFood: nil, actionType: .create) { [weak self] error in
             guard let self = self else {return }
     
             guard let error = error else {
-                self.presentGFAlertOnMain(title: "Food Created!", message: "You have successfully created and added \(newUserFood.description) to your foods", buttonTitle: "Ok")
-                self.tabBarController?.selectedIndex = 0
+                self.presentGFAlertOnMain(title: CAAlertTitle.foodAdded.rawValue, message: CAAlertMessage.foodAdded.rawValue, buttonTitle: "Ok")
+                self.navigationController?.pushViewController(userFoodsVC, animated: true)
                 return
             }
-            self.presentGFAlertOnMain(title: "\(error)", message: "Your food did not get added, please try again!", buttonTitle: "Ok")
+            print(error)
+            self.presentGFAlertOnMain(title: CAAlertTitle.unableToAdd.rawValue, message: CAAlertMessage.unableToAdd.rawValue, buttonTitle: "Ok")
         }
         resetFields()
     }

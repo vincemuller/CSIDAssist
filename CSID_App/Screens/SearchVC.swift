@@ -30,14 +30,14 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if launch == true {
+            self.presentAppUpdateNotification(title: "APP UPDATE", message: "CSIDAssist has been recently updated.  By popular demand we've added 450+ whole foods to the application so users can now see CSID related details on unbranded whole foods like strawberries, avocados, and chicken. We've also improved storage so users can favorite or add foods even if their iCloud account is not set up or is full. Please note, in order to complete this improvement, we had to disconnect iCloud services which in turn will reset your favs and added foods.\n\nPlease reach out via the About Us tab should you have any feedback, questions, issues, or requests you'd like to share.\n\nThank you again for using CSIDAssist.", buttonTitle: "Ok")
+        }
+        
         navBarHeight = self.navigationController?.navigationBar.frame.size.height ?? 100
         tabBarHeight = self.tabBarController?.tabBar.frame.size.height ?? 84
         
-        if let dbPointer = CADatabaseHelper.getDatabasePointer(databaseName: "CSIDAssistFoodDatabase.db") {
-            pointer = dbPointer
-        } else {
-        }
-        let queryPrimer = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: "", searchTerm: "", wholeFoodsFilter: "", databasePointer: pointer)
+        pointer = databasePointer
         
         configureViewController()
         configureSearchController()
@@ -141,23 +141,19 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
         let categorySearchVC                    = CategorySearchVC()
         let userFoodsVC                         = UserFoodsVC()
         var queryResult: [USDAFoodDetails]      = []
-        var queriedUserFoods: [UserFoodItem]    = []
         
         if searchInProgress == true && filteredUSDAFoodData[indexPath.row].wholeFood != "yes" {
             foodDetailsVC.passedData                = filteredUSDAFoodData[indexPath.row]
-            foodDetailsVC.passedPointer             = pointer
             foodDetailsVC.modalPresentationStyle    = .popover
             foodDetailsVC.title                     = "CSIDAssist"
             self.present(foodDetailsVC, animated: true)
         } else if searchInProgress == true && filteredUSDAFoodData[indexPath.row].wholeFood == "yes" {
             wholeFoodDetailsVC.passedData                = filteredUSDAFoodData[indexPath.row]
-            wholeFoodDetailsVC.passedPointer             = pointer
             wholeFoodDetailsVC.modalPresentationStyle    = .popover
             wholeFoodDetailsVC.title                     = "CSIDAssist"
             self.present(wholeFoodDetailsVC, animated: true)
         }
         else {
-            //let queryResult: [USDAFoodDetails] = []
             let selection   = categories.list[indexPath.row]
             if selection != "Your Foods" {
                 queryResult = CADatabaseQueryHelper.queryDatabaseCategorySearch(categorySearchTerm: selection, searchTerm: "", wholeFoodsFilter: "", databasePointer: pointer)
@@ -228,6 +224,7 @@ extension SearchVC: UISearchBarDelegate {
         collectionView.reloadData()
         collectionView.setCollectionViewLayout(UIHelper.createTwoColumnFlowLayout(in: view), animated: false)
         searchController.searchBar.selectedScopeButtonIndex = 1
+        wholeFoodsFilter = ""
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
