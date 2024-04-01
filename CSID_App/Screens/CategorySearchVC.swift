@@ -184,6 +184,7 @@ extension CategorySearchVC: UISearchBarDelegate {
         collectionView.reloadData()
         collectionView.setCollectionViewLayout(UIHelper.createOneColumnFlowLayout(in: view), animated: false)
         searchController.searchBar.selectedScopeButtonIndex = 1
+        wholeFoodsFilter = ""
     }
     
 }
