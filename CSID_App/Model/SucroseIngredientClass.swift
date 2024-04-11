@@ -53,6 +53,7 @@ class SucroseCheck {
     var otherSugarIngredients: [String] = [
         "sugar alcohol",
         "agave nectar",
+        "agave syrup",
         "barley malt",
         "corn sweetener",
         "corn syrup solids",
@@ -131,6 +132,7 @@ class SucroseCheck {
     var replacedOtherSugarIngredients: [String] = [
         "sgralcl",
         "agavenctr",
+        "agavsrp",
         "barleymlt",
         "cornsweetener",
         "cornsyrpsolids",
