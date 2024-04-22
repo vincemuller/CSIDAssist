@@ -17,7 +17,7 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
     var passedData: UserFoodItem!
     var sugarTypes: String = ""
     
-    let findSugars = SucroseCheck()
+    let findSugars = UserFoodSucrCheck()
     
     var sugarIngr: [String] = []
     var otherIngr: [String] = []
@@ -63,8 +63,9 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         view.backgroundColor    = .systemBackground
         
         let uniqueIngredients   = findSugars.makingIngredientsUnique(originalIngredients: passedData.ingredients.lowercased())
-        sugarIngr = findSugars.getSucroseIngredients(productIngredients: uniqueIngredients)
-        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: uniqueIngredients)
+        var x = findSugars.getSugarIngredients(productIngredients: uniqueIngredients)
+        sugarIngr = x[0]
+        otherIngr = x[1]
         
         configureTitleLabel()
         configurePortionContainers()
@@ -333,9 +334,10 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         totalSugarsData.text    = passedData.totalSugars.description
         totalStarchData.text    = (max((Float(passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars)),0)).description
         
-        let uniqueIngredients = findSugars.makingIngredientsUnique(originalIngredients: passedData.ingredients.lowercased())
-        sugarIngr = findSugars.getSucroseIngredients(productIngredients: uniqueIngredients)
-        otherIngr = findSugars.getOtherSugarIngredients(productIngredients: uniqueIngredients)
+        let uniqueIngredients   = findSugars.makingIngredientsUnique(originalIngredients: passedData.ingredients.lowercased())
+        var x = findSugars.getSugarIngredients(productIngredients: uniqueIngredients)
+        sugarIngr = x[0]
+        otherIngr = x[1]
         
         collectionView.reloadData()
         

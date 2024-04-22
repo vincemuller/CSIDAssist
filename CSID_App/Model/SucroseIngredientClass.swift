@@ -9,52 +9,95 @@ import UIKit
 
 class SucroseCheck {
     var sucrIngredients: [String] = [
-        "barbados sugar",
-        "barley malt syrup",
-        "beet sugar",
-        "brown sugar",
-        "buttered syrup",
-        "cane juice",
-        "cane juice crystals",
-        "cane sugar",
-        "cane syrup",
-        "caramel",
-        "carob syrup",
-        "castor sugar",
-        "coconut palm sugar",
-        "coconut sugar",
-        "confectioner's sugar",
-        "dehydrated cane juice",
-        "cemerara sugar",
-        "evaporated cane juice",
+        "organic free-flowing brown sugars",
+        "organic dehydrated cane juice",
+        "organic evaporated cane juice",
+        "organic confectioner's sugar",
+        "organic cane juice crystals",
+        "organic coconut palm sugar",
         "free-flowing brown sugars",
+        "organic barley malt syrup",
+        "organic refiner's syrup",
+        "organic turbinado sugar",
+        "organic barbados sugar",
+        "organic buttered syrup",
+        "organic cemerara sugar",
+        "organic powdered sugar",
+        "dehydrated cane juice",
+        "evaporated cane juice",
+        "organic coconut sugar",
+        "organic sorghum Syrup",
+        "organic sweet sorghum",
+        "confectioner's sugar",
+        "organic castor sugar",
+        "organic golden sugar",
+        "organic golden syrup",
+        "organic invert sugar",
+        "organic yellow sugar",
+        "cane juice crystals",
+        "organic brown sugar",
+        "organic carob syrup",
+        "organic icing sugar",
+        "organic maple syrup",
+        "coconut palm sugar",
+        "organic beet sugar",
+        "organic cane juice",
+        "organic cane sugar",
+        "organic cane syrup",
+        "organic palm sugar",
+        "organic saccharose",
+        "barley malt syrup",
+        "organic muscovado",
+        "organic raw sugar",
+        "organic molasses",
+        "refiner's syrup",
+        "turbinado sugar",
+        "organic caramel",
+        "organic panocha",
+        "organic sucrose",
+        "organic treacle",
+        "buttered syrup",
+        "cemerara sugar",
+        "powdered sugar",
+       "barbados sugar",
+        "coconut sugar",
+        "sorghum Syrup",
+        "sweet sorghum",
+        "organic sugar",
+        "organic syrup",
+        "castor sugar",
         "golden sugar",
         "golden syrup",
-        "icing sugar",
         "invert sugar",
+        "yellow sugar",
+        "brown sugar",
+        "carob syrup",
+        "icing sugar",
         "maple syrup",
-        "molasses",
-        "muscovado",
+        "beet sugar",
+        "cane juice",
+        "cane sugar",
+        "cane syrup",
         "palm sugar",
-        "panocha",
-        "powdered sugar",
-        "raw sugar",
-        "refiner's syrup",
         "saccharose",
-        "sorghum Syrup",
+        "muscovado",
+        "raw sugar",
+        "molasses",
+        "caramel",
+        "panocha",
         "sucrose",
-        "sugar",
-        "syrup",
-        "sweet sorghum",
         "treacle",
-        "turbinado sugar",
-        "yellow sugar"
+        "sugar",
+        "syrup"
     ]
+    
     var otherSugarIngredients: [String] = [
         "sugar alcohol",
         "agave nectar",
         "agave syrup",
         "barley malt",
+        "brown rice syrup",
+        "brown rice syrup solids",
         "corn sweetener",
         "corn syrup solids",
         "date sugar",
@@ -84,136 +127,126 @@ class SucroseCheck {
         "hydrogenated starch hydrolysates",
         "isomalt",
         "monk fruit extract",
-        "monk fruit"
+        "monk fruit",
+        "organic sugar alcohol",
+        "organic agave nectar",
+        "organic agave syrup",
+        "organic barley malt",
+        "organic brown rice syrup",
+        "organic brown rice syrup solids",
+        "organic corn sweetener",
+        "organic corn syrup solids",
+        "organic date sugar",
+        "organic dextrin",
+        "organic dextrose",
+        "organic fructose",
+        "organic fruit juice",
+        "organic fruit juice concentrate",
+        "organic glucose",
+        "organic glucose solids",
+        "organic grape sugar",
+        "organic hfcs (high-fructose corn syrup)",
+        "organic high fructose corn syrup",
+        "organic honey",
+        "organic malt syrup",
+        "organic maltodextrin",
+        "organic maltol",
+        "organic maltose",
+        "organic mannose",
+        "organic rice syrup",
+        "organic corn syrup",
+        "organic erythritol",
+        "organic maltitol",
+        "organic mannitol",
+        "organic sorbitol",
+        "organic xylitol",
+        "organic hydrogenated starch hydrolysates",
+        "organic isomalt",
+        "organic monk fruit extract",
+        "organic monk fruit"
     ]
     
-    var replacedSucrIngredients: [String] = [
-        "barbadossgr",
-        "barleymaltsyrup",
-        "beetsgr",
-        "brownsgr",
-        "butteredsyrp",
-        "cnejc",
-        "canejccrystals",
-        "canesgr",
-        "canesyrp",
-        "caramel",
-        "carobsyrp",
-        "castorsgr",
-        "coconutpalmsgr",
-        "coconutsgr",
-        "confectioner's sugar",
-        "dehydratedcanejce",
-        "cemerarasgr",
-        "evaporatedcanejce",
-        "free-flowingbrownsugars",
-        "goldensgr",
-        "goldensyrp",
-        "icingsgr",
-        "invertsgr",
-        "maplesyrp",
-        "molasses",
-        "muscovado",
-        "palmsgr",
-        "panocha",
-        "powderedsgr",
-        "rawsgr",
-        "refiner'ssyrp",
-        "saccharose",
-        "sorghumsyrp",
-        "sucrose",
-        "sugar",
-        "syrup",
-        "sweet sorghum",
-        "treacle",
-        "turbinadosgr",
-        "yellowsgr",
-    ]
     var replacedOtherSugarIngredients: [String] = [
-        "sgralcl",
-        "agavenctr",
-        "agavsrp",
-        "barleymlt",
-        "cornsweetener",
-        "cornsyrpsolids",
-        "datesgr",
-        "dextrin",
-        "dextrose",
-        "fructose",
-        "frtjce",
-        "fruitjcecnctrte",
-        "glucose",
-        "glucsslds",
-        "grapesgr",
-        "hfcs (high-fruct cs)",
-        "highfructsecrnsyrp",
-        "honey",
-        "maltsyrp",
-        "maltodxtrn",
-        "maltol",
-        "maltose",
-        "mannose",
-        "ricesyrp",
-        "cornsyp",
-        "erythritol",
-        "maltitol",
-        "mannitol",
-        "sorbitol",
-        "xylitol",
-        "hydrogenated starch hydrolysates",
-        "isomalt",
-        "mnkfrutxtrct",
-        "mnkfrt",
     ]
     
     
-    func makingIngredientsUnique(originalIngredients: String) -> String {
-        let productIngredients = originalIngredients.lowercased().replacingOccurrences(of: "sugar free", with: "")
-        var replacedProductIngredients = productIngredients
-        var x: Int = 0
-        
-        while x < sucrIngredients.count {
-            replacedProductIngredients = replacedProductIngredients.replacingOccurrences(of: sucrIngredients[x], with: replacedSucrIngredients[x])
-            x = x + 1
-        }
-        
-        x = 0
-        
-        while x < otherSugarIngredients.count {
-            replacedProductIngredients = replacedProductIngredients.replacingOccurrences(of: otherSugarIngredients[x], with: replacedOtherSugarIngredients[x])
-            x = x + 1
-        }
-        
-        return replacedProductIngredients
-    }
-    
-    func getSucroseIngredients(productIngredients: String) -> [String] {
-        
+    //Sugar = "$sugar&" | "$sugar," | ", sugar," | ", sugar&"
+    func getSucroseIngredientsEnhanced(productIngredients: String) -> [String] {
+        var prodIngredients = productIngredients.replacingOccurrences(of: "\n", with: ", ")
         var returnedSugarIngredients: [String] = []
+        prodIngredients = "$" + prodIngredients.lowercased() + "&"
         
         var x: Int = 0
-        while x < replacedSucrIngredients.count {
-            if productIngredients.contains(replacedSucrIngredients[x]) {
+        while x < sucrIngredients.count {
+            let firstCheck = "$" + sucrIngredients[x].lowercased() + "&" // "$sugar&"
+            let secondCheck = "$" + sucrIngredients[x].lowercased() + "," // "$sugar,"
+            let thirdCheck = ", " + sucrIngredients[x].lowercased() + "," // ", sugar,"
+            let fourthCheck = ", " + sucrIngredients[x].lowercased() + "&" // ", sugar&"
+            let fifthCheck = "[" + sucrIngredients[x].lowercased() + "," // "[sugar,"
+            let sixthCheck = ", " + sucrIngredients[x].lowercased() + "]" // ", sugar]"
+            let seventhCheck = "(" + sucrIngredients[x].lowercased() + "," // "(sugar,"
+            let eighthCheck = ", " + sucrIngredients[x].lowercased() + ")" // ", sugar)"
+            let ninthCheck = "{" + sucrIngredients[x].lowercased() + "," // "{sugar,"
+            let tenthCheck = ", " + sucrIngredients[x].lowercased() + "}" // ", sugar)"
+            
+            //Sugar detection checks
+            if (prodIngredients.contains(firstCheck) ||
+                prodIngredients.contains(secondCheck) ||
+                prodIngredients.contains(thirdCheck) ||
+                prodIngredients.contains(fourthCheck) ||
+                prodIngredients.contains(fifthCheck) ||
+                prodIngredients.contains(sixthCheck) ||
+                prodIngredients.contains(seventhCheck) ||
+                prodIngredients.contains(eighthCheck) ||
+                prodIngredients.contains(ninthCheck) ||
+                prodIngredients.contains(tenthCheck)
+                )
+                
+            {
                 returnedSugarIngredients.append(sucrIngredients[x])
             }
             x = x + 1
         }
-        
         return returnedSugarIngredients
     }
     
     func getOtherSugarIngredients(productIngredients: String) -> [String] {
-        
+        var prodIngredients = productIngredients.replacingOccurrences(of: "\n", with: ", ")
+        print(prodIngredients)
         var returnedOtherSugarIngredients: [String] = []
+        prodIngredients = "$" + prodIngredients.lowercased() + "&"
         
         var x: Int = 0
-        while x < replacedOtherSugarIngredients.count {
-            if productIngredients.contains(replacedOtherSugarIngredients[x]) {
+        while x < otherSugarIngredients.count {
+            let firstCheck = "$" + otherSugarIngredients[x].lowercased() + "&" // "$dextrose&"
+            let secondCheck = "$" + otherSugarIngredients[x].lowercased() + "," // "$dextrose,"
+            let thirdCheck = ", " + otherSugarIngredients[x].lowercased() + "," // ", dextrose,"
+            let fourthCheck = ", " + otherSugarIngredients[x].lowercased() + "&" // ", dextrose&"
+            let fifthCheck = "[" + otherSugarIngredients[x].lowercased() + "," // "[dextrose,"
+            let sixthCheck = ", " + otherSugarIngredients[x].lowercased() + "]" // ", dextrose]"
+            let seventhCheck = "(" + otherSugarIngredients[x].lowercased() + "," // "(dextrose,"
+            let eighthCheck = ", " + otherSugarIngredients[x].lowercased() + ")" // ", dextrose)"
+            let ninthCheck = "{" + otherSugarIngredients[x].lowercased() + "," // "{dextrose,"
+            let tenthCheck = ", " + otherSugarIngredients[x].lowercased() + "}" // ", dextrose)"
+            
+            //Other sugar ingredient detection checks
+            if (prodIngredients.contains(firstCheck) ||
+                prodIngredients.contains(secondCheck) ||
+                prodIngredients.contains(thirdCheck) ||
+                prodIngredients.contains(fourthCheck) ||
+                prodIngredients.contains(fifthCheck) ||
+                prodIngredients.contains(sixthCheck) ||
+                prodIngredients.contains(seventhCheck) ||
+                prodIngredients.contains(eighthCheck) ||
+                prodIngredients.contains(ninthCheck) ||
+                prodIngredients.contains(tenthCheck)
+                )
+                
+            {
                 returnedOtherSugarIngredients.append(otherSugarIngredients[x])
             }
             x = x + 1
         }
-        
         return returnedOtherSugarIngredients
     }
 }

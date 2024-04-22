@@ -39,6 +39,7 @@
 		EBA53CA22B0D1C96000BAB15 /* ChartCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53CA12B0D1C96000BAB15 /* ChartCircleView.swift */; };
 		EBA53CA62B0FDD32000BAB15 /* CADatabaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53CA52B0FDD32000BAB15 /* CADatabaseHelper.swift */; };
 		EBC15F192B76BF5200378947 /* EmptyCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC15F182B76BF5200378947 /* EmptyCollectionView.swift */; };
+		EBC32E502BD6DF8A001BCDC6 /* UserFoodSucrCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC32E4F2BD6DF89001BCDC6 /* UserFoodSucrCheck.swift */; };
 		EBD83F582B3328FA00905E37 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD83F572B3328FA00905E37 /* ErrorMessage.swift */; };
 		EBE2B8D62B1AF34D00B44999 /* CAPortionTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE2B8D52B1AF34D00B44999 /* CAPortionTextField.swift */; };
 		EBEB385A2B9AB355009C5321 /* WholeFoodDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEB38592B9AB355009C5321 /* WholeFoodDetailsVC.swift */; };
@@ -91,6 +92,7 @@
 		EBA53CA52B0FDD32000BAB15 /* CADatabaseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CADatabaseHelper.swift; sourceTree = "<group>"; };
 		EBA958DC2BBB0EA9006DBB7D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EBC15F182B76BF5200378947 /* EmptyCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionView.swift; sourceTree = "<group>"; };
+		EBC32E4F2BD6DF89001BCDC6 /* UserFoodSucrCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFoodSucrCheck.swift; sourceTree = "<group>"; };
 		EBD83F572B3328FA00905E37 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		EBE2B8D52B1AF34D00B44999 /* CAPortionTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAPortionTextField.swift; sourceTree = "<group>"; };
 		EBEB38592B9AB355009C5321 /* WholeFoodDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholeFoodDetailsVC.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				EB85EB282B3E88B80037A969 /* SucroseIngredientClass.swift */,
 				EBEB38712BADCAE5009C5321 /* FoodDetailsViewModel.swift */,
 				EBEB38772BAE225F009C5321 /* WholeFoodDetailsViewModel.swift */,
+				EBC32E4F2BD6DF89001BCDC6 /* UserFoodSucrCheck.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -330,6 +333,7 @@
 				BC8DF8932AEDCA6500799CB9 /* NewFoodLabel.swift in Sources */,
 				EBEB38722BADCAE5009C5321 /* FoodDetailsViewModel.swift in Sources */,
 				EBEB38762BAE160C009C5321 /* FavoriteIconImageView.swift in Sources */,
+				EBC32E502BD6DF8A001BCDC6 /* UserFoodSucrCheck.swift in Sources */,
 				EBA53CA62B0FDD32000BAB15 /* CADatabaseHelper.swift in Sources */,
 				BC6F5D772AD6622C005F9257 /* CSIDIconImageView.swift in Sources */,
 				EBEB385E2BA10F87009C5321 /* DeleteIconView.swift in Sources */,

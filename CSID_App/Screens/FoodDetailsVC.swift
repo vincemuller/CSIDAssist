@@ -324,8 +324,8 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
         } else if cardsDetails[indexPath.row] == "Sugars"{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SugarCardCollectionViewCell.reuseID, for: indexPath) as! SugarCardCollectionViewCell
             cell.cardLabel.text         = cardsDetails[indexPath.row]
-            cell.sucroseIngr.text       = viewModel.getSucroseSugars(productIngredients: passedData.ingredients.lowercased())
-            cell.otherIngr.text         = viewModel.getOtherSugars(productIngredients: passedData.ingredients.lowercased())
+            cell.sucroseIngr.text       = viewModel.getSucroseSugars(productIngredients: passedData.ingredients)
+            cell.otherIngr.text         = viewModel.getOtherSugars(productIngredients: passedData.ingredients)
             returnCell = cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCollectionViewCell.reuseID, for: indexPath) as! CardCollectionViewCell

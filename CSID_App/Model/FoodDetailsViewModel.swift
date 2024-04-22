@@ -62,8 +62,7 @@ class FoodDetailsViewModel {
     
     
     func getSucroseSugars(productIngredients: String) -> String {
-        let uniqueIngredients = findSugars.makingIngredientsUnique(originalIngredients: productIngredients)
-        var sucroseSugars = findSugars.getSucroseIngredients(productIngredients: uniqueIngredients)
+        var sucroseSugars = findSugars.getSucroseIngredientsEnhanced(productIngredients: productIngredients)
         
         if sucroseSugars.isEmpty {
             let sI = "No sucrose detected. As always, check the ingredients"
@@ -77,8 +76,7 @@ class FoodDetailsViewModel {
     }
     
     func getOtherSugars(productIngredients: String) -> String {
-        let uniqueIngredients = findSugars.makingIngredientsUnique(originalIngredients: productIngredients)
-        var otherSugars = findSugars.getOtherSugarIngredients(productIngredients: uniqueIngredients)
+        var otherSugars = findSugars.getOtherSugarIngredients(productIngredients: productIngredients)
         
         if otherSugars.isEmpty {
             let oI = "No other sugars detected. As always, check the ingredients"
