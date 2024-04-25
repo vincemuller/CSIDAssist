@@ -62,7 +62,10 @@ class FoodDetailsViewModel {
     
     
     func getSucroseSugars(productIngredients: String) -> String {
-        var sucroseSugars = findSugars.getSucroseIngredientsEnhanced(productIngredients: productIngredients)
+        let uniqueIngredients   = findSugars.makingIngredientsUnique(originalIngredients: productIngredients.lowercased())
+        let x = findSugars.getSugarIngredients(productIngredients: uniqueIngredients)
+        
+        var sucroseSugars = x[0]
         
         if sucroseSugars.isEmpty {
             let sI = "No sucrose detected. As always, check the ingredients"
@@ -76,15 +79,18 @@ class FoodDetailsViewModel {
     }
     
     func getOtherSugars(productIngredients: String) -> String {
-        var otherSugars = findSugars.getOtherSugarIngredients(productIngredients: productIngredients)
+        let uniqueIngredients   = findSugars.makingIngredientsUnique(originalIngredients: productIngredients.lowercased())
+        let x = findSugars.getSugarIngredients(productIngredients: uniqueIngredients)
+        
+        var otherSugars = x[1]
         
         if otherSugars.isEmpty {
-            let oI = "No other sugars detected. As always, check the ingredients"
-            return oI
+            let sI = "No other sugars detected. As always, check the ingredients"
+            return sI
         }
         
         otherSugars = otherSugars.map({$0.capitalized})
-        let oI = "•\(otherSugars.joined(separator: "  •"))"
+        let oI        = "•\(otherSugars.joined(separator: "  •"))"
         
         return oI
     }

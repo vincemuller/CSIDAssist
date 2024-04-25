@@ -1,5 +1,5 @@
 //
-//  SucroseIngredientClass.swift
+//  EnhancedSucroseCheck.swift
 //  CSID_App
 //
 //  Created by Vince Muller on 12/28/23.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SucroseCheck {
+class EnhancedSucroseCheck {
     var sucrIngredients: [String] = [
         "organic free-flowing brown sugars",
         "organic dehydrated cane juice",
@@ -36,6 +36,7 @@ class SucroseCheck {
         "organic yellow sugar",
         "cane juice crystals",
         "organic brown sugar",
+        "organic brown cane sugar",
         "organic carob syrup",
         "organic icing sugar",
         "organic maple syrup",
@@ -76,6 +77,7 @@ class SucroseCheck {
         "maple syrup",
         "beet sugar",
         "cane juice",
+        "brown cane sugar",
         "cane sugar",
         "cane syrup",
         "palm sugar",
@@ -107,6 +109,7 @@ class SucroseCheck {
         "fruit juice",
         "fruit juice concentrate",
         "glucose",
+        "glucose-fructose syrup",
         "glucose solids",
         "grape sugar",
         "hfcs (high-fructose corn syrup)",

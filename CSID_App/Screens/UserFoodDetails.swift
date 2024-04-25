@@ -17,7 +17,7 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
     var passedData: UserFoodItem!
     var sugarTypes: String = ""
     
-    let findSugars = UserFoodSucrCheck()
+    let findSugars = SucroseCheck()
     
     var sugarIngr: [String] = []
     var otherIngr: [String] = []

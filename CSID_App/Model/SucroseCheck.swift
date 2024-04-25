@@ -1,5 +1,5 @@
 //
-//  UserFoodSucrCheck.swift
+//  EnhancedSucroseCheck.swift
 //  CSID_App
 //
 //  Created by Vince Muller on 4/22/24.
@@ -7,12 +7,13 @@
 
 import UIKit
 
-class UserFoodSucrCheck {
+class SucroseCheck {
     
     var sugarIngredients: [String] = [
         "organic hydrogenated starch hydrolysates",
         "organic hfcs (high-fructose corn syrup)",
         "organic free-flowing brown sugars",
+        "organic glucose-fructose syrup",
         "hydrogenated starch hydrolysates",
         "organic high fructose corn syrup",
         "hfcs (high-fructose corn syrup)",
@@ -33,6 +34,7 @@ class UserFoodSucrCheck {
         "organic turbinado sugar",
         "brown rice syrup solids",
         "fruit juice concentrate",
+        "glucose-fructose syrup",
         "organic barbados sugar",
         "organic buttered syrup",
         "organic cemerara sugar",
@@ -168,6 +170,7 @@ class UserFoodSucrCheck {
         "O300",
         "O299",
         "S298",
+        "O297.5",
         "O297",
         "O296",
         "O295",
@@ -188,6 +191,7 @@ class UserFoodSucrCheck {
         "S280",
         "O279",
         "O278",
+        "0277.5",
         "S277",
         "S276",
         "S275",
