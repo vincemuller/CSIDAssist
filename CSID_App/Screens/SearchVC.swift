@@ -30,10 +30,6 @@ class SearchVC: UIViewController, UICollectionViewDelegate, UICollectionViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if launch == true {
-            self.presentAppUpdateNotification(title: "APP UPDATE", message: "CSIDAssist has been recently updated.  By popular demand we've added 450+ whole foods to the application so users can now see CSID related details on unbranded whole foods like strawberries, avocados, and chicken. We've also improved storage so users can favorite or add foods even if their iCloud account is not set up or is full. Please note, in order to complete this improvement, we had to disconnect iCloud services which in turn will reset your favs and added foods.\n\nPlease reach out via the About Us tab should you have any feedback, questions, issues, or requests you'd like to share.\n\nThank you again for using CSIDAssist.", buttonTitle: "Ok")
-        }
-        
         navBarHeight = self.navigationController?.navigationBar.frame.size.height ?? 100
         tabBarHeight = self.tabBarController?.tabBar.frame.size.height ?? 84
         

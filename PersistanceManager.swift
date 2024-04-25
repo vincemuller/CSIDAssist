@@ -20,23 +20,8 @@ enum PersistenceManager {
     static private let defaults = UserDefaults.standard
     
     enum Keys {
-        static let firstLaunchIcloudRetrieve = "firstLaunch"
         static let favorites = "favorites"
         static let userFoods = "userFoods"
-    }
-    
-    static func getUserLaunchDetails() -> Bool {
-        var firstLaunch = defaults.bool(forKey:"firstLaunch")
-        print(firstLaunch)
-        firstLaunch.toggle()
-        print(firstLaunch)
-        
-        guard firstLaunch == true else {
-            return firstLaunch
-        }
-        
-        defaults.set(true, forKey: Keys.firstLaunchIcloudRetrieve)
-        return firstLaunch
     }
     
     static func updateWith(favorite: USDAFoodDetails, actionType: FavoriteActionType, completed: @escaping (Error?) -> Void) {

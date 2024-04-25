@@ -10,6 +10,5 @@ import CloudKit
 
 
 public var databasePointer: OpaquePointer!
-public var launch: Bool!
 public var userID: String!
 public var iCloudFavs: [Int]!
