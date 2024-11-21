@@ -28,12 +28,12 @@
 		EB3BEBF32B5C6B2D00AE70AA /* CategoriesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3BEBF22B5C6B2D00AE70AA /* CategoriesCollectionViewCell.swift */; };
 		EB3F10EB2B5DC08D0053340F /* AboutUsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3F10EA2B5DC08D0053340F /* AboutUsVC.swift */; };
 		EB5BFE242B14ED810063FA4F /* CADatabaseQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5BFE232B14ED810063FA4F /* CADatabaseQueryHelper.swift */; };
+		EB5E01AB2C56CCAA0063DD45 /* CSIDAssistFoodDatabase.db in Resources */ = {isa = PBXBuildFile; fileRef = EB5E01AA2C56CCAA0063DD45 /* CSIDAssistFoodDatabase.db */; };
 		EB67A1062B42200E003A646C /* UserFoodsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB67A1052B42200E003A646C /* UserFoodsVC.swift */; };
 		EB67A1082B4233B1003A646C /* UserFoodDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB67A1072B4233B1003A646C /* UserFoodDetails.swift */; };
 		EB67A10A2B435952003A646C /* EditUserFoodVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB67A1092B435952003A646C /* EditUserFoodVC.swift */; };
 		EB85EB292B3E88B80037A969 /* EnhancedSucroseCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB85EB282B3E88B80037A969 /* EnhancedSucroseCheck.swift */; };
 		EB85EB2B2B4098DB0037A969 /* SugarCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB85EB2A2B4098DB0037A969 /* SugarCardCollectionViewCell.swift */; };
-		EB9EEE412B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db in Resources */ = {isa = PBXBuildFile; fileRef = EB9EEE402B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db */; };
 		EBA53C9E2B0BBA35000BAB15 /* CategoryStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53C9D2B0BBA35000BAB15 /* CategoryStruct.swift */; };
 		EBA53CA02B0BEB7F000BAB15 /* SeparatorLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53C9F2B0BEB7F000BAB15 /* SeparatorLine.swift */; };
 		EBA53CA22B0D1C96000BAB15 /* ChartCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA53CA12B0D1C96000BAB15 /* ChartCircleView.swift */; };
@@ -80,12 +80,12 @@
 		EB3BEBF22B5C6B2D00AE70AA /* CategoriesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesCollectionViewCell.swift; sourceTree = "<group>"; };
 		EB3F10EA2B5DC08D0053340F /* AboutUsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUsVC.swift; sourceTree = "<group>"; };
 		EB5BFE232B14ED810063FA4F /* CADatabaseQueryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CADatabaseQueryHelper.swift; sourceTree = "<group>"; };
+		EB5E01AA2C56CCAA0063DD45 /* CSIDAssistFoodDatabase.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = CSIDAssistFoodDatabase.db; path = ../../../../../CSIDAssistFoodDatabase.db; sourceTree = "<group>"; };
 		EB67A1052B42200E003A646C /* UserFoodsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFoodsVC.swift; sourceTree = "<group>"; };
 		EB67A1072B4233B1003A646C /* UserFoodDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFoodDetails.swift; sourceTree = "<group>"; };
 		EB67A1092B435952003A646C /* EditUserFoodVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserFoodVC.swift; sourceTree = "<group>"; };
 		EB85EB282B3E88B80037A969 /* EnhancedSucroseCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedSucroseCheck.swift; sourceTree = "<group>"; };
 		EB85EB2A2B4098DB0037A969 /* SugarCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SugarCardCollectionViewCell.swift; sourceTree = "<group>"; };
-		EB9EEE402B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = CSIDAssistFoodDatabase.db; sourceTree = "<group>"; };
 		EBA53C9D2B0BBA35000BAB15 /* CategoryStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryStruct.swift; sourceTree = "<group>"; };
 		EBA53C9F2B0BEB7F000BAB15 /* SeparatorLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorLine.swift; sourceTree = "<group>"; };
 		EBA53CA12B0D1C96000BAB15 /* ChartCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartCircleView.swift; sourceTree = "<group>"; };
@@ -131,7 +131,7 @@
 		BC3386372AD7CB8A004D2FED /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				EB9EEE402B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db */,
+				EB5E01AA2C56CCAA0063DD45 /* CSIDAssistFoodDatabase.db */,
 				BCA26D3B2ACB588C00E749B7 /* USDAFoodDataStruct.swift */,
 				EBA53C9D2B0BBA35000BAB15 /* CategoryStruct.swift */,
 				EB85EB282B3E88B80037A969 /* EnhancedSucroseCheck.swift */,
@@ -305,7 +305,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB9EEE412B2BCB0D009530D4 /* CSIDAssistFoodDatabase.db in Resources */,
+				EB5E01AB2C56CCAA0063DD45 /* CSIDAssistFoodDatabase.db in Resources */,
 				BC5F07DD2AB25582007096F8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

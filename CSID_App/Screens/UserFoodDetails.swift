@@ -316,10 +316,12 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let element      = cardsColors.remove(at: indexPath.row)
-        let elementLabel = cardsDetails.remove(at: indexPath.row)
-        cardsDetails.insert(elementLabel, at: indexPath.row+1)
-        cardsColors.insert(element, at: (indexPath.row+1))
+        
+        guard indexPath.row != 1 else {
+            return
+        }
+        cardsColors.reverse()
+        cardsDetails.reverse()
         
         collectionView.reloadData()
     }
