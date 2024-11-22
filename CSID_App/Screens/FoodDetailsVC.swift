@@ -343,14 +343,14 @@ class CSIDFoodDetailsVC: UIViewController, UICollectionViewDelegate, UICollectio
 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         guard indexPath.row != 1 else {
             return
         }
         cardsColors.reverse()
         cardsDetails.reverse()
         
-        collectionView.reloadData()
+        configureCollectionView()
+    
     }
     
     @objc func handleFavoriteTapped(_ gesture: UITapGestureRecognizer) {

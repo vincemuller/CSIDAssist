@@ -323,7 +323,7 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         cardsColors.reverse()
         cardsDetails.reverse()
         
-        collectionView.reloadData()
+        configureCollectionView()
     }
     
     func updateUserFoodDetails(foodDetails: UserFoodItem) {
