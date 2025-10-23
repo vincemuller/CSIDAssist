@@ -108,7 +108,7 @@ class UserFoodsVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, canEditItemAt indexPath: IndexPath) -> Bool {
-        let userFoodItem = passedUserFoods[indexPath.row]
+        let _ = passedUserFoods[indexPath.row]
         passedUserFoods.remove(at: indexPath.row)
         collectionView.deleteItems(at: [indexPath])
         

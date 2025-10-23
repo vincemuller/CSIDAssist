@@ -155,10 +155,10 @@ class AddNewFoodVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         totalSugarsTextField.delegate   = self
         addedSugarsTextField.delegate   = self
         
-        totalCarbsTextField.keyboardType    = .numberPad
-        totalFiberTextField.keyboardType    = .numberPad
-        totalSugarsTextField.keyboardType   = .numberPad
-        addedSugarsTextField.keyboardType   = .numberPad
+        totalCarbsTextField.keyboardType    = .decimalPad
+        totalFiberTextField.keyboardType    = .decimalPad
+        totalSugarsTextField.keyboardType   = .decimalPad
+        addedSugarsTextField.keyboardType   = .decimalPad
             
         NSLayoutConstraint.activate([
             nutritionLabel.topAnchor.constraint(equalTo: ingredientsTextField.bottomAnchor, constant: 15),

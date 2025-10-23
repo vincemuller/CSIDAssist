@@ -63,7 +63,7 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         view.backgroundColor    = .systemBackground
         
         let uniqueIngredients   = findSugars.makingIngredientsUnique(originalIngredients: passedData.ingredients.lowercased())
-        var x = findSugars.getSugarIngredients(productIngredients: uniqueIngredients)
+        let x = findSugars.getSugarIngredients(productIngredients: uniqueIngredients)
         sugarIngr = x[0]
         otherIngr = x[1]
         
@@ -337,7 +337,7 @@ class UserFoodDetails: UIViewController, UICollectionViewDelegate, UICollectionV
         totalStarchData.text    = (max((Float(passedData.totalCarbs-passedData.totalFiber-passedData.totalSugars)),0)).description
         
         let uniqueIngredients   = findSugars.makingIngredientsUnique(originalIngredients: passedData.ingredients.lowercased())
-        var x = findSugars.getSugarIngredients(productIngredients: uniqueIngredients)
+        let x = findSugars.getSugarIngredients(productIngredients: uniqueIngredients)
         sugarIngr = x[0]
         otherIngr = x[1]
         

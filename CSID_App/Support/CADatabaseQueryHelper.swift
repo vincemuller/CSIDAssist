@@ -100,7 +100,7 @@ class CADatabaseQueryHelper {
               filteredUSDAFoodData.append(contentsOf: tempUSDAData)
             }
         } else {
-            let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
+            let _ = String(cString: sqlite3_errmsg(databasePointer))
         }
         sqlite3_finalize(queryStatement)
         return filteredUSDAFoodData
@@ -184,7 +184,7 @@ class CADatabaseQueryHelper {
               filteredUSDAFoodData.append(contentsOf: tempUSDAData)
             }
         } else {
-            let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
+            let _ = String(cString: sqlite3_errmsg(databasePointer))
         }
         sqlite3_finalize(queryStatement)
         return filteredUSDAFoodData
@@ -270,7 +270,7 @@ class CADatabaseQueryHelper {
               filteredUSDAFoodData.append(contentsOf: tempUSDAData)
             }
         } else {
-            let errorMessage    = String(cString: sqlite3_errmsg(databasePointer))
+            let _ = String(cString: sqlite3_errmsg(databasePointer))
 
         }
         sqlite3_finalize(queryStatement)
