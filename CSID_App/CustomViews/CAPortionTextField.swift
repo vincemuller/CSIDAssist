@@ -39,7 +39,7 @@ class CAPortionTextField: UITextField {
         adjustsFontSizeToFitWidth = false
         font            = UIFont.systemFont(ofSize: 14)
         autocorrectionType  = .no
-        keyboardType        = .numberPad
+        keyboardType        = .decimalPad
 
     }
     
